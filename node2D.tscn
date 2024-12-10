@@ -1,18 +1,16 @@
 [gd_scene load_steps=8 format=3 uid="uid://qyq07mg1p0sn"]
 
 [ext_resource type="Script" path="res://characterBody2D.gd" id="1_06o6w"]
-[ext_resource type="Script" path="res://commandInput.gd" id="1_rrkik"]
+[ext_resource type="Script" path="res://main.gd" id="1_rrkik"]
 [ext_resource type="Texture2D" uid="uid://eos4yb6buaxr" path="res://icon.svg" id="2_mcqon"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_vy411"]
-size = Vector2(0.28515, 0.464029)
 
 [sub_resource type="QuadMesh" id="QuadMesh_st13u"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_l68c8"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_3lyl6"]
-size = Vector2(1343, 36)
+[sub_resource type="QuadMesh" id="QuadMesh_b37v0"]
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_rrkik")
@@ -21,36 +19,39 @@ script = ExtResource("1_rrkik")
 script = ExtResource("1_06o6w")
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
-position = Vector2(-324, 55)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-position = Vector2(-322, 57)
-scale = Vector2(316.5, 208.5)
+scale = Vector2(5, 5)
 shape = SubResource("RectangleShape2D_vy411")
 
 [node name="MeshInstance2D" type="MeshInstance2D" parent="CharacterBody2D"]
-position = Vector2(-322.875, 57.375)
-scale = Vector2(95.75, 97.25)
+scale = Vector2(100, 100)
 mesh = SubResource("QuadMesh_st13u")
 
 [node name="commandInput" type="LineEdit" parent="CharacterBody2D"]
-offset_left = -879.0
-offset_top = -246.0
-offset_right = -518.0
-offset_bottom = -206.0
-
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(-451, 260)
-physics_material_override = SubResource("PhysicsMaterial_l68c8")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
-position = Vector2(137.5, 8)
-shape = SubResource("RectangleShape2D_3lyl6")
+offset_left = -569.0
+offset_top = -319.0
+offset_right = -208.0
+offset_bottom = -279.0
 
 [node name="Icon" type="Sprite2D" parent="."]
-position = Vector2(-788, 107)
+position = Vector2(-329, 253)
 texture = ExtResource("2_mcqon")
 
 [node name="Icon2" type="Sprite2D" parent="."]
-position = Vector2(43, 320)
+position = Vector2(451, 372)
 texture = ExtResource("2_mcqon")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="."]
+position = Vector2(0, -150)
+collision_layer = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+position = Vector2(0, 500)
+scale = Vector2(100, 5)
+shape = SubResource("RectangleShape2D_7grsg")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="StaticBody2D"]
+position = Vector2(0, 500)
+scale = Vector2(2000, 100)
+mesh = SubResource("QuadMesh_b37v0")
