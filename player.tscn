@@ -1,6 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://b5hrrpwlk61d8"]
+[gd_scene load_steps=5 format=3 uid="uid://b5hrrpwlk61d8"]
 
 [ext_resource type="Script" path="res://characterBody2D.gd" id="1_bhnif"]
+[ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://Morse Code the art/Protractor.png" id="2_vhsvq"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kimm8"]
 
@@ -12,6 +13,10 @@ collision_mask = 3
 script = ExtResource("1_bhnif")
 
 [node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(3, 3)
+texture = ExtResource("2_vhsvq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 scale = Vector2(5, 5)
