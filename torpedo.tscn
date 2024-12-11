@@ -41,5 +41,10 @@ shape = SubResource("CircleShape2D_u78d1")
 scale = Vector2(2.15, 2.15)
 shape = SubResource("CircleShape2D_ctrve")
 
+[node name="Timer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="detectionRadii" to="." method="_on_detection_radii_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
