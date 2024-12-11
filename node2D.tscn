@@ -1,12 +1,8 @@
-[gd_scene load_steps=8 format=3 uid="uid://qyq07mg1p0sn"]
+[gd_scene load_steps=6 format=3 uid="uid://qyq07mg1p0sn"]
 
-[ext_resource type="Script" path="res://characterBody2D.gd" id="1_06o6w"]
 [ext_resource type="Script" path="res://main.gd" id="1_rrkik"]
+[ext_resource type="PackedScene" uid="uid://b5hrrpwlk61d8" path="res://player.tscn" id="2_jrhgi"]
 [ext_resource type="Texture2D" uid="uid://eos4yb6buaxr" path="res://icon.svg" id="2_mcqon"]
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_vy411"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_st13u"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
 
@@ -15,24 +11,7 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_rrkik")
 
-[node name="CharacterBody2D" type="CharacterBody2D" parent="."]
-script = ExtResource("1_06o6w")
-
-[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="CharacterBody2D"]
-scale = Vector2(5, 5)
-shape = SubResource("RectangleShape2D_vy411")
-
-[node name="MeshInstance2D" type="MeshInstance2D" parent="CharacterBody2D"]
-scale = Vector2(100, 100)
-mesh = SubResource("QuadMesh_st13u")
-
-[node name="commandInput" type="LineEdit" parent="CharacterBody2D"]
-offset_left = -569.0
-offset_top = -319.0
-offset_right = -208.0
-offset_bottom = -279.0
+[node name="CharacterBody2D" parent="." instance=ExtResource("2_jrhgi")]
 
 [node name="Icon" type="Sprite2D" parent="."]
 position = Vector2(-329, 253)
@@ -55,3 +34,6 @@ shape = SubResource("RectangleShape2D_7grsg")
 position = Vector2(0, 500)
 scale = Vector2(2000, 100)
 mesh = SubResource("QuadMesh_b37v0")
+
+[node name="CharacterBody2D2" parent="." instance=ExtResource("2_jrhgi")]
+position = Vector2(400, 0)

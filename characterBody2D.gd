@@ -1,13 +1,14 @@
 extends CharacterBody2D
 
-
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
 var xDrag = 0.02
 var yDrag = 0.02
-
+var HP = 100
 
 func _physics_process(delta: float) -> void:
+	if HP <= 0:
+		queue_free()
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	# Add the gravity.

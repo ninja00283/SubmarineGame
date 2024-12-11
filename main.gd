@@ -58,7 +58,7 @@ func fireCommand(parts: Array):
 	var torpedo = torpedoScene.instantiate()
 	
 	var angleDegreesInput = 0
-	var magnitudeInput = 128
+	var magnitudeInput = 256
 	var angle = parts[1]
 	
 	if angle.is_valid_float():
