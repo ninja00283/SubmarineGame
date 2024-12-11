@@ -26,9 +26,8 @@ func _on_detection_radii_body_entered(body):
 		distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
 		fuzeDelay.start()
 
-
 func _on_timer_timeout():
-	if target != null:
+	if target != null and distance <= 150:
 		target.HP -= 2500 / distance
 		print(distance)
 		print(target.HP)

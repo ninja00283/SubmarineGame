@@ -1,10 +1,8 @@
-[gd_scene load_steps=6 format=3 uid="uid://c4xactt1lxmxl"]
+[gd_scene load_steps=5 format=3 uid="uid://c4xactt1lxmxl"]
 
 [ext_resource type="Script" path="res://torpedo.gd" id="1_61b7t"]
 [ext_resource type="Texture2D" uid="uid://ddcdo8on17lsg" path="res://torpedo.png" id="1_fxbiq"]
 [ext_resource type="Script" path="res://area2D.gd" id="3_jpvmm"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_u78d1"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ctrve"]
 radius = 7.44186
@@ -28,12 +26,6 @@ script = ExtResource("3_jpvmm")
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="Area2D"]
 polygon = PackedVector2Array(8, -1, 8, 1, 7, 2, 8, 2, 9, 1, 9, -1, 8, -2, 7, -2)
-
-[node name="explosionRadii" type="Area2D" parent="."]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="explosionRadii"]
-scale = Vector2(3.2, 3.2)
-shape = SubResource("CircleShape2D_u78d1")
 
 [node name="detectionRadii" type="Area2D" parent="."]
 
