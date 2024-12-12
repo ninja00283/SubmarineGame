@@ -29,7 +29,6 @@ func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
 					fireCommand(parts, characterBody)
 			input.clear()
 			return
-	print("Unknown command: ", text)
 	input.clear()
 
 func moveCommand(parts: Array, characterBody: CharacterBody2D):
@@ -55,28 +54,33 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 
 func fireCommand(parts: Array, characterBody: CharacterBody2D):
 	if parts.size() >= 3:
-		print("fireCommand()")
-		
-		var torpedo = torpedoScene.instantiate()
-		
-		var angleDegreesInput = 0
-		var magnitudeInput = 256
-		var ammo = parts[1]
+		var ammo_type_index = parts[1]
 		var angle = parts[2]
 		
-		if angle.is_valid_float():
-			angleDegreesInput = angle.to_int()
-		
-		torpedo.rotation = deg_to_rad(angleDegreesInput)
-		
-		var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
-		var velocity = direction * magnitudeInput
-		
-		torpedo.linear_velocity = velocity
-		
-		var offset = direction * 100
-		torpedo.position = characterBody.position + offset
-	
-		get_tree().root.add_child(torpedo)
+		if ammo_type_index.is_valid_float() and angle.is_valid_float():
+			var ammo_index = ammo_type_index.to_int()
+			
+			if ammo_index > 0 and ammo_index <= ammo.size():
+				var ammo_type = ammo[ammo_index - 1]
+				var angleDegreesInput = angle.to_int()
+				var magnitudeInput = 256
+				
+				var torpedo = torpedoScene.instantiate()
+				torpedo.rotation = deg_to_rad(angleDegreesInput)
+				
+				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
+				var velocity = direction * magnitudeInput
+				
+				torpedo.linear_velocity = velocity
+				
+				var offset = direction * 100
+				torpedo.position = characterBody.position + offset
+				
+				get_tree().root.add_child(torpedo)
+				print("Fired ", ammo_type, " at angle ", angleDegreesInput)
+			else:
+				print("Invalid ammo index. Must correspond to a weapon in the list.")
+		else:
+			print("Invalid inputs for fire command. Both ammo type and angle must be numeric.")
 	else:
-		print("Needs 3 parts, parts: ", parts.size())
+		print("Needs 3 parts: command type, ammo type, and firing angle. Parts: ", parts.size())
