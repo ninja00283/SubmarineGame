@@ -37,3 +37,12 @@ mesh = SubResource("QuadMesh_b37v0")
 
 [node name="CharacterBody2D2" parent="." instance=ExtResource("2_jrhgi")]
 position = Vector2(400, 0)
+
+[node name="Camera2D" type="Camera2D" parent="."]
+
+[node name="commandInput" type="LineEdit" parent="."]
+offset_left = -569.0
+offset_top = -319.0
+offset_right = -208.0
+offset_bottom = -279.0
+metadata/_edit_use_anchors_ = true

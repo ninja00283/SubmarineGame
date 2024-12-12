@@ -12,10 +12,8 @@ collision_layer = 3
 collision_mask = 3
 script = ExtResource("1_bhnif")
 
-[node name="Camera2D" type="Camera2D" parent="."]
-
 [node name="Sprite2D" type="Sprite2D" parent="."]
-scale = Vector2(3, 3)
+scale = Vector2(4, 4)
 texture = ExtResource("2_vhsvq")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
@@ -25,10 +23,3 @@ shape = SubResource("RectangleShape2D_kimm8")
 [node name="MeshInstance2D" type="MeshInstance2D" parent="."]
 scale = Vector2(100, 100)
 mesh = SubResource("QuadMesh_k6w4n")
-
-[node name="commandInput" type="LineEdit" parent="."]
-offset_left = -569.0
-offset_top = -319.0
-offset_right = -208.0
-offset_bottom = -279.0
-metadata/_edit_use_anchors_ = true

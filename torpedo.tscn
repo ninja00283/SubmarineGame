@@ -5,7 +5,7 @@
 [ext_resource type="Script" path="res://area2D.gd" id="3_jpvmm"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_ctrve"]
-radius = 7.44186
+radius = 12.5
 
 [node name="RigidBody2D" type="RigidBody2D"]
 mass = 20.0

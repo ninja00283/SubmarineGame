@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var commandInput: LineEdit = $CharacterBody2D/commandInput
+@onready var commandInput: LineEdit = $commandInput
 @onready var characterBody2D: CharacterBody2D = $CharacterBody2D
 @onready var torpedoScene = preload("res://torpedo.tscn")
 

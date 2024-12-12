@@ -28,7 +28,7 @@ func _on_detection_radii_body_entered(body):
 
 func _on_timer_timeout():
 	if target != null and distance <= 150:
-		target.HP -= 2500 / distance
+		target.HP -= 8000 / distance - 50
 		print(distance)
 		print(target.HP)
 		queue_free()
