@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://cjcjxu7myhbq"
-path="res://.godot/imported/Protractor.png-5e7467f4f9821119b45b588e8bff343c.ctex"
+path="res://.godot/imported/Protractor.png-60e79b6cfb74a1d9d239ae53aaa6215b.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Protractor.png"
-dest_files=["res://.godot/imported/Protractor.png-5e7467f4f9821119b45b588e8bff343c.ctex"]
+source_file="res://Morse Code the art/Protractor.png"
+dest_files=["res://.godot/imported/Protractor.png-60e79b6cfb74a1d9d239ae53aaa6215b.ctex"]
 
 [params]
 
