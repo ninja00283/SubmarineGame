@@ -9,6 +9,8 @@ radius = 12.5
 
 [node name="RigidBody2D" type="RigidBody2D"]
 mass = 20.0
+gravity_scale = 0.0
+linear_damp_mode = 1
 script = ExtResource("1_61b7t")
 
 [node name="CollisionPolygon2D2" type="CollisionPolygon2D" parent="."]

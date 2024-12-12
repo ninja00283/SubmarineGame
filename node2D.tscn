@@ -11,7 +11,8 @@
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_rrkik")
 
-[node name="CharacterBody2D" parent="." instance=ExtResource("2_jrhgi")]
+[node name="CharacterBody2DP1" parent="." instance=ExtResource("2_jrhgi")]
+position = Vector2(-800, 0)
 
 [node name="Icon" type="Sprite2D" parent="."]
 position = Vector2(-329, 253)
@@ -35,14 +36,30 @@ position = Vector2(0, 500)
 scale = Vector2(2000, 100)
 mesh = SubResource("QuadMesh_b37v0")
 
-[node name="CharacterBody2D2" parent="." instance=ExtResource("2_jrhgi")]
-position = Vector2(400, 0)
+[node name="CharacterBody2DP2" parent="." instance=ExtResource("2_jrhgi")]
+position = Vector2(800, 0)
 
 [node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
 
-[node name="commandInput" type="LineEdit" parent="."]
-offset_left = -569.0
-offset_top = -319.0
-offset_right = -208.0
-offset_bottom = -279.0
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+scale = Vector2(2, 2)
+
+[node name="commandInputP1" type="LineEdit" parent="Control"]
+layout_mode = 0
+offset_left = -574.0
+offset_top = -322.0
+offset_right = -213.0
+offset_bottom = -282.0
 metadata/_edit_use_anchors_ = true
+
+[node name="commandInputP2" type="LineEdit" parent="Control"]
+layout_mode = 0
+offset_left = 212.0
+offset_top = -322.0
+offset_right = 573.0
+offset_bottom = -282.0
+size_flags_horizontal = 0
+size_flags_vertical = 0

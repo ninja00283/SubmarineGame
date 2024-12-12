@@ -34,7 +34,7 @@ Fire={
 
 [physics]
 
-2d/default_gravity=0.4
+2d/default_gravity=0.8
 
 [rendering]
 
