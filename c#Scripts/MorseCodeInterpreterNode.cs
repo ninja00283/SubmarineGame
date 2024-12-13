@@ -98,43 +98,44 @@ public static class MorseCodeInterpreter{
 	static readonly double Fuzziness = 0.1;
 
 	static readonly List<List<MorseLengths>> MorseCodes = new(){
-		new(){MorseLengths.Dot, MorseLengths.Dash},//A
-		new(){MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot},//B
-		new(){MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dot},//C
-		new(){MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dot},//D
-		new(){MorseLengths.Dot},//E
-		new(){MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dot},//F
-		new(){MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dot},//G
-		new(){MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,},//H
-		new(){MorseLengths.Dot,MorseLengths.Dot},//I
-		new(){MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash},//J
-		new(){MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dash},//K
-		new(){MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dot},//L
-		new(){MorseLengths.Dash,MorseLengths.Dash},//M
-		new(){MorseLengths.Dash,MorseLengths.Dot},//N
-		new(){},//O
-		new(){},//P
-		new(){},//Q
-		new(){},//R
-		new(){},//S
-		new(){},//T
-		new(){},//U
-		new(){},//V
-		new(){},//W
-		new(){},//X
-		new(){},//Y
-		new(){},//Z
+		new(){MorseLengths.Dot, MorseLengths.Dash},                                           // A
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},       // B
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dot},      // C
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot},                         // D
+		new(){MorseLengths.Dot},                                                              // E
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dot},       // F
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot},                        // G
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},        // H
+		new(){MorseLengths.Dot, MorseLengths.Dot},                                            // I
+		new(){MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash},     // J
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dash},                        // K
+		new(){MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot},       // L
+		new(){MorseLengths.Dash, MorseLengths.Dash},                                          // M
+		new(){MorseLengths.Dash, MorseLengths.Dot},                                           // N
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash},                       // O
+		new(){MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot},      // P
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dash},     // Q
+		new(){MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dot},                         // R
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},                          // S
+		new(){MorseLengths.Dash},                                                             // T
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dash},                         // U
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dash},       // V
+		new(){MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash},                        // W
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},       // X
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash},     // Y
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot},      // Z
 
-		new(){MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash},//1
-		new(){MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash},//2
-		new(){MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dash,MorseLengths.Dash},//3
-		new(){MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dash},//4
-		new(){MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot},//5
-		new(){MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot},//6
-		new(){MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dot,MorseLengths.Dot},//7
-		new(){MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dot,MorseLengths.Dot},//8
-		new(){MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dot},//9
-		new(){MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash,MorseLengths.Dash},//0
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash}, // 0
+		new(){MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash},  // 1
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash},   // 2
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dash, MorseLengths.Dash},    // 3
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dash},     // 4
+		new(){MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},      // 5
+		new(){MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},     // 6
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot, MorseLengths.Dot},    // 7
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot, MorseLengths.Dot},   // 8
+		new(){MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dash, MorseLengths.Dot},  // 9
+
 
 	};
 
@@ -193,7 +194,7 @@ public static class MorseCodeInterpreter{
 			Candidates.Add((item,10 - Math.Abs(item.Count - Word.Count)));
 		}
 		for (int i = 0; i < Word.Count; i++){
-            for (int currentCandidateIndex = 0; currentCandidateIndex < Candidates.Count; currentCandidateIndex++){
+			for (int currentCandidateIndex = 0; currentCandidateIndex < Candidates.Count; currentCandidateIndex++){
 				if(i < Candidates[currentCandidateIndex].MorseCodes.Count){
 					if(Candidates[currentCandidateIndex].MorseCodes[i] == Word[i]){
 						Candidates[currentCandidateIndex] = (Candidates[currentCandidateIndex].MorseCodes, Candidates[currentCandidateIndex].Accuracy + 1);
@@ -201,7 +202,7 @@ public static class MorseCodeInterpreter{
 						Candidates[currentCandidateIndex] = (Candidates[currentCandidateIndex].MorseCodes, Candidates[currentCandidateIndex].Accuracy - 1);
 					}
 				}
-            }
+			}
 		}
 		for (int currentCandidateIndexLastPass = 0; currentCandidateIndexLastPass < Candidates.Count; currentCandidateIndexLastPass++){
 			if(FinalCandidates.AccuracyValue < Candidates[currentCandidateIndexLastPass].Accuracy){

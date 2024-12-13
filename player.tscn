@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b5hrrpwlk61d8"]
+[gd_scene load_steps=5 format=3 uid="uid://couhv4h8umrc7"]
 
 [ext_resource type="Script" path="res://characterBody2D.gd" id="1_bhnif"]
 [ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://Morse Code the art/Protractor.png" id="2_vhsvq"]
@@ -10,6 +10,7 @@
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 3
 collision_mask = 3
+motion_mode = 1
 script = ExtResource("1_bhnif")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
