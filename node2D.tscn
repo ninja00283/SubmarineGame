@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=8 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" path="res://main.gd" id="1_rrkik"]
 [ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://player.tscn" id="2_jrhgi"]
@@ -11,6 +11,16 @@ bounce = 0.5
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_b37v0"]
+
+[sub_resource type="Environment" id="Environment_0getb"]
+background_mode = 3
+glow_enabled = true
+glow_intensity = 1.4
+glow_strength = 0.55
+glow_bloom = 0.05
+glow_blend_mode = 0
+glow_hdr_threshold = 0.1
+glow_hdr_scale = 1.0
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_rrkik")
@@ -68,3 +78,6 @@ offset_right = 573.0
 offset_bottom = -282.0
 size_flags_horizontal = 0
 size_flags_vertical = 0
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0getb")

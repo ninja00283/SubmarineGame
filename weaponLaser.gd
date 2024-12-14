@@ -5,8 +5,14 @@ extends Node2D
 @onready var timer: Timer = $Timer
 @onready var lineEdit: LineEdit = $LineEdit
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
+@onready var laserHit: Sprite2D = $laserHit
+@onready var laserStart: Sprite2D = $laserStart
+@onready var gpupHit: GPUParticles2D = $GPUPHit
+@onready var gpupStart: GPUParticles2D = $GPUPStart
+
 
 var castPoint
+var collisionPoint
 var angle = 0
 var currentHitObject = null
 var damageTimer = 0.0
@@ -19,26 +25,37 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	rayCast2D.force_raycast_update()
+	line2D.points[0] = to_local(rayCast2D.global_position)
 	if rayCast2D.is_colliding():
-		line2D.points[0] = rayCast2D.position
+		var collisionPoint = rayCast2D.get_collision_point()
+		laserHit.position = to_local(collisionPoint)
+		line2D.points[1] = to_local(collisionPoint)
+
+		# Check if the collider has HP.
 		var hitObject = rayCast2D.get_collider()
 		if hitObject != null and "HP" in hitObject:
 			currentHitObject = hitObject
 		else:
-			print("Target doesn't have hp value")
+			print("Target doesn't have HP value")
+			currentHitObject = null
 	else:
-		castPoint = rayCast2D.target_position
-		line2D.points[1] = castPoint
+		var targetPosition = rayCast2D.target_position
+		gpupHit.position = to_local(targetPosition)
+		laserHit.position = to_local(targetPosition)
+		line2D.points[1] = to_local(rayCast2D.global_position + rayCast2D.get_global_transform().basis_xform(targetPosition))
 		currentHitObject = null
-	line2D.points[1] = rayCast2D.to_local(rayCast2D.get_collision_point())
-	rayCast2D.rotation = 0
-	line2D.rotation = 0
+
 	if currentHitObject != null:
 		damageTimer += delta
 		if damageTimer >= 0.02:
 			currentHitObject.HP -= damageRate
 			print(currentHitObject.get_class(), " HP: ", currentHitObject.HP)
-			damageTimer = 0 # Reset timer
+			damageTimer = 0
+	
+	if rayCast2D.is_colliding():
+		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()
+		gpupHit.position = laserHit.position
+
 		
 func laserOff():
 	animationPlayer.stop()

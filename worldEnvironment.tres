@@ -1,0 +1,14 @@
+[gd_resource type="Environment" load_steps=3 format=3 uid="uid://by7uq56lnu0a"]
+
+[sub_resource type="PhysicalSkyMaterial" id="PhysicalSkyMaterial_miyp8"]
+ground_color = Color(0.0921545, 0.000125357, 0.240124, 1)
+
+[sub_resource type="Sky" id="Sky_tkcn0"]
+sky_material = SubResource("PhysicalSkyMaterial_miyp8")
+
+[resource]
+background_mode = 2
+sky = SubResource("Sky_tkcn0")
+ambient_light_sky_contribution = 0.0
+ssao_intensity = 1.0
+glow_enabled = true

@@ -1,35 +1,7 @@
-[gd_scene load_steps=6 format=3 uid="uid://clp730ykoyj6o"]
+[gd_scene load_steps=12 format=3 uid="uid://clp730ykoyj6o"]
 
 [ext_resource type="Script" path="res://weaponLaser.gd" id="1_pjuma"]
-
-[sub_resource type="Animation" id="Animation_vsu2t"]
-resource_name = "laserOn"
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Line2D:width")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(0.2, 0.2),
-"update": 0,
-"values": [0.0, 20.0]
-}
-tracks/1/type = "method"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath(".")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(1),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"laserOff"
-}]
-}
+[ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://laserParticle.png" id="2_8pykh"]
 
 [sub_resource type="Animation" id="Animation_ajjbc"]
 length = 0.001
@@ -40,6 +12,54 @@ tracks/0/path = NodePath("Line2D:width")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [20.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("laserHit:modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.15, 2, 0.5, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("laserStart:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(4.8, 48, 24, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("GPUPStart:self_modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0.3, 3, 1.5, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GPUPHit:amount_ratio")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
@@ -76,6 +96,132 @@ tracks/1/keys = {
 "method": &"queue_free"
 }]
 }
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("laserHit:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(0.15, 1.5, 0.75, 1), Color(0.15, 1.5, 0.75, 0)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("laserStart:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(4.8, 48, 24, 1), Color(4.8, 48, 24, 0)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GPUPStart:self_modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(0.3, 3, 1.5, 1), Color(0.3, 3, 1.5, 0)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("GPUPHit:amount_ratio")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [1.0, 0.0]
+}
+
+[sub_resource type="Animation" id="Animation_vsu2t"]
+resource_name = "laserOn"
+step = 0.01
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Line2D:width")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [0.0, 20.0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"laserOff"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("laserHit:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(0.15, 2, 0.5, 0), Color(0.15, 1.5, 0.75, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("laserStart:modulate")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(4.8, 48, 24, 0), Color(4.8, 48, 24, 1)]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("GPUPStart:self_modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(0.3, 3, 1.5, 0), Color(0.3, 3, 1.5, 1)]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("GPUPHit:amount_ratio")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [0.0, 1.0]
+}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ukykt"]
 _data = {
@@ -83,6 +229,46 @@ _data = {
 "laserOff": SubResource("Animation_hm1sq"),
 "laserOn": SubResource("Animation_vsu2t")
 }
+
+[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_88g1s"]
+blend_mode = 1
+
+[sub_resource type="Curve" id="Curve_nujgp"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0891892, 1), 0.0, 0.0, 0, 0, Vector2(0.559459, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_xhifq"]
+curve = SubResource("Curve_nujgp")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_onhte"]
+lifetime_randomness = 0.6
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 4.0
+direction = Vector3(200, 0, 0)
+spread = 32.0
+initial_velocity_min = 3000.0
+initial_velocity_max = 3200.0
+scale_min = 0.08
+scale_max = 0.12
+scale_curve = SubResource("CurveTexture_xhifq")
+turbulence_enabled = true
+turbulence_noise_strength = 0.2
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v4xy5"]
+lifetime_randomness = 0.3
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 16.0
+angle_min = 1.07288e-05
+angle_max = 1.07288e-05
+direction = Vector3(200, 0, 0)
+initial_velocity_min = 145.0
+initial_velocity_max = 165.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.08
+scale_max = 0.12
+scale_curve = SubResource("CurveTexture_xhifq")
 
 [node name="weaponLaser" type="Node2D"]
 script = ExtResource("1_pjuma")
@@ -92,10 +278,45 @@ target_position = Vector2(8000, 0)
 
 [node name="Line2D" type="Line2D" parent="."]
 points = PackedVector2Array(0, 0, 200, 0)
-width = 0.0
-default_color = Color(0, 0, 1, 1)
+width = 20.0
+default_color = Color(0.5, 6, 3, 1)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
 "": SubResource("AnimationLibrary_ukykt")
 }
+
+[node name="laserHit" type="Sprite2D" parent="."]
+modulate = Color(0.15, 2, 0.5, 1)
+texture_filter = 2
+material = SubResource("CanvasItemMaterial_88g1s")
+texture = ExtResource("2_8pykh")
+
+[node name="laserStart" type="Sprite2D" parent="."]
+modulate = Color(4.8, 48, 24, 1)
+texture_filter = 2
+material = SubResource("CanvasItemMaterial_88g1s")
+scale = Vector2(0.4, 0.4)
+texture = ExtResource("2_8pykh")
+
+[node name="GPUPHit" type="GPUParticles2D" parent="."]
+self_modulate = Color(0.3, 3, 1.5, 1)
+rotation = 3.14159
+amount = 16
+amount_ratio = 0.0
+process_material = SubResource("ParticleProcessMaterial_onhte")
+texture = ExtResource("2_8pykh")
+lifetime = 0.25
+speed_scale = 1.5
+trail_enabled = true
+trail_lifetime = 0.05
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="GPUPStart" type="GPUParticles2D" parent="."]
+self_modulate = Color(0.3, 3, 1.5, 1)
+amount = 32
+process_material = SubResource("ParticleProcessMaterial_v4xy5")
+texture = ExtResource("2_8pykh")
+lifetime = 0.6
+preprocess = 2.0
