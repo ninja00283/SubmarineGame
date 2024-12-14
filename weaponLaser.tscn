@@ -241,19 +241,18 @@ point_count = 4
 curve = SubResource("Curve_nujgp")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_onhte"]
-lifetime_randomness = 0.6
+lifetime_randomness = 0.8
 particle_flag_disable_z = true
 emission_shape = 1
-emission_sphere_radius = 4.0
+emission_sphere_radius = 16.0
 direction = Vector3(200, 0, 0)
 spread = 32.0
 initial_velocity_min = 3000.0
 initial_velocity_max = 3200.0
-scale_min = 0.08
-scale_max = 0.12
+scale_min = 0.12
+scale_max = 0.16
 scale_curve = SubResource("CurveTexture_xhifq")
 turbulence_enabled = true
-turbulence_noise_strength = 0.2
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v4xy5"]
 lifetime_randomness = 0.3
@@ -285,6 +284,7 @@ default_color = Color(0.5, 6, 3, 1)
 libraries = {
 "": SubResource("AnimationLibrary_ukykt")
 }
+speed_scale = 0.5
 
 [node name="laserHit" type="Sprite2D" parent="."]
 modulate = Color(0.15, 2, 0.5, 1)
@@ -302,11 +302,12 @@ texture = ExtResource("2_8pykh")
 [node name="GPUPHit" type="GPUParticles2D" parent="."]
 self_modulate = Color(0.3, 3, 1.5, 1)
 rotation = 3.14159
-amount = 16
+scale = Vector2(2, 2)
+amount = 32
 amount_ratio = 0.0
 process_material = SubResource("ParticleProcessMaterial_onhte")
 texture = ExtResource("2_8pykh")
-lifetime = 0.25
+lifetime = 0.2
 speed_scale = 1.5
 trail_enabled = true
 trail_lifetime = 0.05
