@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c44qeydba351h"
-path="res://.godot/imported/laserParticle.png-4b58e8eb93dc606a72b9a92f65cca28e.ctex"
+uid="uid://ddcdo8on17lsg"
+path="res://.godot/imported/torpedo.png-7ba72a34fbdb2c7fac07531964de325e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://laserParticle.png"
-dest_files=["res://.godot/imported/laserParticle.png-4b58e8eb93dc606a72b9a92f65cca28e.ctex"]
+source_file="res://assets/torpedo.png"
+dest_files=["res://.godot/imported/torpedo.png-7ba72a34fbdb2c7fac07531964de325e.ctex"]
 
 [params]
 

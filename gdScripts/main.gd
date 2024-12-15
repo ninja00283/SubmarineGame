@@ -4,14 +4,19 @@ extends Node2D
 @onready var commandInputP2: LineEdit = $Control/commandInputP2
 @onready var characterBody2DP1: CharacterBody2D = $CharacterBody2DP1
 @onready var characterBody2DP2: CharacterBody2D = $CharacterBody2DP2
-@onready var torpedoScene = preload("res://weaponTorpedo.tscn")
-@onready var laserScene = preload("res://weaponLaser.tscn")
+@onready var torpedoScene = preload("res://scenes/weaponTorpedo.tscn")
+@onready var laserScene = preload("res://scenes/weaponLaser.tscn")
 
 var commands = ["move", "fire"]
 var ammo = ["torpedo", "laser"]
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("Reload"):
+		print("Reloading...")
+		get_tree().reload_current_scene()
+	elif Input.is_action_just_pressed("Reload"):
+		print("Couldn't reload")
 	if is_instance_valid(characterBody2DP1) and Input.is_action_just_pressed("Submit"):
 		commandInterpret(commandInputP1, characterBody2DP1)
 	if is_instance_valid(characterBody2DP2) and Input.is_action_just_pressed("Submit"):
@@ -102,6 +107,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				laser.position = characterBody.position + offset
 
 				get_tree().root.add_child(laser)
+				move_child(laser, 8)
 
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:

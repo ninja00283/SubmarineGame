@@ -1,7 +1,8 @@
 [gd_scene load_steps=12 format=3 uid="uid://clp730ykoyj6o"]
 
-[ext_resource type="Script" path="res://weaponLaser.gd" id="1_pjuma"]
-[ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://laserParticle.png" id="2_8pykh"]
+[ext_resource type="Script" path="res://gdScripts/weaponLaser.gd" id="1_04ec4"]
+[ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="2_b4osc"]
+[ext_resource type="Material" uid="uid://uprrg2dc1s6c" path="res://assets/weaponLaser.tres" id="3_830qs"]
 
 [sub_resource type="Animation" id="Animation_ajjbc"]
 length = 0.001
@@ -231,7 +232,6 @@ _data = {
 }
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_88g1s"]
-blend_mode = 1
 
 [sub_resource type="Curve" id="Curve_nujgp"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0891892, 1), 0.0, 0.0, 0, 0, Vector2(0.559459, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -239,20 +239,6 @@ point_count = 4
 
 [sub_resource type="CurveTexture" id="CurveTexture_xhifq"]
 curve = SubResource("Curve_nujgp")
-
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_onhte"]
-lifetime_randomness = 0.8
-particle_flag_disable_z = true
-emission_shape = 1
-emission_sphere_radius = 16.0
-direction = Vector3(200, 0, 0)
-spread = 32.0
-initial_velocity_min = 3000.0
-initial_velocity_max = 3200.0
-scale_min = 0.12
-scale_max = 0.16
-scale_curve = SubResource("CurveTexture_xhifq")
-turbulence_enabled = true
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_v4xy5"]
 lifetime_randomness = 0.3
@@ -270,7 +256,7 @@ scale_max = 0.12
 scale_curve = SubResource("CurveTexture_xhifq")
 
 [node name="weaponLaser" type="Node2D"]
-script = ExtResource("1_pjuma")
+script = ExtResource("1_04ec4")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(8000, 0)
@@ -279,6 +265,7 @@ target_position = Vector2(8000, 0)
 points = PackedVector2Array(0, 0, 200, 0)
 width = 20.0
 default_color = Color(0.5, 6, 3, 1)
+antialiased = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
@@ -289,15 +276,14 @@ speed_scale = 0.5
 [node name="laserHit" type="Sprite2D" parent="."]
 modulate = Color(0.15, 2, 0.5, 1)
 texture_filter = 2
-material = SubResource("CanvasItemMaterial_88g1s")
-texture = ExtResource("2_8pykh")
+texture = ExtResource("2_b4osc")
 
 [node name="laserStart" type="Sprite2D" parent="."]
 modulate = Color(4.8, 48, 24, 1)
 texture_filter = 2
 material = SubResource("CanvasItemMaterial_88g1s")
 scale = Vector2(0.4, 0.4)
-texture = ExtResource("2_8pykh")
+texture = ExtResource("2_b4osc")
 
 [node name="GPUPHit" type="GPUParticles2D" parent="."]
 self_modulate = Color(0.3, 3, 1.5, 1)
@@ -305,19 +291,18 @@ rotation = 3.14159
 scale = Vector2(2, 2)
 amount = 32
 amount_ratio = 0.0
-process_material = SubResource("ParticleProcessMaterial_onhte")
-texture = ExtResource("2_8pykh")
+process_material = ExtResource("3_830qs")
+texture = ExtResource("2_b4osc")
 lifetime = 0.2
 speed_scale = 1.5
+collision_base_size = 2.0
 trail_enabled = true
 trail_lifetime = 0.05
-trail_sections = 2
-trail_section_subdivisions = 1
 
 [node name="GPUPStart" type="GPUParticles2D" parent="."]
 self_modulate = Color(0.3, 3, 1.5, 1)
 amount = 32
 process_material = SubResource("ParticleProcessMaterial_v4xy5")
-texture = ExtResource("2_8pykh")
+texture = ExtResource("2_b4osc")
 lifetime = 0.6
 preprocess = 2.0

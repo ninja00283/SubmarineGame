@@ -1,7 +1,7 @@
-[gd_scene load_steps=8 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=9 format=3 uid="uid://dyl0pe6kqksw3"]
 
-[ext_resource type="Script" path="res://main.gd" id="1_rrkik"]
-[ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://player.tscn" id="2_jrhgi"]
+[ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rrkik"]
+[ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://scenes/player.tscn" id="2_jrhgi"]
 [ext_resource type="Texture2D" uid="uid://eos4yb6buaxr" path="res://icon.svg" id="2_mcqon"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
@@ -14,13 +14,22 @@ bounce = 0.5
 
 [sub_resource type="Environment" id="Environment_0getb"]
 background_mode = 3
+background_energy_multiplier = 0.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+tonemap_white = 16.0
 glow_enabled = true
+glow_normalized = true
 glow_intensity = 1.4
 glow_strength = 0.55
-glow_bloom = 0.05
 glow_blend_mode = 0
 glow_hdr_threshold = 0.1
 glow_hdr_scale = 1.0
+adjustment_enabled = true
+adjustment_brightness = 0.8
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_emltp"]
+polygon = PackedVector2Array(1000, 0, -1000, 0, -1000, -100, 1000, -100)
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_rrkik")
@@ -57,27 +66,49 @@ mesh = SubResource("QuadMesh_b37v0")
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
 
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0getb")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(0, 400)
+occluder = SubResource("OccluderPolygon2D_emltp")
+
 [node name="Control" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
-scale = Vector2(2, 2)
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="commandInputP1" type="LineEdit" parent="Control"]
-layout_mode = 0
-offset_left = -574.0
-offset_top = -322.0
-offset_right = -213.0
-offset_bottom = -282.0
-metadata/_edit_use_anchors_ = true
+self_modulate = Color(8.47, 1.25, 2.12, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -1137.0
+offset_top = -633.0
+offset_right = -537.0
+offset_bottom = -593.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_colors/font_color = Color(0.0691731, 0.0381473, 0.0816656, 1)
+theme_override_font_sizes/font_size = 44
+alignment = 1
 
 [node name="commandInputP2" type="LineEdit" parent="Control"]
-layout_mode = 0
-offset_left = 212.0
-offset_top = -322.0
-offset_right = 573.0
-offset_bottom = -282.0
+self_modulate = Color(8.47, 1.25, 2.12, 1)
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 497.0
+offset_top = -633.0
+offset_right = 1097.0
+offset_bottom = -593.0
+grow_horizontal = 2
+grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_0getb")
+theme_override_colors/font_color = Color(0.0691731, 0.0381473, 0.0816656, 1)
+theme_override_font_sizes/font_size = 40
+alignment = 1

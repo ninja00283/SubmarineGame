@@ -1,0 +1,86 @@
+[gd_scene load_steps=10 format=3 uid="uid://couhv4h8umrc7"]
+
+[ext_resource type="Script" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
+[ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://assets/Morse Code the art/Protractor.png" id="2_vhsvq"]
+[ext_resource type="Material" uid="uid://cc5oaf4uqttbv" path="res://assets/weaponTorpedo.tres" id="3_y6a5f"]
+[ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="4_20753"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_kimm8"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_k6w4n"]
+
+[sub_resource type="Curve" id="Curve_fhqiu"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0475, 1), 0.0, 0.0, 0, 0, Vector2(0.9, 1), 0.0, 0.0, 0, 0, Vector2(0.99999, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_k3ubg"]
+curve = SubResource("Curve_fhqiu")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_alnvb"]
+lifetime_randomness = 0.2
+particle_flag_disable_z = true
+direction = Vector3(1, 1, 1)
+spread = 180.0
+initial_velocity_min = 150.0
+initial_velocity_max = 300.0
+gravity = Vector3(0, 0, 0)
+damping_min = 0.05
+damping_max = 0.1
+scale_min = 4.0
+scale_max = 4.0
+scale_curve = SubResource("CurveTexture_k3ubg")
+collision_mode = 1
+collision_friction = 0.4
+collision_bounce = 0.5
+collision_use_scale = true
+
+[node name="CharacterBody2D" type="CharacterBody2D"]
+collision_layer = 3
+collision_mask = 3
+motion_mode = 1
+wall_min_slide_angle = 0.0
+script = ExtResource("1_bhnif")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+scale = Vector2(4, 4)
+texture = ExtResource("2_vhsvq")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+scale = Vector2(5, 5)
+shape = SubResource("RectangleShape2D_kimm8")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="."]
+scale = Vector2(100, 100)
+mesh = SubResource("QuadMesh_k6w4n")
+
+[node name="deathDelay" type="Timer" parent="."]
+wait_time = 0.1
+one_shot = true
+
+[node name="queueFreeDelay" type="Timer" parent="."]
+wait_time = 5.0
+
+[node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
+self_modulate = Color(4, 2.5, 2.75, 1)
+emitting = false
+amount = 1024
+process_material = ExtResource("3_y6a5f")
+texture = ExtResource("4_20753")
+lifetime = 4.5
+one_shot = true
+explosiveness = 0.9
+trail_enabled = true
+trail_lifetime = 0.5
+trail_sections = 2
+trail_section_subdivisions = 1
+
+[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 512
+process_material = SubResource("ParticleProcessMaterial_alnvb")
+lifetime = 4.5
+one_shot = true
+explosiveness = 0.95
+
+[connection signal="timeout" from="deathDelay" to="." method="_on_death_delay_timeout"]
+[connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]

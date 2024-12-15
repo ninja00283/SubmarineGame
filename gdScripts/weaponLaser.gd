@@ -9,8 +9,8 @@ extends Node2D
 @onready var laserStart: Sprite2D = $laserStart
 @onready var gpupHit: GPUParticles2D = $GPUPHit
 @onready var gpupStart: GPUParticles2D = $GPUPStart
+@onready var sprite2D: Sprite2D = $Sprite2D
 
-# Export variables for controlling sine wave effect
 @export var amplitude: float = 1
 @export var frequency: float = 20
 @export var minBrightness: float = 0.8
@@ -67,7 +67,6 @@ func _process(delta: float) -> void:
 	if rayCast2D.is_colliding():
 		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()
 		gpupHit.position = laserHit.position
-
 
 func laserOff():
 	animationPlayer.stop()

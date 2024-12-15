@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cesjla05yptrv"]
 
-[ext_resource type="Script" path="res://target.gd" id="1_jo884"]
+[ext_resource type="Script" path="res://gdScripts/target.gd" id="1_jo884"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_pdqek"]
 

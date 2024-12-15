@@ -1,0 +1,23 @@
+[gd_resource type="ParticleProcessMaterial" load_steps=3 format=3 uid="uid://uprrg2dc1s6c"]
+
+[sub_resource type="Curve" id="Curve_nujgp"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0891892, 1), 0.0, 0.0, 0, 0, Vector2(0.559459, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_xhifq"]
+curve = SubResource("Curve_nujgp")
+
+[resource]
+lifetime_randomness = 0.8
+particle_flag_disable_z = true
+emission_shape = 1
+emission_sphere_radius = 16.0
+direction = Vector3(200, 0, 0)
+spread = 32.0
+initial_velocity_min = 3000.0
+initial_velocity_max = 3200.0
+scale_min = 0.12
+scale_max = 0.16
+scale_curve = SubResource("CurveTexture_xhifq")
+turbulence_enabled = true
+collision_use_scale = true

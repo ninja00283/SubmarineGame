@@ -5,8 +5,6 @@ using System.Formats.Asn1;
 using System.Linq;
 using System.Transactions;
 
-
-
 public enum MorseLengths{
 
 	Dot = MorseLengths.Unit * 1,
