@@ -64,7 +64,7 @@ func _process(delta: float) -> void:
 	if rayCast2D.is_colliding():
 		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()
 		gpupHit.position = laserHit.position
-	lightOccluder.scale.x = line2D.points[1].x
+	# lightOccluder.scale.x = line2D.points[1].x
 
 func laserOff():
 	animationPlayer.stop()

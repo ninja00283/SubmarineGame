@@ -19,39 +19,45 @@ extends RigidBody2D
 @onready var fuseCol: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
 @onready var heat: RayCast2D = $HEAT
 
+var damage
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
 var target = null
 var distance = 0
 var HP = 10
+var gpup2D6C = false
+var exploded = false
+var HEATExploded = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	armingDelay.start()
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("KillTorpedo"):
+		HP = 0
 	if HP <= 0:
-		queueFree.start()
-		hit()
+		if gpup2D6C == false:
+			HEAT()
+			hit()
+			queueFree.start()
+			gpup2D6C = true
 
 func _on_area_2d_body_entered(body):
+	print("_on_area_2d_body_entered(body)")
 	if body != self:
-		gpup2D4.emitting = true
-		gpup2D5.emitting = true
-		gpup2D6.emitting = true
-		if heat.is_colliding():
-			var collider = heat.get_collider()
-			if collider.is_class("RigidBody2D") or collider.is_class("CharacterBody2D"):
-				if "HP" in collider:
-					collider.HP -= 200
-					print("Collider HP: ", collider.HP)
 		if rayCast2D.is_colliding():
 			gpup2D4.global_rotation = rayCast2D.get_collision_normal().angle()
 			gpup2D4.global_rotation_degrees -= 45
 			gpup2D5.global_rotation = rayCast2D.get_collision_normal().angle()
 		print(body)
-		explode()
+		if exploded == false:
+			explode()
+			exploded = true
 		hit()
 		queueFree.start()
+	else:
+		print("Body is self")
+	HEAT()
 
 func _on_detection_radii_body_entered(body):
 	target = body
@@ -65,18 +71,27 @@ func _on_timer_timeout():
 	if target != null and distance <= 150:
 		weaponTorpedo.spread = 180
 		gpup2D4.emitting = true
-		explode()
+		if exploded == false:
+			explode()
+			exploded = true
 		hit()
 		queueFree.start()
+		HEAT()
 
 func _on_timer_2_timeout() -> void:
 	queue_free()
 
 func hit():
+	if heat.is_colliding() and HEATExploded == false:
+		if target != self:
+			HEATExploded = true
+			heat.get_collider().HP -= 200
+			print("Collider HP: ", heat.get_collider().HP, "Collider type: ", heat.get_collider())
 	collider2D2.position = Vector2(10000, 10000)
 	linear_velocity = Vector2(0, 0)
-	impactFuse.monitoring = false
-	detectionRadii.monitoring = false
+	gpup2D4.emitting = true
+	gpup2D5.emitting = true
+	gpup2D6.emitting = true
 	gpup2D1.emitting = false
 	gpup2D2.emitting = false
 	gpup2D3.emitting = false
@@ -85,12 +100,16 @@ func hit():
 func explode():
 	for body in explosionRadii.get_overlapping_bodies():
 		if body != self and "HP" in body:
-			var damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
-			body.HP -= damage
+			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
 			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP)
-
-
-
-
+			
 func _on_arming_delay_timeout() -> void:
 	armingDelay.queue_free()
+
+func HEAT():
+	if heat.is_colliding() and HEATExploded == false:
+		if "HP" in heat.get_collider():
+			print(heat.get_collider().HP)
+			heat.get_collider().HP -= 125
+			print("WORK PLS ", heat.get_collider().HP, heat.get_collider())
+			HEATExploded = true
