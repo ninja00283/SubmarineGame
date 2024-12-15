@@ -15,6 +15,7 @@ extends RigidBody2D
 @onready var rayCast2D: RayCast2D = $RayCast2D
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var collider2D: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
+@onready var collider2D2: CollisionPolygon2D = $CollisionPolygon2D2
 @onready var fuseCol: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
 @onready var heat: RayCast2D = $HEAT
 
@@ -29,7 +30,8 @@ func _ready() -> void:
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if HP <= 0:
-		queue_free()
+		queueFree.start()
+		hit()
 
 func _on_area_2d_body_entered(body):
 	if body != self:
@@ -71,6 +73,7 @@ func _on_timer_2_timeout() -> void:
 	queue_free()
 
 func hit():
+	collider2D2.position = Vector2(10000, 10000)
 	linear_velocity = Vector2(0, 0)
 	impactFuse.monitoring = false
 	detectionRadii.monitoring = false
