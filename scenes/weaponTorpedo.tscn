@@ -110,8 +110,8 @@ collision_use_scale = true
 particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
 spread = 0.2
-initial_velocity_min = 3200.0
-initial_velocity_max = 3200.0
+initial_velocity_min = 6400.0
+initial_velocity_max = 6400.0
 gravity = Vector3(0, 0, 0)
 damping_min = 0.1
 damping_max = 0.1
@@ -133,7 +133,7 @@ gradient = SubResource("Gradient_fxh52")
 use_hdr = true
 
 [sub_resource type="Curve" id="Curve_vo4w4"]
-_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0525, 1), 0.0, 0.0, 0, 0, Vector2(0.9025, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0175, 1), 0.0, 0.0, 0, 0, Vector2(0.9025, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 4
 
 [sub_resource type="CurveTexture" id="CurveTexture_emdj6"]
@@ -142,12 +142,12 @@ curve = SubResource("Curve_vo4w4")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_tl1mo"]
 particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
-spread = 15.0
+spread = 12.0
 initial_velocity_min = 2400.0
 initial_velocity_max = 2800.0
 gravity = Vector3(0, 192, 0)
-damping_min = 0.15
-damping_max = 0.2
+damping_min = 0.04
+damping_max = 0.08
 scale_min = 0.02
 scale_max = 0.02
 scale_curve = SubResource("CurveTexture_emdj6")
@@ -232,11 +232,11 @@ texture = ExtResource("4_sw6vr")
 lifetime = 5.0
 
 [node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
-self_modulate = Color(8, 10, 11, 1)
+self_modulate = Color(1.75, 1.25, 1.375, 1)
 position = Vector2(32, 0)
 rotation = 2.35619
 emitting = false
-amount = 256
+amount = 512
 process_material = ExtResource("5_uf7vu")
 texture = ExtResource("4_sw6vr")
 lifetime = 4.5
@@ -279,6 +279,9 @@ one_shot = true
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(50, 0)
+
+[node name="HEAT" type="RayCast2D" parent="."]
+target_position = Vector2(280, 0)
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="detectionRadii" to="." method="_on_detection_radii_body_entered"]

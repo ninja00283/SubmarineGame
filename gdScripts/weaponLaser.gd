@@ -10,6 +10,7 @@ extends Node2D
 @onready var gpupHit: GPUParticles2D = $GPUPHit
 @onready var gpupStart: GPUParticles2D = $GPUPStart
 @onready var sprite2D: Sprite2D = $Sprite2D
+@onready var lightOccluder: LightOccluder2D = $LightOccluder2D
 
 @export var amplitude: float = 1
 @export var frequency: float = 20
@@ -21,8 +22,7 @@ var collisionPoint
 var angle = 0
 var currentHitObject = null
 var damageTimer = 0.0
-var damageRate = 1.5
-var sineOffset: float = 0.0  # Optional offset for phase control
+var damageRate = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -30,12 +30,10 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	# Sine wave brightness modulation
-	var sineValue = amplitude * sin(frequency * Time.get_ticks_usec() / 1000000.0 + sineOffset)
-	var brightness = lerp(minBrightness, maxBrightness, (sineValue + 1) / 2)  # Mapping sine to desired brightness range
-	line2D.modulate = Color(brightness, brightness, brightness)  # Apply the brightness to Line2D
+	var sineValue = amplitude * sin(frequency * Time.get_ticks_usec() / 1000000.0)
+	var brightness = lerp(minBrightness, maxBrightness, (sineValue + 1) / 2)
+	line2D.modulate = Color(brightness, brightness, brightness)
 
-	# Raycast update and collision handling
 	rayCast2D.force_raycast_update()
 	line2D.points[0] = to_local(rayCast2D.global_position)
 	if rayCast2D.is_colliding():
@@ -43,7 +41,6 @@ func _process(delta: float) -> void:
 		laserHit.position = to_local(collisionPoint)
 		line2D.points[1] = to_local(collisionPoint)
 
-		# Check if the collider has HP.
 		var hitObject = rayCast2D.get_collider()
 		if hitObject != null and "HP" in hitObject:
 			currentHitObject = hitObject
@@ -63,10 +60,11 @@ func _process(delta: float) -> void:
 			currentHitObject.HP -= damageRate
 			print(currentHitObject.get_class(), " HP: ", currentHitObject.HP)
 			damageTimer = 0
-	
+
 	if rayCast2D.is_colliding():
 		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()
 		gpupHit.position = laserHit.position
+	lightOccluder.scale.x = line2D.points[1].x
 
 func laserOff():
 	animationPlayer.stop()

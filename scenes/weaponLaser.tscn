@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://clp730ykoyj6o"]
+[gd_scene load_steps=13 format=3 uid="uid://clp730ykoyj6o"]
 
 [ext_resource type="Script" path="res://gdScripts/weaponLaser.gd" id="1_04ec4"]
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="2_b4osc"]
@@ -148,6 +148,7 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_vsu2t"]
 resource_name = "laserOn"
+length = 2.0
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -168,7 +169,7 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(1),
+"times": PackedFloat32Array(2),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -255,6 +256,9 @@ scale_min = 0.08
 scale_max = 0.12
 scale_curve = SubResource("CurveTexture_xhifq")
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_ngun5"]
+polygon = PackedVector2Array(0, -10, 1, -10, 1, 10, 0, 10)
+
 [node name="weaponLaser" type="Node2D"]
 script = ExtResource("1_04ec4")
 
@@ -306,3 +310,7 @@ process_material = SubResource("ParticleProcessMaterial_v4xy5")
 texture = ExtResource("2_b4osc")
 lifetime = 0.6
 preprocess = 2.0
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(100, 0)
+occluder = SubResource("OccluderPolygon2D_ngun5")

@@ -19,15 +19,20 @@ curve = SubResource("Curve_fhqiu")
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_alnvb"]
 lifetime_randomness = 0.2
 particle_flag_disable_z = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 12.0
+emission_ring_inner_radius = 12.0
 direction = Vector3(1, 1, 1)
 spread = 180.0
-initial_velocity_min = 150.0
-initial_velocity_max = 300.0
+initial_velocity_min = 4800.0
+initial_velocity_max = 9600.0
 gravity = Vector3(0, 0, 0)
 damping_min = 0.05
-damping_max = 0.1
-scale_min = 4.0
-scale_max = 4.0
+damping_max = 0.2
+scale_min = 6.0
+scale_max = 8.0
 scale_curve = SubResource("CurveTexture_k3ubg")
 collision_mode = 1
 collision_friction = 0.4
@@ -61,16 +66,15 @@ one_shot = true
 wait_time = 5.0
 
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
-self_modulate = Color(4, 2.5, 2.75, 1)
+self_modulate = Color(1, 0.825, 0.687, 1)
 emitting = false
-amount = 1024
+amount = 256
 process_material = ExtResource("3_y6a5f")
 texture = ExtResource("4_20753")
 lifetime = 4.5
 one_shot = true
-explosiveness = 0.9
-trail_enabled = true
-trail_lifetime = 0.5
+explosiveness = 0.95
+trail_lifetime = 0.1
 trail_sections = 2
 trail_section_subdivisions = 1
 
@@ -78,9 +82,9 @@ trail_section_subdivisions = 1
 emitting = false
 amount = 512
 process_material = SubResource("ParticleProcessMaterial_alnvb")
-lifetime = 4.5
+lifetime = 2.0
 one_shot = true
-explosiveness = 0.95
+explosiveness = 1.0
 
 [connection signal="timeout" from="deathDelay" to="." method="_on_death_delay_timeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]

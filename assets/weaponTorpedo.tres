@@ -1,4 +1,11 @@
-[gd_resource type="ParticleProcessMaterial" load_steps=3 format=3 uid="uid://cc5oaf4uqttbv"]
+[gd_resource type="ParticleProcessMaterial" load_steps=5 format=3 uid="uid://cc5oaf4uqttbv"]
+
+[sub_resource type="Gradient" id="Gradient_ppd8d"]
+colors = PackedColorArray(100, 100, 100, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_w401a"]
+gradient = SubResource("Gradient_ppd8d")
+use_hdr = true
 
 [sub_resource type="Curve" id="Curve_kqbdk"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0351351, 1), 0.0, 0.0, 0, 0, Vector2(0.702703, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -8,21 +15,25 @@ point_count = 4
 curve = SubResource("Curve_kqbdk")
 
 [resource]
-lifetime_randomness = 0.35
+lifetime_randomness = 0.5
 particle_flag_align_y = true
 particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 64.0
+emission_ring_inner_radius = 64.0
 direction = Vector3(1, 1, 1)
 spread = 180.0
-initial_velocity_min = 800.0
-initial_velocity_max = 2400.0
-gravity = Vector3(0, 0, 0)
+initial_velocity_min = 100.0
+initial_velocity_max = 1200.0
+gravity = Vector3(0, 144, 0)
 damping_min = 0.12
-damping_max = 0.5
+damping_max = 0.24
 scale_min = 0.04
 scale_max = 0.08
 scale_curve = SubResource("CurveTexture_fp8x7")
-collision_mode = 1
-collision_friction = 0.2
-collision_bounce = 0.8
+color_ramp = SubResource("GradientTexture1D_w401a")
+collision_mode = 2
 collision_use_scale = true
