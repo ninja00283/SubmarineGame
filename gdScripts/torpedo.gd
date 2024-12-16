@@ -96,6 +96,7 @@ func explode():
 	for body in explosionRadii.get_overlapping_bodies():
 		if body != self and "HP" in body:
 			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
+			body.HP -= damage
 			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP)
 			
 func _on_arming_delay_timeout() -> void:

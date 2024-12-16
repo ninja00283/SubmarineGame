@@ -43,7 +43,7 @@ collision_use_scale = true
 collision_layer = 7
 collision_mask = 7
 motion_mode = 1
-wall_min_slide_angle = 0.0
+wall_min_slide_angle = 0.174533
 script = ExtResource("1_bhnif")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]

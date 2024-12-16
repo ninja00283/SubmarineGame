@@ -5,8 +5,9 @@
 [ext_resource type="Texture2D" uid="uid://eos4yb6buaxr" path="res://icon.svg" id="2_mcqon"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
-friction = 0.0
+friction = 0.2
 bounce = 0.5
+absorbent = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
 
