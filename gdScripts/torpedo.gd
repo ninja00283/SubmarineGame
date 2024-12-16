@@ -17,7 +17,7 @@ extends RigidBody2D
 @onready var collider2D: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
 @onready var collider2D2: CollisionPolygon2D = $CollisionPolygon2D2
 @onready var fuseCol: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
-@onready var heat: RayCast2D = $HEAT
+@onready var heat: Area2D = $HEAT
 
 var damage
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
@@ -82,11 +82,6 @@ func _on_timer_2_timeout() -> void:
 	queue_free()
 
 func hit():
-	if heat.is_colliding() and HEATExploded == false:
-		if target != self and "HP" in target:
-			heat.get_collider().HP -= 200
-			print("Collider HP: ", heat.get_collider().HP, "Collider type: ", heat.get_collider())
-		HEATExploded = true
 	collider2D2.position = Vector2(10000, 10000)
 	linear_velocity = Vector2(0, 0)
 	gpup2D4.emitting = true
@@ -107,8 +102,7 @@ func _on_arming_delay_timeout() -> void:
 	armingDelay.queue_free()
 
 func HEAT():
-	if heat.is_colliding() and HEATExploded == false:
-		if "HP" in heat.get_collider():
-			print(heat.get_collider().HP)
-			heat.get_collider().HP -= 125
-			HEATExploded = true
+	for body in heat.get_overlapping_bodies():
+		if body != self and "HP" in body:
+			body.HP -= 200
+			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP)

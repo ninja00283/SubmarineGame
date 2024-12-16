@@ -60,14 +60,12 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 
 func fireCommand(parts: Array, characterBody: CharacterBody2D):
 	if parts.size() >= 3:
-		var ammoType = parts[1].to_lower()  # Get the ammo type from the command
+		var ammoType = parts[1].to_lower()
 		var angle = parts[2]
 		
 		if angle.is_valid_float():
 			var angleDegreesInput = angle.to_int()
-			var magnitudeInput = 256  # Fixed magnitude for now (you can adjust it as needed)
-			
-			# Check if ammoType is a valid index or a weapon name
+			var magnitudeInput = 256
 			if ammoType.is_valid_float():
 				var ammoIndex = ammoType.to_int()
 				if ammoIndex > 0 and ammoIndex <= ammo.size():
@@ -76,13 +74,10 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 					print("Invalid ammo index. Must be within the range of available weapons.")
 					return
 			elif ammo.has(ammoType):
-				# If ammoType is a valid weapon name
 				pass
 			else:
 				print("Invalid ammo type. Must be either a valid index or a weapon name.")
 				return
-
-			# Instantiate the selected weapon
 			if ammoType == "torpedo":
 				var torpedo = torpedoScene.instantiate()
 				torpedo.rotation = deg_to_rad(angleDegreesInput)
