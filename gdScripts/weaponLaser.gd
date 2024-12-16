@@ -10,7 +10,7 @@ extends Node2D
 @onready var gpupHit: GPUParticles2D = $GPUPHit
 @onready var gpupStart: GPUParticles2D = $GPUPStart
 @onready var sprite2D: Sprite2D = $Sprite2D
-@onready var lightOccluder: LightOccluder2D = $LightOccluder2D
+
 
 @export var amplitude: float = 1
 @export var frequency: float = 20
@@ -40,7 +40,6 @@ func _process(delta: float) -> void:
 		var collisionPoint = rayCast2D.get_collision_point()
 		laserHit.position = to_local(collisionPoint)
 		line2D.points[1] = to_local(collisionPoint)
-
 		var hitObject = rayCast2D.get_collider()
 		if hitObject != null and "HP" in hitObject:
 			currentHitObject = hitObject
@@ -64,7 +63,6 @@ func _process(delta: float) -> void:
 	if rayCast2D.is_colliding():
 		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()
 		gpupHit.position = laserHit.position
-	# lightOccluder.scale.x = line2D.points[1].x
 
 func laserOff():
 	animationPlayer.stop()

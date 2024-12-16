@@ -83,10 +83,10 @@ func _on_timer_2_timeout() -> void:
 
 func hit():
 	if heat.is_colliding() and HEATExploded == false:
-		if target != self:
-			HEATExploded = true
+		if target != self and "HP" in target:
 			heat.get_collider().HP -= 200
 			print("Collider HP: ", heat.get_collider().HP, "Collider type: ", heat.get_collider())
+		HEATExploded = true
 	collider2D2.position = Vector2(10000, 10000)
 	linear_velocity = Vector2(0, 0)
 	gpup2D4.emitting = true
@@ -111,5 +111,4 @@ func HEAT():
 		if "HP" in heat.get_collider():
 			print(heat.get_collider().HP)
 			heat.get_collider().HP -= 125
-			print("WORK PLS ", heat.get_collider().HP, heat.get_collider())
 			HEATExploded = true
