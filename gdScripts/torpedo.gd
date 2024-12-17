@@ -82,7 +82,8 @@ func _on_timer_2_timeout() -> void:
 	queue_free()
 
 func hit():
-	collider2D2.position = Vector2(10000, 10000)
+	collider2D2.position = Vector2(INF, INF)
+	impactFuse.position = Vector2(INF, INF)
 	linear_velocity = Vector2(0, 0)
 	gpup2D4.emitting = true
 	gpup2D5.emitting = true
@@ -97,13 +98,15 @@ func explode():
 		if body != self and "HP" in body:
 			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
 			body.HP -= damage
-			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP)
+			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: Overpressure")
 			
 func _on_arming_delay_timeout() -> void:
 	armingDelay.queue_free()
 
 func HEAT():
-	for body in heat.get_overlapping_bodies():
-		if body != self and "HP" in body:
-			body.HP -= 200
-			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP)
+	if is_instance_valid(heat):
+		for body in heat.get_overlapping_bodies():
+			if body != self and "HP" in body:
+				body.HP -= 200
+				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
+		

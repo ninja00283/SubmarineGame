@@ -1,0 +1,11 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://bravh61xeamfv"]
+
+[ext_resource type="Shader" path="res://assets/shockwaveShader.gdshader" id="1_vv7b1"]
+
+[resource]
+shader = ExtResource("1_vv7b1")
+shader_parameter/center = Vector2(0.5, 0.5)
+shader_parameter/force = 0.01
+shader_parameter/size = 0.3
+shader_parameter/width = 0.01
+shader_parameter/offset = 0.002
