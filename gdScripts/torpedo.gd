@@ -37,7 +37,6 @@ func _process(delta: float) -> void:
 		HP = 0
 	if HP <= 0:
 		if gpup2D6C == false:
-			HEAT()
 			hit()
 			queueFree.start()
 			gpup2D6C = true
@@ -50,14 +49,11 @@ func _on_area_2d_body_entered(body):
 			gpup2D4.global_rotation_degrees -= 45
 			gpup2D5.global_rotation = rayCast2D.get_collision_normal().angle()
 		print(body)
-		if exploded == false:
-			explode()
-			exploded = true
 		hit()
 		queueFree.start()
 	else:
 		print("Body is self")
-	HEAT()
+
 
 func _on_detection_radii_body_entered(body):
 	target = body
@@ -71,19 +67,13 @@ func _on_timer_timeout():
 	if target != null and distance <= 150:
 		weaponTorpedo.spread = 180
 		gpup2D4.emitting = true
-		if exploded == false:
-			explode()
-			exploded = true
 		hit()
 		queueFree.start()
-		HEAT()
 
 func _on_timer_2_timeout() -> void:
 	queue_free()
 
 func hit():
-	collider2D2.position = Vector2(INF, INF)
-	impactFuse.position = Vector2(INF, INF)
 	linear_velocity = Vector2(0, 0)
 	gpup2D4.emitting = true
 	gpup2D5.emitting = true
@@ -92,13 +82,24 @@ func hit():
 	gpup2D2.emitting = false
 	gpup2D3.emitting = false
 	sprite2D.hide()
+	if not exploded:
+		explode()
+		exploded = true
+	if not HEATExploded:
+		HEAT()
+		HEATExploded = true
+	collider2D2.position = Vector2(INF, INF)
+	impactFuse.position = Vector2(INF, INF)
 	
 func explode():
+	var relativePos = to_local(target.global_position)
+	distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
 	for body in explosionRadii.get_overlapping_bodies():
 		if body != self and "HP" in body:
 			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
 			body.HP -= damage
 			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: Overpressure")
+			print("Distance: ", distance)
 			
 func _on_arming_delay_timeout() -> void:
 	armingDelay.queue_free()
@@ -109,4 +110,3 @@ func HEAT():
 			if body != self and "HP" in body:
 				body.HP -= 200
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
-		
