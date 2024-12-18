@@ -2,7 +2,7 @@ extends RigidBody2D
 
 @onready var armingDelay: Timer = $armingDelay
 @onready var fuzeDelay = $Timer
-@onready var queueFree: Timer = $Timer2
+@onready var queueFreeDelay: Timer = $queueFreeDelay
 @onready var impactFuse: Area2D = $Area2D
 @onready var detectionRadii: Area2D = $detectionRadii
 @onready var sprite2D: Sprite2D = $Sprite2D2
@@ -12,6 +12,7 @@ extends RigidBody2D
 @onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
 @onready var gpup2D5: GPUParticles2D = $GPUParticles2D5
 @onready var gpup2D6: GPUParticles2D = $GPUParticles2D6
+@onready var gpup2D7: GPUParticles2D = $GPUParticles2D7
 @onready var rayCast2D: RayCast2D = $RayCast2D
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var collider2D: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
@@ -27,18 +28,17 @@ var HP = 10
 var gpup2D6C = false
 var exploded = false
 var HEATExploded = false
-# Called when the node enters the scene tree for the first time.
+
 func _ready() -> void:
 	armingDelay.start()
 
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("KillTorpedo"):
 		HP = 0
 	if HP <= 0:
 		if gpup2D6C == false:
 			hit()
-			queueFree.start()
+			queueFreeDelay.start()
 			gpup2D6C = true
 
 func _on_area_2d_body_entered(body):
@@ -50,7 +50,7 @@ func _on_area_2d_body_entered(body):
 			gpup2D5.global_rotation = rayCast2D.get_collision_normal().angle()
 		print(body)
 		hit()
-		queueFree.start()
+		queueFreeDelay.start()
 	else:
 		print("Body is self")
 
@@ -60,7 +60,7 @@ func _on_detection_radii_body_entered(body):
 	if not is_instance_valid(armingDelay):
 		var relativePos = to_local(body.global_position)
 		distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-		
+		hit()
 		fuzeDelay.start()
 
 func _on_timer_timeout():
@@ -68,10 +68,9 @@ func _on_timer_timeout():
 		weaponTorpedo.spread = 180
 		gpup2D4.emitting = true
 		hit()
-		queueFree.start()
+		queueFreeDelay.start()
 
-func _on_timer_2_timeout() -> void:
-	queue_free()
+
 
 func hit():
 	linear_velocity = Vector2(0, 0)
@@ -81,6 +80,8 @@ func hit():
 	gpup2D1.emitting = false
 	gpup2D2.emitting = false
 	gpup2D3.emitting = false
+	gpup2D6.amount_ratio = 0
+	gpup2D7.amount_ratio = 0
 	sprite2D.hide()
 	if not exploded:
 		explode()
@@ -90,6 +91,10 @@ func hit():
 		HEATExploded = true
 	collider2D2.position = Vector2(INF, INF)
 	impactFuse.position = Vector2(INF, INF)
+	heat.position = Vector2(INF, INF)
+	detectionRadii.position = Vector2(INF, INF)
+	explosionRadii.position = Vector2(INF, INF)
+	
 	
 func explode():
 	var relativePos = to_local(target.global_position)
@@ -110,3 +115,7 @@ func HEAT():
 			if body != self and "HP" in body:
 				body.HP -= 200
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
+
+
+func _queueFreeDelayTimeout() -> void:
+	queue_free()

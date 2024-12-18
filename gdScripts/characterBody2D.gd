@@ -87,7 +87,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 		
 		if angle.is_valid_float():
 			var angleDegreesInput = angle.to_int()
-			var magnitudeInput = 256
+			var magnitudeInput = 324
 			if ammoType.is_valid_float():
 				var ammoIndex = ammoType.to_int()
 				if ammoIndex > 0 and ammoIndex <= ammo.size():
