@@ -9,6 +9,12 @@ var canSpawn = false
 var isSpawning = false
 
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("MMB"):
+		var playerInstance = playerScene.instantiate()
+		playerInstance.position = get_global_mouse_position()
+		get_tree().root.add_child(playerInstance)
+	if Input.is_action_just_pressed("Reload"):
+		get_tree().reload_current_scene()
 	if Input.is_action_just_pressed("Spawn"):
 		holdCounter = 0.0
 		canSpawn = false

@@ -39,18 +39,13 @@ func _physics_process(delta: float) -> void:
 		explodeDelay.start()
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
-	# Add the gravity.
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
-	# Handle jump.
-	if Input.is_action_just_pressed("ui_up") and is_on_floor():
-		velocity.y = JUMP_VELOCITY
 
 	move_and_slide()
 
 func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
-	var text = input.text.to_lower()
+	var text = input.text.to_lower().strip_edges()
 	var parts = text.split(" ")
 	if parts.size() > 0:
 		var command = parts[0]
@@ -75,8 +70,8 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 			magnitudeInput = magnitude.to_int()
 			
 			var angleRadians = deg_to_rad(angleDegreesInput)
-			var x = magnitudeInput * cos(angleRadians)
-			var y = magnitudeInput * sin(angleRadians)
+			var x = magnitudeInput * cos(angleRadians) * 10
+			var y = magnitudeInput * sin(angleRadians) * 10
 			
 			characterBody.velocity += Vector2(x, y)
 			print(x, " ", y, " Velocity added")
