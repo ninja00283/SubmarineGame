@@ -16,7 +16,7 @@ extends CharacterBody2D
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
-var commands = ["move", "fire"]
+var commands = ["move", "fire", "damage"]
 var ammo = ["torpedo", "laser"]
 var xDrag = 0.02
 var yDrag = 0.02
@@ -41,9 +41,12 @@ func _physics_process(delta: float) -> void:
 	velocity.y = velocity.y * (1 - yDrag)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-
+		
 	move_and_slide()
-
+	var collision_info = move_and_collide(velocity * delta)
+	if collision_info:
+		velocity = velocity.bounce(collision_info.get_normal()) * 0.9
+		
 func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
 	var text = input.text.to_lower().strip_edges()
 	var parts = text.split(" ")
@@ -55,6 +58,8 @@ func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
 					moveCommand(parts, characterBody)
 				"fire":
 					fireCommand(parts, characterBody)
+				"damage":
+					damageCommand(parts, characterBody)
 			input.clear()
 			return
 	input.clear()
@@ -134,6 +139,17 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 	else:
 		print("Needs 3 parts: command type, ammo type, and firing angle. Parts: ", parts.size())
 
+func damageCommand(parts: Array, characterBody: CharacterBody2D):
+	if parts.size() >= 2:
+		var damage = parts[1]
+		if damage.is_valid_float():
+			characterBody.HP -= damage.to_float()
+			print("characterBody.HP: ",characterBody.HP)
+		else:
+			print("Damage value must be numeric")
+	else:
+		print("Incorrect part count; expected command type and numeric damage value.")
+
 func _on_death_delay_timeout() -> void:
 	collider2D.position = Vector2(INF, INF)
 	commandInput.editable = false
@@ -150,10 +166,8 @@ func _on_death_delay_timeout() -> void:
 func _on_queue_free_delay_timeout() -> void:
 	queue_free()
 
-
 func _explodeDelayEnd() -> void:
 	var bodies = explosionRadii.get_overlapping_bodies()
-
 	var distances = []
 	
 	for body in bodies:

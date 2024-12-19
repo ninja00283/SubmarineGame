@@ -1,0 +1,135 @@
+[gd_scene load_steps=12 format=3 uid="uid://dyl0pe6kqksw3"]
+
+[ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rqimn"]
+[ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://scenes/player.tscn" id="2_2ocbj"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
+friction = 0.2
+bounce = 0.5
+absorbent = true
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_b37v0"]
+
+[sub_resource type="Environment" id="Environment_0getb"]
+background_mode = 3
+background_energy_multiplier = 0.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+glow_enabled = true
+glow_normalized = true
+glow_intensity = 1.4
+glow_strength = 0.55
+glow_blend_mode = 0
+glow_hdr_threshold = 0.1
+glow_hdr_scale = 1.0
+adjustment_enabled = true
+adjustment_brightness = 0.8
+
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_emltp"]
+polygon = PackedVector2Array(1000, 0, -1000, 0, -1000, -100, 1000, -100)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
+friction = 0.2
+bounce = 0.8
+
+[sub_resource type="Animation" id="Animation_37mw4"]
+resource_name = "borderHit"
+length = 0.2
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Border/Border:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(0.2, 0.2),
+"update": 0,
+"values": [Color(100, 1, 100, 1), Color(3.5, 1, 1, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_orpn6"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Border/Border:self_modulate")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(4, 1, 1, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_wkegp"]
+_data = {
+"RESET": SubResource("Animation_orpn6"),
+"borderHit": SubResource("Animation_37mw4")
+}
+
+[node name="Root" type="Node2D"]
+script = ExtResource("1_rqimn")
+
+[node name="CharacterBody2DP1" parent="." instance=ExtResource("2_2ocbj")]
+position = Vector2(-800, 0)
+
+[node name="CharacterBody2DP2" parent="." instance=ExtResource("2_2ocbj")]
+position = Vector2(800, 0)
+
+[node name="Platform" type="StaticBody2D" parent="."]
+position = Vector2(0, -150)
+collision_layer = 3
+physics_material_override = SubResource("PhysicsMaterial_85bkh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
+position = Vector2(0, 500)
+scale = Vector2(100, 5)
+shape = SubResource("RectangleShape2D_7grsg")
+
+[node name="MeshInstance2D" type="MeshInstance2D" parent="Platform"]
+position = Vector2(0, 500)
+scale = Vector2(2000, 100)
+mesh = SubResource("QuadMesh_b37v0")
+
+[node name="Camera2D" type="Camera2D" parent="."]
+zoom = Vector2(0.5, 0.5)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_0getb")
+
+[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
+position = Vector2(0, 400)
+occluder = SubResource("OccluderPolygon2D_emltp")
+
+[node name="Border" type="StaticBody2D" parent="."]
+collision_layer = 7
+collision_mask = 7
+physics_material_override = SubResource("PhysicsMaterial_nvee0")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Border"]
+build_mode = 1
+polygon = PackedVector2Array(-1920, -1080, 1920, -1080, 1920, 1080, -1920, 1080)
+
+[node name="Border" type="Polygon2D" parent="Border"]
+self_modulate = Color(4, 1, 1, 1)
+scale = Vector2(1.005, 1.005)
+polygon = PackedVector2Array(-1900, -1060, -1900, 1060, -1940, 1100, -1940, -1100, 1940, -1100, 1940, 1100, -1940, 1100, -1900, 1060, 1900, 1060, 1900, -1060)
+
+[node name="Area2D" type="Area2D" parent="Border"]
+scale = Vector2(0.999, 0.999)
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Border/Area2D"]
+build_mode = 1
+polygon = PackedVector2Array(-1920, -1080, 1920, -1080, 1920, 1080, -1920, 1080)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_wkegp")
+}
+
+[connection signal="body_entered" from="Border/Area2D" to="." method="_borderHit"]

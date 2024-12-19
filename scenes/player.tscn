@@ -94,7 +94,7 @@ wait_time = 0.1
 one_shot = true
 
 [node name="queueFreeDelay" type="Timer" parent="."]
-wait_time = 8.2
+wait_time = 10.0
 
 [node name="explodeDelay" type="Timer" parent="."]
 wait_time = 0.25
@@ -140,7 +140,8 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="commandInput" type="LineEdit" parent="Control"]
-self_modulate = Color(8.47, 1.25, 2.12, 1)
+self_modulate = Color(1, 0, 0, 1)
+light_mask = 0
 layout_mode = 0
 offset_left = -240.0
 offset_top = -234.295

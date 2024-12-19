@@ -1,7 +1,7 @@
 extends RigidBody2D
 
 @onready var armingDelay: Timer = $armingDelay
-@onready var fuzeDelay = $Timer
+@onready var detectionRadiiDelay: Timer = $detectionRadiiDelay
 @onready var queueFreeDelay: Timer = $queueFreeDelay
 @onready var impactFuse: Area2D = $Area2D
 @onready var detectionRadii: Area2D = $detectionRadii
@@ -44,6 +44,7 @@ func _process(delta: float) -> void:
 func _on_area_2d_body_entered(body):
 	print("_on_area_2d_body_entered(body)")
 	if body != self:
+		target = body
 		if rayCast2D.is_colliding():
 			gpup2D4.global_rotation = rayCast2D.get_collision_normal().angle()
 			gpup2D4.global_rotation_degrees -= 45
@@ -56,21 +57,17 @@ func _on_area_2d_body_entered(body):
 
 
 func _on_detection_radii_body_entered(body):
-	target = body
 	if not is_instance_valid(armingDelay):
 		var relativePos = to_local(body.global_position)
 		distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-		hit()
-		fuzeDelay.start()
-
-func _on_timer_timeout():
-	if target != null and distance <= 150:
-		weaponTorpedo.spread = 180
-		gpup2D4.emitting = true
-		hit()
-		queueFreeDelay.start()
+		target = body
+		detectionRadiiDelay.start()
 
 
+func _on_detection_radii_delay_timeout() -> void:
+	weaponTorpedo.spread = 180
+	hit()
+	queueFreeDelay.start()
 
 func hit():
 	linear_velocity = Vector2(0, 0)
@@ -94,6 +91,7 @@ func hit():
 	heat.position = Vector2(INF, INF)
 	detectionRadii.position = Vector2(INF, INF)
 	explosionRadii.position = Vector2(INF, INF)
+	queueFreeDelay.start()
 	
 	
 func explode():

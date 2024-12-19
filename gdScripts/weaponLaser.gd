@@ -44,7 +44,6 @@ func _process(delta: float) -> void:
 		if hitObject != null and "HP" in hitObject:
 			currentHitObject = hitObject
 		else:
-			print("Target doesn't have HP value")
 			currentHitObject = null
 	else:
 		var targetPosition = rayCast2D.target_position

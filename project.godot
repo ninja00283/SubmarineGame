@@ -11,7 +11,7 @@ config_version=5
 [application]
 
 config/name="Submarine Game"
-run/main_scene="res://scenes/node2D.tscn"
+run/main_scene="res://scenes/root.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
