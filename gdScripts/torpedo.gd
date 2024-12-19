@@ -19,7 +19,9 @@ extends RigidBody2D
 @onready var collider2D2: CollisionPolygon2D = $CollisionPolygon2D2
 @onready var fuseCol: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
 @onready var heat: Area2D = $HEAT
+@onready var attackDamageDelay: Timer = $attackDamageDelay
 
+var player
 var damage
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
 var target = null
@@ -92,7 +94,7 @@ func hit():
 	detectionRadii.position = Vector2(INF, INF)
 	explosionRadii.position = Vector2(INF, INF)
 	queueFreeDelay.start()
-	
+	attackDamageDelay.start()
 	
 func explode():
 	var relativePos = to_local(target.global_position)
@@ -101,10 +103,14 @@ func explode():
 		if body != self and "HP" in body:
 			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
 			body.HP -= damage
+			if damage <= 0:
+				player.attackDamageF(0, true)
+			else:
+				player.attackDamageF(damage, false)
 			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: Overpressure")
 			print("Distance: ", distance)
 			
-func _on_arming_delay_timeout() -> void:
+func _onArmingDelayTimeout() -> void:
 	armingDelay.queue_free()
 
 func HEAT():
@@ -113,7 +119,12 @@ func HEAT():
 			if body != self and "HP" in body:
 				body.HP -= 200
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
+				player.attackDamageF(200, false)
 
 
 func _queueFreeDelayTimeout() -> void:
 	queue_free()
+
+
+func _onAttackDamageDelayTimeout() -> void:
+	player.attackDamageF(0, true)

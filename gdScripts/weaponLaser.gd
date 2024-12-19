@@ -11,12 +11,12 @@ extends Node2D
 @onready var gpupStart: GPUParticles2D = $GPUPStart
 @onready var sprite2D: Sprite2D = $Sprite2D
 
-
 @export var amplitude: float = 1
 @export var frequency: float = 20
 @export var minBrightness: float = 0.8
 @export var maxBrightness: float = 1.2
 
+var player
 var castPoint
 var collisionPoint
 var angle = 0
@@ -56,6 +56,7 @@ func _process(delta: float) -> void:
 		damageTimer += delta
 		if damageTimer >= 0.02:
 			currentHitObject.HP -= damageRate
+			player.attackDamageF(damageRate, false)
 			print(currentHitObject.get_class(), " HP: ", currentHitObject.HP)
 			damageTimer = 0
 
@@ -66,3 +67,6 @@ func _process(delta: float) -> void:
 func laserOff():
 	animationPlayer.stop()
 	animationPlayer.play("laserOff")
+
+func attackDamage():
+	player.attackDamageF(0.0, true)

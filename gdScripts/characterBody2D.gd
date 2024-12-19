@@ -13,6 +13,7 @@ extends CharacterBody2D
 @onready var laserScene = preload("res://scenes/weaponLaser.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
+@onready var attackDamageLabel: Label = $attackDamageLabel
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
@@ -20,14 +21,17 @@ var commands = ["move", "fire", "damage"]
 var ammo = ["torpedo", "laser"]
 var xDrag = 0.02
 var yDrag = 0.02
-var HP = 100
+var HP = 100.0
 var deathDelayValid = true
+var attackDamage = 0.0
 @export var amplitude: float = 1
 @export var frequency: float = 15
 @export var minBrightness: float = 0.8
 @export var maxBrightness: float = 1.2
 
 func _physics_process(delta: float) -> void:
+	if HP > 0:
+		meshIn2D.set_self_modulate(Color(1+0.2-(HP/100),HP/100+0.2,0,1))
 	var sineValue = amplitude * sin(frequency * Time.get_ticks_usec() / 1000000.0)
 	var brightness = lerp(minBrightness, maxBrightness, (sineValue + 1) / 2)
 	gpup2D3.modulate = Color(brightness, brightness, brightness)
@@ -118,6 +122,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				torpedo.position = characterBody.position + offset
 
 				get_tree().root.add_child(torpedo)
+				torpedo.player = self
 			elif ammoType == "laser":
 				var laser = laserScene.instantiate()
 				laser.rotation = deg_to_rad(angleDegreesInput)
@@ -129,6 +134,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				laser.position = characterBody.position + offset
 
 				get_tree().root.add_child(laser)
+				laser.player = self
 				laser.reparent(self)
 				if is_instance_valid(laser):
 					print("Laser parent: ", laser.get_parent().get_class())
@@ -186,3 +192,13 @@ func _explodeDelayEnd() -> void:
 		var damage = 24000 / (distance + 1) * pow(distance / (distance + 12), 6)
 		target.HP -= damage
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
+		
+func attackDamageF(damage, bool):
+	var decimalPoints = 2
+	var attackDamageR = round(attackDamage * pow(10, decimalPoints)) / pow(10, decimalPoints)
+	if not bool:
+		attackDamage += damage
+	else:
+		attackDamageLabel.text = str("Attack damage: ", attackDamageR)
+		print("Attack damage: ", attackDamage)
+		attackDamage = 0.0
