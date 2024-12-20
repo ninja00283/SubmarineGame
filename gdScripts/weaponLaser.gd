@@ -37,7 +37,7 @@ func _process(delta: float) -> void:
 	rayCast2D.force_raycast_update()
 	line2D.points[0] = to_local(rayCast2D.global_position)
 	if rayCast2D.is_colliding():
-		var collisionPoint = rayCast2D.get_collision_point()
+		collisionPoint = rayCast2D.get_collision_point()
 		laserHit.position = to_local(collisionPoint)
 		line2D.points[1] = to_local(collisionPoint)
 		var hitObject = rayCast2D.get_collider()

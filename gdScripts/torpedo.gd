@@ -34,7 +34,7 @@ var HEATExploded = false
 func _ready() -> void:
 	armingDelay.start()
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("KillTorpedo"):
 		HP = 0
 	if HP <= 0:
@@ -121,10 +121,8 @@ func HEAT():
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
 				player.attackDamageF(200, false)
 
-
 func _queueFreeDelayTimeout() -> void:
 	queue_free()
-
 
 func _onAttackDamageDelayTimeout() -> void:
 	player.attackDamageF(0, true)

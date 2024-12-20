@@ -5,6 +5,8 @@ extends CharacterBody2D
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
+@onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
+@onready var gpup2D5: GPUParticles2D = $GPUParticles2D5
 @onready var collider2D: CollisionShape2D = $CollisionShape2D
 @onready var sprite2D: Sprite2D = $Sprite2D
 @onready var meshIn2D: MeshInstance2D = $MeshInstance2D
@@ -32,9 +34,9 @@ var attackDamage = 0.0
 func _physics_process(delta: float) -> void:
 	if HP > 0:
 		meshIn2D.set_self_modulate(Color(1+0.2-(HP/100),HP/100+0.2,0,1))
-	var sineValue = amplitude * sin(frequency * Time.get_ticks_usec() / 1000000.0)
-	var brightness = lerp(minBrightness, maxBrightness, (sineValue + 1) / 2)
-	gpup2D3.modulate = Color(brightness, brightness, brightness)
+	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
+	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
+	gpup2D3.modulate = Color(brightness,brightness,brightness)
 	if Input.is_action_just_pressed("Submit"):
 		commandInterpret(commandInput, self)
 	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
@@ -45,12 +47,45 @@ func _physics_process(delta: float) -> void:
 	velocity.y = velocity.y * (1 - yDrag)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
-		
+
 	move_and_slide()
-	var collision_info = move_and_collide(velocity * delta)
-	if collision_info:
-		velocity = velocity.bounce(collision_info.get_normal()) * 0.9
-		
+	var colInfo = move_and_collide(velocity * delta)
+	if colInfo:
+		var collider = colInfo.get_collider()
+		if collider is CharacterBody2D and "HP" in collider:
+			var transferVelo = velocity * 0.5
+			var remainingVelo = velocity * 0.5
+
+			collider.HP -= velocity.length() * 0.08
+			HP -= velocity.length() * 0.08
+			collider.velocity += transferVelo
+			velocity = remainingVelo.bounce(colInfo.get_normal())
+		else:
+			velocity = velocity.bounce(colInfo.get_normal()) * 0.9
+			
+		var velocityLen = velocity.length()
+		var particleRatio = 1.0
+		if velocityLen < 800.0:
+			particleRatio = velocityLen / 800.0
+
+		var newgpup2D4 = gpup2D4.duplicate() as GPUParticles2D
+		var newgpup2D5 = gpup2D5.duplicate() as GPUParticles2D
+
+		var colPos = colInfo.get_position()
+		newgpup2D4.global_position = colPos
+		newgpup2D4.rotation_degrees = rad_to_deg(colInfo.get_normal().angle()) - 90
+		newgpup2D4.amount_ratio = particleRatio
+		newgpup2D4.emitting = true
+
+		newgpup2D5.global_position = colPos
+		newgpup2D5.rotation_degrees = rad_to_deg(colInfo.get_normal().angle()) + 90
+		newgpup2D5.amount_ratio = particleRatio
+		newgpup2D5.emitting = true
+
+		get_tree().root.add_child(newgpup2D4)
+		get_tree().root.add_child(newgpup2D5)
+
+
 func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
 	var text = input.text.to_lower().strip_edges()
 	var parts = text.split(" ")
@@ -158,6 +193,7 @@ func damageCommand(parts: Array, characterBody: CharacterBody2D):
 
 func _on_death_delay_timeout() -> void:
 	collider2D.position = Vector2(INF, INF)
+	velocity = Vector2(0, 0)
 	commandInput.editable = false
 	commandInput.hide()
 	sprite2D.hide()
@@ -193,10 +229,10 @@ func _explodeDelayEnd() -> void:
 		target.HP -= damage
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
 		
-func attackDamageF(damage, bool):
+func attackDamageF(damage, reset):
 	var decimalPoints = 2
 	var attackDamageR = round(attackDamage * pow(10, decimalPoints)) / pow(10, decimalPoints)
-	if not bool:
+	if not reset:
 		attackDamage += damage
 	else:
 		attackDamageLabel.text = str("Attack damage: ", attackDamageR)

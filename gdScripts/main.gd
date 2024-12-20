@@ -58,12 +58,12 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 
 
 func _borderHit(body: Node2D) -> void:
-	var velocityMagnitude = body.velocity.length()
-	var animationLength = animationPlayer.get_animation("borderHit").length
-	var startPosition = 0.0
-	if velocityMagnitude < 400.0:
-		startPosition = lerp(0.2, 0.0, clamp(velocityMagnitude / 400.0, 0.0, 1.0))
-	animationPlayer.stop()
-	animationPlayer.play("borderHit")
-	animationPlayer.seek(startPosition, true)
-	print("Body collided with world border. Velocity: ", velocityMagnitude, " Start position: ", startPosition)
+	if "velocity" in body:
+		var velocityMagnitude = body.velocity.length()
+		var startPosition = 0.0
+		if velocityMagnitude < 400.0:
+			startPosition = lerp(0.2,0.0,clamp(velocityMagnitude/400.0,0.0,1.0))
+		animationPlayer.stop()
+		animationPlayer.play("borderHit")
+		animationPlayer.seek(startPosition, true)
+		print("Body collided with world border. Velocity: ", velocityMagnitude, " Start position: ", startPosition)
