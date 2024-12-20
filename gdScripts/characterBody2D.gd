@@ -117,7 +117,7 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 			var x = magnitudeInput * cos(angleRadians) * 10
 			var y = magnitudeInput * sin(angleRadians) * 10
 			
-			characterBody.velocity += Vector2(x, y)
+			characterBody.velocity += Vector2(x*3, y*3)
 			print(x, " ", y, " Velocity added")
 		else:
 			print("Invalid move command. Both angle and magnitude must be numeric values.")
@@ -230,8 +230,8 @@ func _explodeDelayEnd() -> void:
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
 		
 func attackDamageF(damage, reset):
-	var decimalPoints = 2
-	var attackDamageR = round(attackDamage * pow(10, decimalPoints)) / pow(10, decimalPoints)
+	var decimalPoints = 0
+	var attackDamageR = int(attackDamage)
 	if not reset:
 		attackDamage += damage
 	else:
