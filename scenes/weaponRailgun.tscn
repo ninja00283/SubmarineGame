@@ -1,0 +1,79 @@
+[gd_scene load_steps=10 format=3 uid="uid://bmi8j7ndhedm1"]
+
+[ext_resource type="Script" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
+[ext_resource type="Texture2D" uid="uid://gnj4iibriqh" path="res://assets/APDSCore.png" id="2_puneq"]
+[ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="3_22bnv"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_65cpx"]
+friction = 0.5
+bounce = 0.8
+
+[sub_resource type="Gradient" id="Gradient_op3rw"]
+offsets = PackedFloat32Array(0, 0.276451, 0.566553, 1)
+colors = PackedColorArray(100, 80, 40, 0.9, 67.9775, 28.764, 14.382, 0.964045, 50, 15, 2, 1, 20, 5, 1, 0.995)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_f53rv"]
+gradient = SubResource("Gradient_op3rw")
+
+[sub_resource type="Curve" id="Curve_3e7lo"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0186916, 1), 0.0, 0.0, 0, 0, Vector2(0.847352, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_5wmfh"]
+curve = SubResource("Curve_3e7lo")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_crat7"]
+lifetime_randomness = 1.0
+particle_flag_align_y = true
+particle_flag_disable_z = true
+particle_flag_damping_as_friction = true
+initial_velocity_min = 2400.0
+initial_velocity_max = 12800.0
+gravity = Vector3(0, 0, 0)
+damping_min = 0.04
+damping_max = 0.08
+scale_min = 0.01
+scale_max = 0.01
+scale_curve = SubResource("CurveTexture_5wmfh")
+color_ramp = SubResource("GradientTexture1D_f53rv")
+turbulence_enabled = true
+
+[node name="RigidBody2D" type="RigidBody2D"]
+collision_layer = 0
+collision_mask = 0
+mass = 50.0
+physics_material_override = SubResource("PhysicsMaterial_65cpx")
+linear_damp = 2.0
+angular_damp = 1.0
+script = ExtResource("1_32tfa")
+
+[node name="APDSCore" type="Sprite2D" parent="."]
+self_modulate = Color(100, 20, 100, 1)
+position = Vector2(12.8, 0)
+scale = Vector2(0.09, 0.09)
+texture = ExtResource("2_puneq")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+position = Vector2(12.8, 0)
+scale = Vector2(0.09, 0.09)
+polygon = PackedVector2Array(-384, 128, 128, 128, 384, 0, 128, -128, -384, -128)
+
+[node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 1024
+process_material = SubResource("ParticleProcessMaterial_crat7")
+texture = ExtResource("3_22bnv")
+lifetime = 1.5
+one_shot = true
+explosiveness = 0.95
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
+position = Vector2(16.4, 0)
+scale = Vector2(0.09, 0.09)
+polygon = PackedVector2Array(91.1111, 128, 128, 128, 384, 0, 128, -128, 91.1111, -128)
+
+[node name="queueFreeDelay" type="Timer" parent="."]
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

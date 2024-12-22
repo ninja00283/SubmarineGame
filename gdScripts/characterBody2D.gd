@@ -13,23 +13,34 @@ extends CharacterBody2D
 @onready var commandInput: LineEdit = $Control/commandInput
 @onready var torpedoScene = preload("res://scenes/weaponTorpedo.tscn")
 @onready var laserScene = preload("res://scenes/weaponLaser.tscn")
+@onready var railgunScene = preload("res://scenes/weaponRailgun.tscn")
+@onready var sabotScene = preload("res://scenes/particleSabot.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
+@onready var animPl: AnimationPlayer = $AnimationPlayer
 
 const SPEED = 300.0
 const JUMP_VELOCITY = -400.0
 var commands = ["move", "fire", "damage"]
-var ammo = ["torpedo", "laser"]
+var ammo = ["torpedo", "laser", "railgun"]
 var xDrag = 0.02
 var yDrag = 0.02
 var HP = 100.0
 var deathDelayValid = true
 var attackDamage = 0.0
-@export var amplitude: float = 1
-@export var frequency: float = 15
-@export var minBrightness: float = 0.8
-@export var maxBrightness: float = 1.2
+var shakeDur: float = INF
+@export var shakeScale: float = 0.0
+var amplitude: float = 1
+var frequency: float = 15
+var minBrightness: float = 0.85
+var maxBrightness: float = 1.15
+var originalPosition: Vector2
+var shaking: bool = false
+
+func _ready() -> void:
+	startShake()
+	originalPosition = position
 
 func _physics_process(delta: float) -> void:
 	if HP > 0:
@@ -40,8 +51,11 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("Submit"):
 		commandInterpret(commandInput, self)
 	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
+		animPl.stop()
+		animPl.play("death")
+		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
+		collider2D.position = Vector2(INF,INF)
 		deathDelayValid = false
-		deathDelay.start()
 		explodeDelay.start()
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
@@ -65,25 +79,29 @@ func _physics_process(delta: float) -> void:
 			
 		var velocityLen = velocity.length()
 		var particleRatio = 1.0
-		if velocityLen < 800.0:
-			particleRatio = velocityLen / 800.0
-
+		if velocityLen < 1600.0:
+			particleRatio = velocityLen / 1600.0
 		var newgpup2D4 = gpup2D4.duplicate() as GPUParticles2D
 		var newgpup2D5 = gpup2D5.duplicate() as GPUParticles2D
-
 		var colPos = colInfo.get_position()
 		newgpup2D4.global_position = colPos
 		newgpup2D4.rotation_degrees = rad_to_deg(colInfo.get_normal().angle()) - 90
 		newgpup2D4.amount_ratio = particleRatio
 		newgpup2D4.emitting = true
-
 		newgpup2D5.global_position = colPos
 		newgpup2D5.rotation_degrees = rad_to_deg(colInfo.get_normal().angle()) + 90
 		newgpup2D5.amount_ratio = particleRatio
 		newgpup2D5.emitting = true
-
 		get_tree().root.add_child(newgpup2D4)
 		get_tree().root.add_child(newgpup2D5)
+		
+	if shaking:
+		position = originalPosition + Vector2(
+			randf_range(-shakeScale, shakeScale), 
+			randf_range(-shakeScale, shakeScale)
+		)
+	else:
+		position = originalPosition
 
 
 func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
@@ -131,7 +149,6 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 		
 		if angle.is_valid_float():
 			var angleDegreesInput = angle.to_int()
-			var magnitudeInput = 324
 			if ammoType.is_valid_float():
 				var ammoIndex = ammoType.to_int()
 				if ammoIndex > 0 and ammoIndex <= ammo.size():
@@ -147,33 +164,41 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 			if ammoType == "torpedo":
 				var torpedo = torpedoScene.instantiate()
 				torpedo.rotation = deg_to_rad(angleDegreesInput)
-
 				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
-				var velocity = direction * magnitudeInput
-
+				var velocity = direction * 324
 				torpedo.linear_velocity = velocity
-
 				var offset = direction * 100
 				torpedo.position = characterBody.position + offset
-
 				get_tree().root.add_child(torpedo)
 				torpedo.player = self
+				
 			elif ammoType == "laser":
 				var laser = laserScene.instantiate()
 				laser.rotation = deg_to_rad(angleDegreesInput)
-
 				var direction = Vector2(cos(laser.rotation), sin(laser.rotation))
-				var velocity = direction * magnitudeInput
-
 				var offset = direction * 100
 				laser.position = characterBody.position + offset
-
 				get_tree().root.add_child(laser)
 				laser.player = self
 				laser.reparent(self)
-				if is_instance_valid(laser):
-					print("Laser parent: ", laser.get_parent().get_class())
-
+				
+			elif ammoType == "railgun":
+				var sabotT = sabotScene.instantiate()
+				var sabotB = sabotScene.instantiate()
+				var railgun = railgunScene.instantiate()
+				railgun.rotation = deg_to_rad(angleDegreesInput)
+				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
+				var offset = direction * 100
+				var velocity = direction * 12288
+				railgun.linear_velocity = velocity
+				railgun.position = characterBody.position + offset
+				sabotT.position = railgun.position - Vector2(3.84, 12.8)
+				sabotT.linear_velocity = velocity + Vector2(-1200, 1600)
+				sabotB.position = railgun.position - Vector2(3.84, -12.8)
+				sabotB.linear_velocity = velocity + Vector2(-1200, -1600)
+				get_tree().root.add_child(railgun)
+				get_tree().root.add_child(sabotT)
+				get_tree().root.add_child(sabotB)
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
 			print("Invalid inputs for fire command. Angle must be numeric.")
@@ -192,6 +217,8 @@ func damageCommand(parts: Array, characterBody: CharacterBody2D):
 		print("Incorrect part count; expected command type and numeric damage value.")
 
 func _on_death_delay_timeout() -> void:
+	animPl.stop()
+	animPl.play("postDeath")
 	collider2D.position = Vector2(INF, INF)
 	velocity = Vector2(0, 0)
 	commandInput.editable = false
@@ -238,3 +265,8 @@ func attackDamageF(damage, reset):
 		attackDamageLabel.text = str("Attack damage: ", attackDamageR)
 		print("Attack damage: ", attackDamage)
 		attackDamage = 0.0
+
+func startShake():
+	shaking = true
+	await get_tree().create_timer(shakeDur).timeout
+	shaking = false

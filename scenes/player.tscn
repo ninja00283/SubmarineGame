@@ -1,4 +1,4 @@
-[gd_scene load_steps=24 format=3 uid="uid://couhv4h8umrc7"]
+[gd_scene load_steps=29 format=3 uid="uid://couhv4h8umrc7"]
 
 [ext_resource type="Script" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
 [ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://assets/Morse Code the art/Protractor.png" id="2_vhsvq"]
@@ -59,8 +59,8 @@ angle_max = 5.00001
 angular_velocity_min = -1.00002
 angular_velocity_max = -1.00002
 gravity = Vector3(0, 0, 0)
-scale_min = 0.3
-scale_max = 0.35
+scale_min = 0.45
+scale_max = 0.53
 scale_curve = SubResource("CurveTexture_lsc3e")
 alpha_curve = SubResource("CurveTexture_pg0lg")
 
@@ -106,9 +106,179 @@ turbulence_enabled = true
 collision_mode = 2
 collision_use_scale = true
 
+[sub_resource type="Environment" id="Environment_53vx8"]
+background_mode = 3
+background_energy_multiplier = 0.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+glow_enabled = true
+glow_levels/7 = 0.5
+glow_normalized = true
+glow_intensity = 1.4
+glow_strength = 0.6
+glow_blend_mode = 0
+glow_hdr_threshold = 0.1
+glow_hdr_scale = 1.0
+adjustment_enabled = true
+adjustment_brightness = 0.6
+
+[sub_resource type="Animation" id="Animation_05w1y"]
+resource_name = "death"
+length = 5.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:shakeScale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 10.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PointLight2D:energy")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.5]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("WorldEnvironment:environment:adjustment_brightness")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.6, 0.1]
+}
+tracks/3/type = "method"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"_on_death_delay_timeout"
+}]
+}
+
+[sub_resource type="Animation" id="Animation_ua62m"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:shakeScale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PointLight2D:energy")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("WorldEnvironment:environment:adjustment_brightness")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.6]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PointLight2D:color")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(100, 0.5, 0.5, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_dyp61"]
+resource_name = "postDeath"
+length = 6.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PointLight2D:energy")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.5, 0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("WorldEnvironment:environment:adjustment_brightness")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 0.8, 6),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.1, 0.8, 0.6]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PointLight2D:color")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 1.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(100, 0.5, 0.5, 1), Color(10, 80, 80, 0.8)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_fs2rw"]
+_data = {
+"RESET": SubResource("Animation_ua62m"),
+"death": SubResource("Animation_05w1y"),
+"postDeath": SubResource("Animation_dyp61")
+}
+
 [node name="CharacterBody2D" type="CharacterBody2D"]
-collision_layer = 7
-collision_mask = 7
+collision_layer = 15
+collision_mask = 15
 motion_mode = 1
 wall_min_slide_angle = 0.174533
 script = ExtResource("1_bhnif")
@@ -227,6 +397,20 @@ scale = Vector2(0.8, 0.8)
 theme_override_colors/font_color = Color(0.0691731, 0.0381473, 0.0816656, 1)
 theme_override_font_sizes/font_size = 44
 alignment = 1
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_53vx8")
+
+[node name="PointLight2D" type="PointLight2D" parent="."]
+color = Color(100, 0.5, 0.5, 1)
+energy = 0.0
+texture = ExtResource("4_20753")
+texture_scale = 50.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_fs2rw")
+}
 
 [connection signal="timeout" from="deathDelay" to="." method="_on_death_delay_timeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]

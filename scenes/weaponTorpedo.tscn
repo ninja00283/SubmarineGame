@@ -1,6 +1,6 @@
 [gd_scene load_steps=25 format=3 uid="uid://bvih3qrkyftcx"]
 
-[ext_resource type="Script" path="res://gdScripts/torpedo.gd" id="1_opwgj"]
+[ext_resource type="Script" path="res://gdScripts/weaponTorpedo.gd" id="1_opwgj"]
 [ext_resource type="Texture2D" uid="uid://ddcdo8on17lsg" path="res://assets/torpedo.png" id="2_1olg8"]
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="4_sw6vr"]
 [ext_resource type="Material" uid="uid://cc5oaf4uqttbv" path="res://assets/weaponTorpedo.tres" id="5_uf7vu"]

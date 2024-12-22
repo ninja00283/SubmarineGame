@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=11 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://scenes/player.tscn" id="2_2ocbj"]
@@ -11,21 +11,6 @@ absorbent = true
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
 
 [sub_resource type="QuadMesh" id="QuadMesh_b37v0"]
-
-[sub_resource type="Environment" id="Environment_0getb"]
-background_mode = 3
-background_energy_multiplier = 0.0
-ambient_light_energy = 0.0
-reflected_light_source = 1
-glow_enabled = true
-glow_normalized = true
-glow_intensity = 1.4
-glow_strength = 0.55
-glow_blend_mode = 0
-glow_hdr_threshold = 0.1
-glow_hdr_scale = 1.0
-adjustment_enabled = true
-adjustment_brightness = 0.8
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_emltp"]
 polygon = PackedVector2Array(1000, 0, -1000, 0, -1000, -100, 1000, -100)
@@ -83,7 +68,8 @@ position = Vector2(800, 0)
 
 [node name="Platform" type="StaticBody2D" parent="."]
 position = Vector2(0, -150)
-collision_layer = 3
+collision_layer = 15
+collision_mask = 15
 physics_material_override = SubResource("PhysicsMaterial_85bkh")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
@@ -98,9 +84,6 @@ mesh = SubResource("QuadMesh_b37v0")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
-
-[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
-environment = SubResource("Environment_0getb")
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 position = Vector2(0, 375)
