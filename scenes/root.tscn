@@ -91,8 +91,8 @@ scale = Vector2(0.95, 0.5)
 occluder = SubResource("OccluderPolygon2D_emltp")
 
 [node name="Border" type="StaticBody2D" parent="."]
-collision_layer = 7
-collision_mask = 7
+collision_layer = 131079
+collision_mask = 131079
 physics_material_override = SubResource("PhysicsMaterial_nvee0")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Border"]

@@ -38,11 +38,8 @@ var maxBrightness: float = 1.15
 var originalPosition: Vector2
 var shaking: bool = false
 
-func _ready() -> void:
-	startShake()
-	originalPosition = position
-
 func _physics_process(delta: float) -> void:
+	originalPosition = position
 	if HP > 0:
 		meshIn2D.set_self_modulate(Color(1+0.2-(HP/100),HP/100+0.2,0,1))
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
@@ -51,10 +48,11 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("Submit"):
 		commandInterpret(commandInput, self)
 	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
+		collision_layer = 1 << 17
+		collision_mask = 1 << 17
 		animPl.stop()
 		animPl.play("death")
 		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
-		collider2D.position = Vector2(INF,INF)
 		deathDelayValid = false
 		explodeDelay.start()
 	velocity.x = velocity.x * (1 - xDrag)
@@ -100,8 +98,6 @@ func _physics_process(delta: float) -> void:
 			randf_range(-shakeScale, shakeScale), 
 			randf_range(-shakeScale, shakeScale)
 		)
-	else:
-		position = originalPosition
 
 
 func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
@@ -129,13 +125,13 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 		var magnitude = parts[2]
 		if angle.is_valid_float() and magnitude.is_valid_float():
 			angleDegreesInput = angle.to_int()
-			magnitudeInput = magnitude.to_int()
+			magnitudeInput = clampi(magnitude.to_int(), 0, 300)
 			
 			var angleRadians = deg_to_rad(angleDegreesInput)
-			var x = magnitudeInput * cos(angleRadians) * 10
-			var y = magnitudeInput * sin(angleRadians) * 10
+			var x = magnitudeInput * cos(angleRadians)
+			var y = magnitudeInput * sin(angleRadians)
 			
-			characterBody.velocity += Vector2(x*3, y*3)
+			characterBody.velocity += Vector2(x*30, y*30)
 			print(x, " ", y, " Velocity added")
 		else:
 			print("Invalid move command. Both angle and magnitude must be numeric values.")
@@ -219,13 +215,11 @@ func damageCommand(parts: Array, characterBody: CharacterBody2D):
 func _on_death_delay_timeout() -> void:
 	animPl.stop()
 	animPl.play("postDeath")
-	collider2D.position = Vector2(INF, INF)
 	velocity = Vector2(0, 0)
 	commandInput.editable = false
 	commandInput.hide()
 	sprite2D.hide()
 	meshIn2D.hide()
-	collider2D.disabled = true
 	gpup2D1.emitting = true
 	gpup2D2.emitting = true
 	gpup2D3.emitting = true

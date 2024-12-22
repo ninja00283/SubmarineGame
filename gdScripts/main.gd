@@ -11,8 +11,10 @@ var holdCounter = 0.0
 var canSpawn = false
 var isSpawning = false
 
-func _process(delta: float) -> void:
+func _ready() -> void:
 	Engine.time_scale = 1
+	
+func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("MMB"):
 		var playerInstance = playerScene.instantiate()
 		playerInstance.position = get_global_mouse_position()
