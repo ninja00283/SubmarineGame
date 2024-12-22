@@ -3,6 +3,8 @@ extends Node2D
 @onready var playerScene = preload("res://scenes/player.tscn")
 @onready var border: Polygon2D = $Border/Border
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
+@onready var camera2D: Camera2D = $Camera2D
+@onready var cameraZoomTimer: Timer = $cameraZoomTimer
 
 var spawnFrameCounter = 0.0
 var spawnRate = 0.025
@@ -70,3 +72,13 @@ func _borderHit(body: Node2D) -> void:
 		animationPlayer.play("borderHit")
 		animationPlayer.seek(startPosition, true)
 		print("Body collided with world border. Velocity: ", velocityMagnitude, " Start position: ", startPosition)
+
+func positionCamera(pos):
+	camera2D.position = pos
+	animationPlayer.play("cameraZoom")
+	cameraZoomTimer.start()
+
+
+func _on_camera_zoom_timer_timeout() -> void:
+	camera2D.position = Vector2(0, 0)
+	animationPlayer.play("cameraZoomPost")

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=14 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://scenes/player.tscn" id="2_2ocbj"]
@@ -33,6 +33,18 @@ tracks/0/keys = {
 "update": 0,
 "values": [Color(4, 1, 1, 1)]
 }
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Camera2D:zoom")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.5, 0.5)]
+}
 
 [sub_resource type="Animation" id="Animation_37mw4"]
 resource_name = "borderHit"
@@ -51,11 +63,62 @@ tracks/0/keys = {
 "values": [Color(100, 1, 100, 1), Color(3.5, 1, 1, 1)]
 }
 
+[sub_resource type="Animation" id="Animation_d5v6b"]
+resource_name = "cameraZoom"
+length = 5.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera2D:zoom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Vector2(0.5, 0.5), Vector2(0.55, 0.55)]
+}
+
+[sub_resource type="Animation" id="Animation_k5d0p"]
+resource_name = "cameraZoomPost"
+length = 3.5
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Camera2D:zoom")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.4, 3.5),
+"transitions": PackedFloat32Array(0.2, 0.2, 1.2),
+"update": 0,
+"values": [Vector2(0.55, 0.55), Vector2(0.495, 0.495), Vector2(0.5, 0.5)]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wkegp"]
 _data = {
 "RESET": SubResource("Animation_orpn6"),
-"borderHit": SubResource("Animation_37mw4")
+"borderHit": SubResource("Animation_37mw4"),
+"cameraZoom": SubResource("Animation_d5v6b"),
+"cameraZoomPost": SubResource("Animation_k5d0p")
 }
+
+[sub_resource type="Environment" id="Environment_gb58l"]
+background_mode = 3
+background_energy_multiplier = 0.0
+ambient_light_energy = 0.0
+reflected_light_source = 1
+glow_enabled = true
+glow_levels/7 = 0.5
+glow_normalized = true
+glow_intensity = 1.4
+glow_strength = 0.6
+glow_blend_mode = 0
+glow_hdr_threshold = 0.1
+glow_hdr_scale = 1.0
+adjustment_enabled = true
+adjustment_brightness = 0.6
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_rqimn")
@@ -84,6 +147,12 @@ mesh = SubResource("QuadMesh_b37v0")
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
+limit_left = -1920
+limit_top = -1080
+limit_right = 1920
+limit_bottom = 1080
+limit_smoothed = true
+position_smoothing_enabled = true
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
 position = Vector2(0, 375)
@@ -116,4 +185,12 @@ libraries = {
 "": SubResource("AnimationLibrary_wkegp")
 }
 
+[node name="cameraZoomTimer" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_gb58l")
+
 [connection signal="body_entered" from="Border/Area2D" to="." method="_borderHit"]
+[connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]

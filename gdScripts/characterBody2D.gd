@@ -37,6 +37,10 @@ var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
 var originalPosition: Vector2
 var shaking: bool = false
+var root 
+
+func _ready() -> void:
+	root = get_tree().root.get_child(0)
 
 func _physics_process(delta: float) -> void:
 	originalPosition = position
@@ -48,10 +52,11 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("Submit"):
 		commandInterpret(commandInput, self)
 	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
-		collision_layer = 1 << 17
+		collision_layer = 1 << 19
 		collision_mask = 1 << 17
 		animPl.stop()
 		animPl.play("death")
+		root.positionCamera(position)
 		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
 		deathDelayValid = false
 		explodeDelay.start()
@@ -195,6 +200,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				get_tree().root.add_child(railgun)
 				get_tree().root.add_child(sabotT)
 				get_tree().root.add_child(sabotB)
+				railgun.player = self
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
 			print("Invalid inputs for fire command. Angle must be numeric.")
