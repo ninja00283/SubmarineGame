@@ -39,9 +39,6 @@ var originalPosition: Vector2
 var shaking: bool = false
 var root 
 
-func _ready() -> void:
-	root = get_tree().root.get_child(0)
-
 func _physics_process(delta: float) -> void:
 	originalPosition = position
 	if HP > 0:
@@ -52,6 +49,7 @@ func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("Submit"):
 		commandInterpret(commandInput, self)
 	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
+		attackDamageLabel.hide()
 		collision_layer = 1 << 19
 		collision_mask = 1 << 17
 		animPl.stop()
@@ -136,7 +134,7 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 			var x = magnitudeInput * cos(angleRadians)
 			var y = magnitudeInput * sin(angleRadians)
 			
-			characterBody.velocity += Vector2(x*30, y*30)
+			characterBody.velocity += Vector2(x*30000, y*30000)
 			print(x, " ", y, " Velocity added")
 		else:
 			print("Invalid move command. Both angle and magnitude must be numeric values.")

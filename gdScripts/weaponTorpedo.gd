@@ -97,10 +97,10 @@ func hit():
 	attackDamageDelay.start()
 	
 func explode():
-	var relativePos = to_local(target.global_position)
-	distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
 	for body in explosionRadii.get_overlapping_bodies():
 		if body != self and "HP" in body:
+			var relativePos = to_local(body.global_position)
+			distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
 			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
 			body.HP -= damage
 			if damage <= 0:

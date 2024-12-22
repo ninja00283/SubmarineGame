@@ -1,7 +1,6 @@
-[gd_scene load_steps=14 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=13 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rqimn"]
-[ext_resource type="PackedScene" uid="uid://couhv4h8umrc7" path="res://scenes/player.tscn" id="2_2ocbj"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
 friction = 0.2
@@ -122,12 +121,6 @@ adjustment_brightness = 0.6
 
 [node name="Root" type="Node2D"]
 script = ExtResource("1_rqimn")
-
-[node name="CharacterBody2DP1" parent="." instance=ExtResource("2_2ocbj")]
-position = Vector2(-800, 0)
-
-[node name="CharacterBody2DP2" parent="." instance=ExtResource("2_2ocbj")]
-position = Vector2(800, 0)
 
 [node name="Platform" type="StaticBody2D" parent="."]
 position = Vector2(0, -150)

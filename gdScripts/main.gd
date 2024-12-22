@@ -20,6 +20,7 @@ func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("MMB"):
 		var playerInstance = playerScene.instantiate()
 		playerInstance.position = get_global_mouse_position()
+		playerInstance.root = self
 		get_tree().root.add_child(playerInstance)
 		
 	if Input.is_action_just_pressed("Reload"):
@@ -58,6 +59,7 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 		
 		if collision != null:
 			var playerInstance = playerScene.instantiate()
+			playerInstance.root = self
 			playerInstance.position = spawnPosition
 			get_tree().root.add_child(playerInstance)
 
