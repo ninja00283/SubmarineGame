@@ -19,9 +19,10 @@ extends CharacterBody2D
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
 @onready var animPl: AnimationPlayer = $AnimationPlayer
+@onready var deathShader: MeshInstance2D = $deathShader
 
-const SPEED = 300.0
-const JUMP_VELOCITY = -400.0
+var deathShaderShowDur = Time.get_ticks_msec()
+var deathShaderRan = false
 var commands = ["move", "fire", "damage"]
 var ammo = ["torpedo", "laser", "railgun"]
 var xDrag = 0.02
@@ -169,6 +170,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				var offset = direction * 100
 				torpedo.position = characterBody.position + offset
 				get_tree().root.add_child(torpedo)
+				root.objects.append(torpedo)
 				torpedo.player = self
 				
 			elif ammoType == "laser":
@@ -198,6 +200,9 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				get_tree().root.add_child(railgun)
 				get_tree().root.add_child(sabotT)
 				get_tree().root.add_child(sabotB)
+				root.objects.append(railgun)
+				root.objects.append(sabotT)
+				root.objects.append(sabotB)
 				railgun.player = self
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
@@ -268,3 +273,15 @@ func startShake():
 	shaking = true
 	await get_tree().create_timer(shakeDur).timeout
 	shaking = false
+
+func deathShaderAnimS():
+	get_viewport().use_hdr_2d = false
+	deathShader.show()
+	deathShaderRan = true
+	get_tree().paused = true
+
+func deathShaderAnimP():
+	get_viewport().use_hdr_2d = true
+	deathShader.hide()
+	deathShaderRan = true
+	get_tree().paused = false

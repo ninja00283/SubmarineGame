@@ -1,10 +1,11 @@
-[gd_scene load_steps=29 format=3 uid="uid://couhv4h8umrc7"]
+[gd_scene load_steps=32 format=3 uid="uid://couhv4h8umrc7"]
 
 [ext_resource type="Script" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
 [ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://assets/Morse Code the art/Protractor.png" id="2_vhsvq"]
 [ext_resource type="Material" uid="uid://cc5oaf4uqttbv" path="res://assets/weaponTorpedo.tres" id="3_y6a5f"]
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="4_20753"]
 [ext_resource type="Texture2D" uid="uid://dmjk0ccufp35n" path="res://assets/paritcle2.png" id="5_3y4eu"]
+[ext_resource type="Shader" path="res://shaders/deathShader.gdshader" id="6_kafhs"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8h28d"]
 radius = 400.0
@@ -175,7 +176,7 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_05w1y"]
 resource_name = "death"
-length = 5.0
+length = 6.0
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -184,7 +185,7 @@ tracks/0/path = NodePath(".:shakeScale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 5),
+"times": PackedFloat32Array(0, 6),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 10.0]
@@ -196,7 +197,7 @@ tracks/1/path = NodePath("PointLight2D:energy")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0, 5),
+"times": PackedFloat32Array(0, 5.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 1.5]
@@ -208,10 +209,10 @@ tracks/2/path = NodePath("WorldEnvironment:environment:adjustment_brightness")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 5),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 5.2999, 5.3),
+"transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.6, 0.1]
+"values": [0.6, 0.1, 8.0]
 }
 tracks/3/type = "method"
 tracks/3/imported = false
@@ -220,11 +221,17 @@ tracks/3/path = NodePath(".")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 5),
-"transitions": PackedFloat32Array(1, 1),
+"times": PackedFloat32Array(0, 5.3, 5.999, 6),
+"transitions": PackedFloat32Array(1, 1, 1, 1),
 "values": [{
 "args": [],
 "method": &"startShake"
+}, {
+"args": [],
+"method": &"deathShaderAnimS"
+}, {
+"args": [],
+"method": &"deathShaderAnimP"
 }, {
 "args": [],
 "method": &"_on_death_delay_timeout"
@@ -278,6 +285,11 @@ _data = {
 "death": SubResource("Animation_05w1y"),
 "postDeath": SubResource("Animation_dyp61")
 }
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ex233"]
+shader = ExtResource("6_kafhs")
+
+[sub_resource type="QuadMesh" id="QuadMesh_h8co6"]
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 131087
@@ -389,7 +401,6 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="commandInput" type="LineEdit" parent="Control"]
-self_modulate = Color(1, 0, 0, 1)
 light_mask = 0
 layout_mode = 0
 offset_left = -240.0
@@ -411,9 +422,17 @@ texture = ExtResource("4_20753")
 texture_scale = 48.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+process_mode = 3
 libraries = {
 "": SubResource("AnimationLibrary_fs2rw")
 }
+
+[node name="deathShader" type="MeshInstance2D" parent="."]
+visible = false
+top_level = true
+material = SubResource("ShaderMaterial_ex233")
+scale = Vector2(99999, 99999)
+mesh = SubResource("QuadMesh_h8co6")
 
 [connection signal="timeout" from="deathDelay" to="." method="_on_death_delay_timeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]

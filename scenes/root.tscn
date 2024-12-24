@@ -179,7 +179,7 @@ libraries = {
 }
 
 [node name="cameraZoomTimer" type="Timer" parent="."]
-wait_time = 5.0
+wait_time = 5.3
 one_shot = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

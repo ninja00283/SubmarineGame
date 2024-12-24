@@ -12,18 +12,24 @@ var holdTime = 0.5
 var holdCounter = 0.0
 var canSpawn = false
 var isSpawning = false
+var players = []
+var objects = []
 
-func _ready() -> void:
-	Engine.time_scale = 1
-	
 func _process(delta: float) -> void:
 	if Input.is_action_just_pressed("MMB"):
 		var playerInstance = playerScene.instantiate()
 		playerInstance.position = get_global_mouse_position()
 		playerInstance.root = self
+		players.append(playerInstance)
 		get_tree().root.add_child(playerInstance)
 		
 	if Input.is_action_just_pressed("Reload"):
+		for player in players:
+			if is_instance_valid(player):
+				player.queue_free()
+		for object in objects:
+			if is_instance_valid(object):
+				object.queue_free()
 		get_tree().reload_current_scene()
 		
 	if Input.is_action_just_pressed("Spawn"):
@@ -61,6 +67,7 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 			var playerInstance = playerScene.instantiate()
 			playerInstance.root = self
 			playerInstance.position = spawnPosition
+			players.append(playerInstance)
 			get_tree().root.add_child(playerInstance)
 
 
