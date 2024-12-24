@@ -79,8 +79,6 @@ func hit():
 	gpup2D1.emitting = false
 	gpup2D2.emitting = false
 	gpup2D3.emitting = false
-	gpup2D6.amount_ratio = 0
-	gpup2D7.amount_ratio = 0
 	sprite2D.hide()
 	if not exploded:
 		explode()

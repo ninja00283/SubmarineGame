@@ -185,7 +185,7 @@ tracks/0/path = NodePath(".:shakeScale")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 6),
+"times": PackedFloat32Array(0, 5.3),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 10.0]
@@ -212,7 +212,7 @@ tracks/2/keys = {
 "times": PackedFloat32Array(0, 5.2999, 5.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 0,
-"values": [0.6, 0.1, 8.0]
+"values": [0.6, 0.02, 8.0]
 }
 tracks/3/type = "method"
 tracks/3/imported = false

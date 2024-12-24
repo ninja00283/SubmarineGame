@@ -96,7 +96,6 @@ collision_layer = 0
 collision_mask = 0
 mass = 50.0
 physics_material_override = SubResource("PhysicsMaterial_65cpx")
-linear_damp = 2.0
 angular_damp = 1.0
 script = ExtResource("1_32tfa")
 
@@ -112,7 +111,7 @@ scale = Vector2(0.09, 0.09)
 polygon = PackedVector2Array(-384, 128, 128, 128, 384, 0, 128, -128, -384, -128)
 
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
-position = Vector2(-96, 0)
+position = Vector2(-48, 0)
 emitting = false
 amount = 256
 process_material = SubResource("ParticleProcessMaterial_qyavq")

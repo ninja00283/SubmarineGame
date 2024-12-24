@@ -148,8 +148,7 @@ limit_smoothed = true
 position_smoothing_enabled = true
 
 [node name="LightOccluder2D" type="LightOccluder2D" parent="."]
-position = Vector2(0, 375)
-scale = Vector2(0.95, 0.5)
+position = Vector2(0, 400)
 occluder = SubResource("OccluderPolygon2D_emltp")
 
 [node name="Border" type="StaticBody2D" parent="."]

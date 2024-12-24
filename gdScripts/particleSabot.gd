@@ -12,3 +12,7 @@ func _process(delta: float) -> void:
 
 func _on_area_2d_body_entered(body: Node2D) -> void:
 	queue_free()
+
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	if linear_velocity.length() > 0:
+		rotation = linear_velocity.angle()

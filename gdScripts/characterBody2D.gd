@@ -55,6 +55,7 @@ func _physics_process(delta: float) -> void:
 		collision_mask = 1 << 17
 		animPl.stop()
 		animPl.play("death")
+		commandInput.hide()
 		root.positionCamera(position)
 		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
 		deathDelayValid = false
@@ -190,7 +191,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
 				var offset = direction * 100
-				var velocity = direction * 12288
+				var velocity = direction * 6144
 				railgun.linear_velocity = velocity
 				railgun.position = characterBody.position + offset
 				sabotT.position = railgun.position - Vector2(3.84, 12.8)
@@ -260,7 +261,6 @@ func _explodeDelayEnd() -> void:
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
 		
 func attackDamageF(damage, reset):
-	var decimalPoints = 0
 	var attackDamageR = int(attackDamage)
 	if not reset:
 		attackDamage += damage
