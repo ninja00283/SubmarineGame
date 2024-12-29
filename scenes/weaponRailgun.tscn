@@ -138,5 +138,9 @@ scale = Vector2(0.09, 0.09)
 polygon = PackedVector2Array(91.1111, 128, 128, 128, 384, 0, 128, -128, 91.1111, -128)
 
 [node name="queueFreeDelay" type="Timer" parent="."]
+wait_time = 16.0
+one_shot = true
+autostart = true
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]

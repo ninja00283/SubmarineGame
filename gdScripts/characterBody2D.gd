@@ -15,16 +15,18 @@ extends CharacterBody2D
 @onready var laserScene = preload("res://scenes/weaponLaser.tscn")
 @onready var railgunScene = preload("res://scenes/weaponRailgun.tscn")
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
+@onready var bombScene = preload("res://scenes/weaponbomb.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
 @onready var animPl: AnimationPlayer = $AnimationPlayer
 @onready var deathShader: MeshInstance2D = $deathShader
 
+var shaderMaterial = preload("res://assets/weaponBomb.tres")
 var deathShaderShowDur = Time.get_ticks_msec()
 var deathShaderRan = false
 var commands = ["move", "fire", "damage"]
-var ammo = ["torpedo", "laser", "railgun"]
+var ammo = ["torpedo", "laser", "railgun", "bomb"]
 var xDrag = 0.02
 var yDrag = 0.02
 var HP = 100.0
@@ -59,7 +61,6 @@ func _physics_process(delta: float) -> void:
 		root.positionCamera(position)
 		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
 		deathDelayValid = false
-		explodeDelay.start()
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	if not is_on_floor():
@@ -136,7 +137,7 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 			var x = magnitudeInput * cos(angleRadians)
 			var y = magnitudeInput * sin(angleRadians)
 			
-			characterBody.velocity += Vector2(x*30000, y*30000)
+			characterBody.velocity += Vector2(x*30, y*30)
 			print(x, " ", y, " Velocity added")
 		else:
 			print("Invalid move command. Both angle and magnitude must be numeric values.")
@@ -205,6 +206,17 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				root.objects.append(sabotT)
 				root.objects.append(sabotB)
 				railgun.player = self
+			elif ammoType == "bomb":
+				var bomb = bombScene.instantiate()
+				bomb.rotation = deg_to_rad(angleDegreesInput)
+				var direction = Vector2(cos(bomb.rotation), sin(bomb.rotation))
+				var offset = direction * 150
+				var velocity = direction * 1536
+				bomb.linear_velocity = velocity
+				bomb.position = characterBody.position + offset
+				bomb.player = self
+				get_tree().root.add_child(bomb)
+				root.objects.append(bomb)
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
 			print("Invalid inputs for fire command. Angle must be numeric.")
@@ -225,6 +237,7 @@ func damageCommand(parts: Array, characterBody: CharacterBody2D):
 func _on_death_delay_timeout() -> void:
 	animPl.stop()
 	animPl.play("postDeath")
+	explodeDelay.start()
 	velocity = Vector2(0, 0)
 	commandInput.editable = false
 	commandInput.hide()
@@ -245,13 +258,26 @@ func _explodeDelayEnd() -> void:
 	
 	for body in bodies:
 		if body != self and "HP" in body:
-			var relativePos = to_local(body.global_position)
-			var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-			distances.append({"body": body, "distance": distance})
+			var newRaycast = RayCast2D.new()
+			add_child(newRaycast)
+			newRaycast.global_position = global_position
+			newRaycast.target_position = to_local(body.global_position)
+			newRaycast.force_raycast_update()
+			if newRaycast.is_colliding():
+				if newRaycast.get_collider() == body:
+					newRaycast.queue_free()
+					var relativePos = to_local(body.global_position)
+					var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
+					distances.append({"body": body, "distance": distance})
+				else:
+					print("Target obstructed: ", body)
+			else:
+				newRaycast.queue_free()
 	
 	distances.sort_custom(func(a, b):
 		return a["distance"] < b["distance"]
 	)
+	
 	var maxDamageBodies = min(2, distances.size())
 	for i in range(maxDamageBodies):
 		var target = distances[i]["body"]
@@ -259,6 +285,7 @@ func _explodeDelayEnd() -> void:
 		var damage = 24000 / (distance + 1) * pow(distance / (distance + 12), 6)
 		target.HP -= damage
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
+
 		
 func attackDamageF(damage, reset):
 	var attackDamageR = int(attackDamage)

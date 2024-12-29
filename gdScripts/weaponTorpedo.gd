@@ -20,6 +20,7 @@ extends RigidBody2D
 @onready var fuseCol: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
 @onready var heat: Area2D = $HEAT
 @onready var attackDamageDelay: Timer = $attackDamageDelay
+@onready var inExplosionRadii: RayCast2D = $inExplosionRadii
 
 var player
 var damage
@@ -96,17 +97,27 @@ func hit():
 	
 func explode():
 	for body in explosionRadii.get_overlapping_bodies():
-		if body != self and "HP" in body:
-			var relativePos = to_local(body.global_position)
-			distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-			damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
-			body.HP -= damage
-			if damage <= 0:
-				player.attackDamageF(0, true)
+		var newRaycast = RayCast2D.new()
+		add_child(newRaycast)
+		newRaycast.global_position = global_position
+		newRaycast.target_position = to_local(body.global_position)
+		newRaycast.force_raycast_update()
+		if newRaycast.is_colliding():
+			if newRaycast.get_collider() == body:
+				newRaycast.queue_free()
+				if body != self and "HP" in body:
+					var relativePos = to_local(body.global_position)
+					var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
+					var damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
+					body.HP -= damage
+					if damage <= 0:
+						player.attackDamageF(0, true)
+					else:
+						player.attackDamageF(damage, false)
 			else:
-				player.attackDamageF(damage, false)
-			print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: Overpressure")
-			print("Distance: ", distance)
+				print("Target obstructed")
+
+
 			
 func _onArmingDelayTimeout() -> void:
 	armingDelay.queue_free()
@@ -115,9 +126,9 @@ func HEAT():
 	if is_instance_valid(heat):
 		for body in heat.get_overlapping_bodies():
 			if body != self and "HP" in body:
-				body.HP -= 200
+				body.HP -= 80
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
-				player.attackDamageF(200, false)
+				player.attackDamageF(80, false)
 
 func _queueFreeDelayTimeout() -> void:
 	queue_free()

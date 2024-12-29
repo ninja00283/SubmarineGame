@@ -1,0 +1,271 @@
+[gd_scene load_steps=14 format=3 uid="uid://tk8n2c20kyqh"]
+
+[ext_resource type="Script" path="res://gdScripts/weaponBomb.gd" id="1_2b1kx"]
+[ext_resource type="Texture2D" uid="uid://clatga6fquhnp" path="res://assets/weaponBomb.svg" id="1_v0v7v"]
+[ext_resource type="Texture2D" uid="uid://b67h04ttb8ste" path="res://assets/bombTrajectory.svg" id="2_d5kgh"]
+[ext_resource type="Material" uid="uid://d36fe8pvtxh5n" path="res://assets/weaponBomb.tres" id="3_wqcs0"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_fqli1"]
+
+[sub_resource type="Animation" id="Animation_fqmd7"]
+resource_name = "explode"
+length = 2.5
+step = 0.05
+tracks/0/type = "method"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(2.5),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"explode"
+}]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BombTrajectory:scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2.5),
+"transitions": PackedFloat32Array(0.5, 0.5),
+"update": 0,
+"values": [Vector2(0.02, 0.02), Vector2(0.08, 0.08)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("BombTrajectory:self_modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0, 2.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 0.2), Color(1, 1, 1, 1)]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:shakeScale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 2.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 5.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:shakeRotateScale")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 2.5),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+
+[sub_resource type="Animation" id="Animation_sjrxa"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("BombTrajectory:scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector2(0.02, 0.02)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("BombTrajectory:self_modulate")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(1, 1, 1, 1)]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".:shakeScale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath(".:shakeRotateScale")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".:timerDur")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+
+[sub_resource type="Animation" id="Animation_wa1da"]
+resource_name = "timerStarted"
+length = 6.0
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath(".:timerDur")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 6),
+"transitions": PackedFloat32Array(2, 2),
+"update": 0,
+"values": [1.0, 0.1]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_qn7f4"]
+_data = {
+"RESET": SubResource("Animation_sjrxa"),
+"explode": SubResource("Animation_fqmd7"),
+"timerStarted": SubResource("Animation_wa1da")
+}
+
+[sub_resource type="Animation" id="Animation_sa8j2"]
+resource_name = "flashAnim"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponBomb:material:shader_parameter/col")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [Color(1, 1, 1, 1), Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="Animation" id="Animation_dmew7"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("WeaponBomb:material:shader_parameter/col")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Color(0, 0, 0, 1)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ge5dh"]
+_data = {
+"RESET": SubResource("Animation_dmew7"),
+"flashAnim": SubResource("Animation_sa8j2")
+}
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_stilt"]
+radius = 100.0
+
+[node name="RigidBody2D" type="RigidBody2D"]
+collision_layer = 8
+collision_mask = 8
+mass = 20.0
+physics_material_override = SubResource("PhysicsMaterial_fqli1")
+gravity_scale = 980.0
+script = ExtResource("1_2b1kx")
+shakeScale = 1.0
+shakeRotateScale = 0.0
+
+[node name="BombTrajectory" type="Sprite2D" parent="."]
+scale = Vector2(0.02, 0.02)
+texture = ExtResource("2_d5kgh")
+
+[node name="WeaponBomb" type="Sprite2D" parent="."]
+material = ExtResource("3_wqcs0")
+scale = Vector2(0.03, 0.03)
+texture = ExtResource("1_v0v7v")
+
+[node name="Collider" type="CollisionPolygon2D" parent="."]
+visible = false
+scale = Vector2(0.03, 0.03)
+polygon = PackedVector2Array(-5.09998, -1581.7, -11, -1580.1, -11, -1577.2, -259.4, -1145.3, -340.7, -1123, -344.7, -1123, -424.8, -1094, -427.9, -1094, -582, -1019, -584.2, -1019, -677.1, -958, -679.4, -958, -741.4, -909, -743.6, -909, -869.7, -790, -1231, -787, -1371.3, -787, -1373.6, -783, -1121.6, -347.2, -1158.2, -187, -1159.7, -187, -1174, -8.19995, -1174, 8.19995, -1160, 176.3, -1160, 183.5, -1118.2, 357, -1366, 790.9, -1366, 798, -864, 797, -861.6, 797, -789, 868.6, -789, 869.9, -726, 921.8, -726, 923.1, -587, 1016, -587, 1017.5, -431, 1091.5, -431, 1093, -248.6, 1148, 3.69995, 1581, 9.30005, 1581, 259.3, 1145.2, 340.7, 1123, 344.7, 1123, 424.8, 1094, 427.9, 1094, 582, 1019, 584.2, 1019, 677.1, 958, 679.4, 958, 741.4, 909, 743.6, 909, 869.6, 789.9, 1225, 787, 1371.3, 787, 1373.6, 783, 1121.5, 347.1, 1158.2, 187, 1159.7, 187, 1174, 7.19995, 1174, -7.19995, 1160, -176.3, 1160, -183.5, 1118.1, -357.1, 1366, -790.9, 1366, -798, 864, -797, 861.6, -797, 789, -868.7, 789, -869.9, 726, -921.9, 726, -923.1, 587, -1016.1, 587, -1017.5, 431, -1091.6, 431, -1093, 248.6, -1148)
+
+[node name="impactFuse" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="impactFuse"]
+scale = Vector2(0.03, 0.03)
+polygon = PackedVector2Array(-2.19995, -1609.7, -17, -1605.7, -17, -1599.8, -270.2, -1159.1, -429.6, -1110, -433.3, -1110, -589.3, -1034, -592.2, -1034, -749.1, -924, -752, -924, -876.1, -806, -1386.1, -803, -1392.8, -803, -1398.6, -793, -1138.9, -346.1, -1173.9, -193, -1176.2, -193, -1191, -8.40002, -1191, 8.40002, -1177, 176.8, -1177, 184.2, -1136.4, 356.6, -1391, 800.3, -1391, 814, -977, 813, -869, 813, -738, 933.4, -738, 935.3, -599, 1028.3, -599, 1030.3, -441, 1105.2, -441, 1107.4, -258.8, 1162.9, 0.199951, 1608, 12.8, 1608, 270.1, 1158.9, 429.6, 1110, 433.3, 1110, 589.3, 1034, 592.2, 1034, 749.1, 924, 752, 924, 876, 805.9, 1386.1, 803, 1392.8, 803, 1398.6, 793, 1138.8, 346, 1173.9, 193, 1176.2, 193, 1191, 7.40002, 1191, -7.40002, 1177, -176.8, 1177, -184.2, 1135.4, -356.1, 1390, -799.3, 1390, -814, 973, -813, 869, -813, 738, -933.5, 738, -935.3, 599, -1028.4, 599, -1030.3, 441, -1105.3, 441, -1107.4, 258.7, -1163)
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_qn7f4")
+}
+
+[node name="flashAnim" type="AnimationPlayer" parent="."]
+libraries = {
+"": SubResource("AnimationLibrary_ge5dh")
+}
+
+[node name="explosionRadii" type="Area2D" parent="."]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="explosionRadii"]
+shape = SubResource("CircleShape2D_stilt")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 6.0
+one_shot = true
+
+[node name="queueFreeDelay" type="Timer" parent="."]
+wait_time = 5.0
+one_shot = true
+
+[node name="attackDamageFDelay" type="Timer" parent="."]
+one_shot = true
+
+[node name="armingDelay" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = true
+autostart = true
+
+[connection signal="body_entered" from="impactFuse" to="." method="_onImpactFuseActivated"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
+[connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
+[connection signal="timeout" from="attackDamageFDelay" to="." method="_on_attack_damage_f_delay_timeout"]
+[connection signal="timeout" from="armingDelay" to="." method="_on_arming_delay_timeout"]
