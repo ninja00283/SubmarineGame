@@ -5,6 +5,7 @@ extends Node2D
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
 @onready var camera2D: Camera2D = $Camera2D
 @onready var cameraZoomTimer: Timer = $cameraZoomTimer
+@onready var node: Node2D = $Node
 
 var spawnFrameCounter = 0.0
 var spawnRate = 0.025
@@ -12,46 +13,60 @@ var holdTime = 0.5
 var holdCounter = 0.0
 var canSpawn = false
 var isSpawning = false
+var training = false
+var spawnPos = [Vector2(800, 0), Vector2(-800, 0)]
 var players = []
 var objects = []
 
-func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("MMB"):
+func _ready() -> void:
+	for pos in spawnPos:
 		var playerInstance = playerScene.instantiate()
-		playerInstance.position = get_global_mouse_position()
+		playerInstance.position = pos
 		playerInstance.root = self
 		players.append(playerInstance)
-		get_tree().root.add_child(playerInstance)
-		
-	if Input.is_action_just_pressed("Reload"):
-		for player in players:
-			if is_instance_valid(player):
-				player.queue_free()
-		for object in objects:
-			if is_instance_valid(object):
-				object.queue_free()
-		get_tree().reload_current_scene()
-		
-	if Input.is_action_just_pressed("Spawn"):
-		holdCounter = 0.0
-		canSpawn = false
-		isSpawning = true
-		spawnPlayerRing(100, 600)
-		
-	if Input.is_action_pressed("Spawn"):
-		holdCounter += delta
-		if holdCounter >= holdTime:
-			canSpawn = true
+		add_child(playerInstance)
+	get_tree().paused = true
+
+func _process(delta: float) -> void:
+	if training:
+		if Input.is_action_just_pressed("MMB"):
+			var playerInstance = playerScene.instantiate()
+			playerInstance.position = get_global_mouse_position()
+			playerInstance.root = self
+			players.append(playerInstance)
+			get_tree().root.add_child(playerInstance)
 			
-	if Input.is_action_just_released("Spawn"):
-		isSpawning = false
-		
-	if isSpawning and canSpawn:
-		spawnFrameCounter += delta
-		
-		if spawnFrameCounter >= spawnRate:
+	if training:
+		if Input.is_action_just_pressed("Reload"):
+			for player in players:
+				if is_instance_valid(player):
+					player.queue_free()
+			for object in objects:
+				if is_instance_valid(object):
+					object.queue_free()
+			get_tree().reload_current_scene()
+			
+	if training:
+		if Input.is_action_just_pressed("Spawn"):
+			holdCounter = 0.0
+			canSpawn = false
+			isSpawning = true
 			spawnPlayerRing(100, 600)
-			spawnFrameCounter = 0
+			
+		if Input.is_action_pressed("Spawn"):
+			holdCounter += delta
+			if holdCounter >= holdTime:
+				canSpawn = true
+				
+		if Input.is_action_just_released("Spawn"):
+			isSpawning = false
+			
+		if isSpawning and canSpawn:
+			spawnFrameCounter += delta
+			
+			if spawnFrameCounter >= spawnRate:
+				spawnPlayerRing(100, 600)
+				spawnFrameCounter = 0
 
 func spawnPlayerRing(innerOffset: float, outerOffset: float):
 	var spawnCount = 1
@@ -87,7 +102,15 @@ func positionCamera(pos):
 	animationPlayer.play("cameraZoom")
 	cameraZoomTimer.start()
 
-
 func _on_camera_zoom_timer_timeout() -> void:
 	camera2D.position = Vector2(0, 0)
 	animationPlayer.play("cameraZoomPost")
+
+func _on_quit_button_pressed() -> void:
+	node.hide()
+	get_tree().quit()
+
+
+func _on_start_button_pressed() -> void:
+	node.hide()
+	get_tree().paused = false

@@ -241,8 +241,6 @@ turbulence_influence_max = 0.2
 turbulence_initial_displacement_min = 1.49012e-06
 turbulence_initial_displacement_max = 1.0
 collision_use_scale = true
-sub_emitter_mode = 1
-sub_emitter_frequency = 4.0
 
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 8

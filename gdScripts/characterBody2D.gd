@@ -224,15 +224,18 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 		print("Needs 3 parts: command type, ammo type, and firing angle. Parts: ", parts.size())
 
 func damageCommand(parts: Array, characterBody: CharacterBody2D):
-	if parts.size() >= 2:
-		var damage = parts[1]
-		if damage.is_valid_float():
-			characterBody.HP -= damage.to_float()
-			print("characterBody.HP: ",characterBody.HP)
+	if root.training:
+		if parts.size() >= 2:
+			var damage = parts[1]
+			if damage.is_valid_float():
+				characterBody.HP -= damage.to_float()
+				print("characterBody.HP: ",characterBody.HP)
+			else:
+				print("Damage value must be numeric")
 		else:
-			print("Damage value must be numeric")
+			print("Incorrect part count; expected command type and numeric damage value.")
 	else:
-		print("Incorrect part count; expected command type and numeric damage value.")
+		print("The damage command is only available in training mode")
 
 func _on_death_delay_timeout() -> void:
 	animPl.stop()

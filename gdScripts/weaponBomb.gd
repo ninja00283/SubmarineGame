@@ -113,7 +113,7 @@ func projectiles():
 		var shrapnel = particleShrapnel.instantiate()
 		shrapnel.bomb = self
 		shrapnel.player = player
-		shrapnel.rotation_degrees = angle
+		shrapnel.rotation_degrees = angle + self.rotation_degrees
 		angle += angleStep
 		shrapnel.global_position = global_position
 		var direction = Vector2(cos(shrapnel.rotation), sin(shrapnel.rotation))
