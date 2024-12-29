@@ -5,13 +5,15 @@ extends Node2D
 @export var timerDur: float 
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var bombSprite: Sprite2D = $WeaponBomb
+@onready var bombTrajectory: Sprite2D = $BombTrajectory
 @onready var animPl: AnimationPlayer = $AnimationPlayer
 @onready var impactFuse: Area2D = $impactFuse
 @onready var timer: Timer = $Timer
 @onready var flashAnim: AnimationPlayer = $flashAnim
 @onready var queueFreeDelay: Timer = $queueFreeDelay
-@onready var attackDamageFDelay: Timer = $attackDamageFDelay
 @onready var armingDelay: Timer = $armingDelay
+@onready var particleShrapnel = preload("res://scenes/particleShrapnel.tscn")
+@onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 
 var player
 var timePassed: float
@@ -20,13 +22,19 @@ var HP = 25.0
 var originalPosition: Vector2
 var originalRotation
 var shaking: bool = false
+var shrapnelArray = []
+var shrapnelAmount = 6
+var attackDmgSubm = false
 
 func _ready() -> void:
-	armingDelay.start()
 	animPl.stop()
 	flashAnim.stop()
 
 func _process(delta):
+	if not attackDmgSubm and shrapnelAmount <= 0:
+		attackDmgSubm = true
+		player.attackDamageF(0.0, true)
+			
 	timePassed += delta
 	if timePassed >= timerDur:
 		timePassed -= timerDur
@@ -34,6 +42,8 @@ func _process(delta):
 			flashAnim.play("flashAnim")
 	if HP <= 0:
 		impact()
+		self.collision_layer = 1 << 21
+		self.collision_mask = 1 << 21
 	if shaking:
 		position = originalPosition + Vector2(randf_range(-shakeScale, shakeScale), randf_range(-shakeScale, shakeScale))
 		rotation_degrees = originalRotation + randf_range(-shakeRotateScale, shakeRotateScale)
@@ -59,8 +69,11 @@ func impact():
 			impactFuse.monitoring = false
 
 func explode():
-	attackDamageFDelay.start()
-	hide()
+	self.collision_layer = 1 << 21
+	self.collision_mask = 1 << 21
+	projectiles()
+	bombSprite.hide()
+	bombTrajectory.hide()
 	explodeVFX()
 	queueFreeDelay.start()
 	for body in explosionRadii.get_overlapping_bodies():
@@ -90,15 +103,27 @@ func _on_timer_timeout() -> void:
 	impact()
 
 func explodeVFX():
-	pass # add kaboom vfx code here, was too tired to do when this func was made
+	gpup2D1.emitting = true
 
+func projectiles():
+	var particleCount = 6
+	var angleStep = 360.0 / particleCount
+	var angle = 0.0
+	for i in range(particleCount):
+		var shrapnel = particleShrapnel.instantiate()
+		shrapnel.bomb = self
+		shrapnel.player = player
+		shrapnel.rotation_degrees = angle
+		angle += angleStep
+		shrapnel.global_position = global_position
+		var direction = Vector2(cos(shrapnel.rotation), sin(shrapnel.rotation))
+		shrapnel.linear_velocity = direction.normalized() * 2048
+		shrapnelArray.append(shrapnel)
+		get_tree().root.add_child(shrapnel)
+
+	
 func _on_queue_free_delay_timeout() -> void:
 	queue_free()
-
-
-func _on_attack_damage_f_delay_timeout() -> void:
-	player.attackDamageF(0, true)
-
 
 func _on_arming_delay_timeout() -> void:
 	armingDelay.queue_free()
