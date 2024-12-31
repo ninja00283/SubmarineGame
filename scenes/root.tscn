@@ -1,6 +1,7 @@
-[gd_scene load_steps=14 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=17 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rqimn"]
+[ext_resource type="Script" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
 friction = 0.2
@@ -122,6 +123,12 @@ adjustment_brightness = 0.6
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u15to"]
 bg_color = Color(0, 1, 1, 0.313726)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unaew"]
+bg_color = Color(1, 0, 0, 0.313726)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ppqkh"]
+bg_color = Color(0, 0, 0, 0)
+
 [node name="Root" type="Node2D"]
 script = ExtResource("1_rqimn")
 
@@ -187,17 +194,17 @@ one_shot = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_gb58l")
 
-[node name="Node" type="Node2D" parent="."]
+[node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
 
-[node name="Panel" type="Panel" parent="Node"]
+[node name="Panel" type="Panel" parent="MainMenu"]
 offset_left = 960.0
 offset_top = -1080.0
 offset_right = 1920.0
 offset_bottom = 1080.0
 theme_override_styles/panel = SubResource("StyleBoxFlat_u15to")
 
-[node name="MarginContainer" type="MarginContainer" parent="Node"]
+[node name="MarginContainer" type="MarginContainer" parent="MainMenu"]
 process_mode = 3
 offset_left = 960.0
 offset_top = -1080.0
@@ -208,31 +215,130 @@ theme_override_constants/margin_top = 112
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="Node/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/MarginContainer"]
 layout_mode = 2
 theme_override_constants/separation = 100
 
-[node name="startButton" type="Button" parent="Node/MarginContainer/VBoxContainer"]
+[node name="startButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Start"
 
-[node name="trainingButton" type="Button" parent="Node/MarginContainer/VBoxContainer"]
+[node name="debuggingButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
-text = "Training"
+text = "Debugging"
 
-[node name="settingsButton" type="Button" parent="Node/MarginContainer/VBoxContainer"]
+[node name="settingsButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Settings"
 
-[node name="quitButton" type="Button" parent="Node/MarginContainer/VBoxContainer"]
+[node name="quitButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Quit"
 
+[node name="Settings" type="Node2D" parent="MainMenu"]
+script = ExtResource("2_2wqq8")
+
+[node name="Panel" type="Panel" parent="MainMenu/Settings"]
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -480.0
+offset_bottom = 1080.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_unaew")
+
+[node name="Actions" type="MarginContainer" parent="MainMenu/Settings"]
+process_mode = 3
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -1200.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 112
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Actions"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="reloadScene" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Reload Scene"
+
+[node name="submitText" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Submit Text"
+
+[node name="spawnPlayerMMB" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Spawn Player (D)"
+
+[node name="spawnPlayerY" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Spawn Player Ring (D)"
+ellipsis_char = ""
+
+[node name="Keybinds" type="MarginContainer" parent="MainMenu/Settings"]
+process_mode = 3
+offset_left = -1200.0
+offset_top = -1080.0
+offset_right = -480.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 112
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Keybinds"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="reloadScene" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="submitText" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="spawnPlayerMMB" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="spawnPlayerY" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
 [connection signal="body_entered" from="Border/Area2D" to="." method="_borderHit"]
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
-[connection signal="pressed" from="Node/MarginContainer/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="Node/MarginContainer/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_training_button_pressed"]
+[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/settingsButton" to="." method="_on_settings_button_pressed"]
+[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]

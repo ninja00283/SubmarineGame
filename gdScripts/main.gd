@@ -5,15 +5,17 @@ extends Node2D
 @onready var animationPlayer: AnimationPlayer = $AnimationPlayer
 @onready var camera2D: Camera2D = $Camera2D
 @onready var cameraZoomTimer: Timer = $cameraZoomTimer
-@onready var node: Node2D = $Node
+@onready var mainMenu: Node2D = $MainMenu
+@onready var settings: Node2D = $MainMenu/Settings
 
+var settingsShown = false
 var spawnFrameCounter = 0.0
 var spawnRate = 0.025
 var holdTime = 0.5
 var holdCounter = 0.0
 var canSpawn = false
 var isSpawning = false
-var training = false
+var debugging = false
 var spawnPos = [Vector2(800, 0), Vector2(-800, 0)]
 var players = []
 var objects = []
@@ -28,7 +30,7 @@ func _ready() -> void:
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
-	if training:
+	if debugging:
 		if Input.is_action_just_pressed("MMB"):
 			var playerInstance = playerScene.instantiate()
 			playerInstance.position = get_global_mouse_position()
@@ -36,17 +38,16 @@ func _process(delta: float) -> void:
 			players.append(playerInstance)
 			get_tree().root.add_child(playerInstance)
 			
-	if training:
-		if Input.is_action_just_pressed("Reload"):
-			for player in players:
-				if is_instance_valid(player):
-					player.queue_free()
-			for object in objects:
-				if is_instance_valid(object):
-					object.queue_free()
-			get_tree().reload_current_scene()
+	if Input.is_action_just_pressed("Reload"):
+		for player in players:
+			if is_instance_valid(player):
+				player.queue_free()
+		for object in objects:
+			if is_instance_valid(object):
+				object.queue_free()
+		get_tree().reload_current_scene()
 			
-	if training:
+	if debugging:
 		if Input.is_action_just_pressed("Spawn"):
 			holdCounter = 0.0
 			canSpawn = false
@@ -107,10 +108,25 @@ func _on_camera_zoom_timer_timeout() -> void:
 	animationPlayer.play("cameraZoomPost")
 
 func _on_quit_button_pressed() -> void:
-	node.hide()
+	mainMenu.hide()
 	get_tree().quit()
 
 
 func _on_start_button_pressed() -> void:
-	node.hide()
+	mainMenu.hide()
 	get_tree().paused = false
+
+
+func _on_settings_button_pressed() -> void:
+	if settingsShown:
+		settings.hide()
+		settingsShown = false
+	else:
+		settings.show()
+		settingsShown = true
+
+
+func _on_training_button_pressed() -> void:
+	mainMenu.hide()
+	get_tree().paused = false
+	debugging = true
