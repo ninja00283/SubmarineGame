@@ -248,6 +248,7 @@ collision_mask = 8
 mass = 80.0
 physics_material_override = SubResource("PhysicsMaterial_fqli1")
 gravity_scale = 980.0
+continuous_cd = 2
 script = ExtResource("1_2b1kx")
 shakeScale = 1.0
 shakeRotateScale = 0.0

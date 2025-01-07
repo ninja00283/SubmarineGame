@@ -22,6 +22,7 @@ extends CharacterBody2D
 @onready var animPl: AnimationPlayer = $AnimationPlayer
 @onready var deathShader: MeshInstance2D = $deathShader
 
+var key
 var shaderMaterial = preload("res://assets/weaponBomb.tres")
 var deathShaderShowDur = Time.get_ticks_msec()
 var deathShaderRan = false
@@ -50,7 +51,13 @@ func _physics_process(delta: float) -> void:
 	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
 	gpup2D3.modulate = Color(brightness,brightness,brightness)
 	if Input.is_action_just_pressed("Submit"):
-		commandInterpret(commandInput, self)
+		var event = InputEventKey.new()
+		for ev in InputMap.action_get_events("Submit"):
+			if ev is InputEventKey:
+				event = ev
+				break
+		commandInterpret(commandInput, self, event)
+
 	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
 		attackDamageLabel.hide()
 		collision_layer = 1 << 19
@@ -106,7 +113,15 @@ func _physics_process(delta: float) -> void:
 		)
 
 
-func commandInterpret(input: LineEdit, characterBody: CharacterBody2D):
+func commandInterpret(input: LineEdit, characterBody: CharacterBody2D, event: InputEvent):
+	key = char(event.unicode)
+	print("KEY: ", key)
+	
+	if str(input.text).ends_with(key) and key != "":
+		input.text = str(input.text).erase(str(input.text).length()-1)
+	else:
+		print("String does not end with: ", key)
+	print("Input: ", input.text)
 	var text = input.text.to_lower().strip_edges()
 	var parts = text.split(" ")
 	if parts.size() > 0:

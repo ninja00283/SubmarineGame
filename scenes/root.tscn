@@ -130,6 +130,7 @@ bg_color = Color(1, 0, 0, 0.313726)
 bg_color = Color(0, 0, 0, 0)
 
 [node name="Root" type="Node2D"]
+process_mode = 3
 script = ExtResource("1_rqimn")
 
 [node name="Platform" type="StaticBody2D" parent="."]
@@ -240,6 +241,7 @@ theme_override_font_sizes/font_size = 112
 text = "Quit"
 
 [node name="Settings" type="Node2D" parent="MainMenu"]
+visible = false
 script = ExtResource("2_2wqq8")
 
 [node name="Panel" type="Panel" parent="MainMenu/Settings"]
@@ -339,6 +341,6 @@ virtual_keyboard_enabled = false
 [connection signal="body_entered" from="Border/Area2D" to="." method="_borderHit"]
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_training_button_pressed"]
+[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_debug_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/settingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]

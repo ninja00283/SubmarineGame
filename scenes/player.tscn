@@ -318,6 +318,7 @@ shader = ExtResource("6_kafhs")
 [sub_resource type="QuadMesh" id="QuadMesh_h8co6"]
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
+process_mode = 1
 collision_layer = 131087
 collision_mask = 131087
 motion_mode = 1
@@ -427,6 +428,7 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="commandInput" type="LineEdit" parent="Control"]
+process_mode = 3
 light_mask = 0
 layout_mode = 0
 offset_left = -240.0

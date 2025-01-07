@@ -8,6 +8,7 @@ extends Node2D
 @onready var mainMenu: Node2D = $MainMenu
 @onready var settings: Node2D = $MainMenu/Settings
 
+var started = false
 var settingsShown = false
 var spawnFrameCounter = 0.0
 var spawnRate = 0.025
@@ -30,6 +31,12 @@ func _ready() -> void:
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
+	if players.size() > 0 and not started:
+		for player in players:
+			if settingsShown:
+				player.commandInput.hide()
+			else:
+				player.commandInput.show()
 	if debugging:
 		if Input.is_action_just_pressed("MMB"):
 			var playerInstance = playerScene.instantiate()
@@ -38,7 +45,7 @@ func _process(delta: float) -> void:
 			players.append(playerInstance)
 			get_tree().root.add_child(playerInstance)
 			
-	if Input.is_action_just_pressed("Reload"):
+	if Input.is_action_just_pressed("Reload") and started:
 		for player in players:
 			if is_instance_valid(player):
 				player.queue_free()
@@ -113,6 +120,10 @@ func _on_quit_button_pressed() -> void:
 
 
 func _on_start_button_pressed() -> void:
+	started = true
+	if players.size() > 0:
+		for player in players:
+			player.commandInput.show()
 	mainMenu.hide()
 	get_tree().paused = false
 
@@ -126,7 +137,11 @@ func _on_settings_button_pressed() -> void:
 		settingsShown = true
 
 
-func _on_training_button_pressed() -> void:
+func _on_debug_button_pressed() -> void:
+	started = true
+	if players.size() > 0:
+		for player in players:
+			player.commandInput.show()
 	mainMenu.hide()
 	get_tree().paused = false
 	debugging = true
