@@ -1,18 +1,21 @@
 extends RigidBody2D
 
-
-# Called when the node enters the scene tree for the first time.
-func _ready() -> void:
-	pass # Replace with function body.
-
-
-# Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	pass
+	linear_velocity = linear_velocity * 0.99965
+	angular_velocity += angular_velocity * -0.01 * (60 * delta)
+	
+	if cos(rotation) > 0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) > 0.1 + linear_velocity.normalized().angle():
+			angular_velocity -= 0.05 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) < -0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) < -0.1 + linear_velocity.normalized().angle():
+			angular_velocity -= 0.05 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) > 0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) < -0.1 + linear_velocity.normalized().angle():
+			angular_velocity += 0.05 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) < -0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) > 0.1 + linear_velocity.normalized().angle():
+			angular_velocity += 0.05 * (linear_velocity.length() / 6144) * (60 * delta)
 
-func _on_area_2d_body_entered(body: Node2D) -> void:
+func _on_area_2d_body_entered() -> void:
 	queue_free()
-
-func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	if linear_velocity.length() > 0:
-		rotation = linear_velocity.angle()

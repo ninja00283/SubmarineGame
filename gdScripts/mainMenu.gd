@@ -42,9 +42,6 @@ func _ready() -> void:
 	for lineEdit in lineEdits:
 		lineEdit["Node"].focus_exited.connect(Callable(_on_focus_exited).bind(lineEdit["Node"]))
 
-func _process(delta: float) -> void:
-	pass
-
 func _on_focus_entered(lineEdit):
 	var prevKey = key
 	lineEdit.text = "Press key..."

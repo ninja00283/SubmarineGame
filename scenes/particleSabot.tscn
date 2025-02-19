@@ -4,16 +4,14 @@
 [ext_resource type="Texture2D" uid="uid://c3d4rcil8wduk" path="res://assets/APDSSabot.png" id="1_vfs5m"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4dsq"]
-bounce = 0.4
+friction = 0.0
 
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 8
 collision_mask = 8
-mass = 100.0
+mass = 1000.0
 physics_material_override = SubResource("PhysicsMaterial_i4dsq")
-gravity_scale = 500.0
-continuous_cd = 2
-linear_damp = 0.4
+gravity_scale = 10000.0
 script = ExtResource("1_mc42d")
 
 [node name="Sabot" type="Sprite2D" parent="."]

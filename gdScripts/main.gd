@@ -36,7 +36,7 @@ func _process(delta: float) -> void:
 			if settingsShown:
 				player.commandInput.hide()
 			else:
-				player.commandInput.show()
+				player.commandInput.show()   
 	if debugging:
 		if Input.is_action_just_pressed("MMB"):
 			var playerInstance = playerScene.instantiate()
@@ -111,13 +111,13 @@ func positionCamera(pos):
 	cameraZoomTimer.start()
 
 func _on_camera_zoom_timer_timeout() -> void:
+	await get_tree().create_timer(0.6).timeout
 	camera2D.position = Vector2(0, 0)
 	animationPlayer.play("cameraZoomPost")
 
 func _on_quit_button_pressed() -> void:
 	mainMenu.hide()
 	get_tree().quit()
-
 
 func _on_start_button_pressed() -> void:
 	started = true

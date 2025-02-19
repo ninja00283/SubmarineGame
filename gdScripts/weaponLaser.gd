@@ -15,14 +15,16 @@ extends Node2D
 @export var frequency: float = 20
 @export var minBrightness: float = 0.8
 @export var maxBrightness: float = 1.2
+@export var amountRatio: float
 
 var player
 var castPoint
 var collisionPoint
-var angle = 0
+var amountRatioMultiplier: float = 0
+var angle: float = 0
 var currentHitObject = null
-var damageTimer = 0.0
-var damageRate = 1
+var damageTimer: float = 0.0
+var damageRate: float = 1
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -30,6 +32,12 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	var hitObject = rayCast2D.get_collider()
+	if hitObject != null and "HP" in hitObject:
+		amountRatioMultiplier = 1
+	else:
+		amountRatioMultiplier = 0.25
+	gpupHit.amount_ratio = amountRatio * amountRatioMultiplier
 	var sineValue = amplitude * sin(frequency * Time.get_ticks_usec() / 1000000.0)
 	var brightness = lerp(minBrightness, maxBrightness, (sineValue + 1) / 2)
 	line2D.modulate = Color(brightness, brightness, brightness)
@@ -40,7 +48,6 @@ func _process(delta: float) -> void:
 		collisionPoint = rayCast2D.get_collision_point()
 		laserHit.position = to_local(collisionPoint)
 		line2D.points[1] = to_local(collisionPoint)
-		var hitObject = rayCast2D.get_collider()
 		if hitObject != null and "HP" in hitObject:
 			currentHitObject = hitObject
 		else:

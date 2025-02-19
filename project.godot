@@ -26,6 +26,14 @@ window/vsync/vsync_mode=0
 
 project/assembly_name="Submarine Game"
 
+[editor]
+
+naming/node_name_casing=1
+naming/default_signal_callback_name="_on{NodeName}{SignalName}"
+naming/default_signal_callback_to_self_name="_on{SignalName}"
+naming/scene_name_casing=1
+naming/script_name_casing=1
+
 [input]
 
 MorseInput={

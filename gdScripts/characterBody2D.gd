@@ -15,33 +15,32 @@ extends CharacterBody2D
 @onready var laserScene = preload("res://scenes/weaponLaser.tscn")
 @onready var railgunScene = preload("res://scenes/weaponRailgun.tscn")
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
-@onready var bombScene = preload("res://scenes/weaponbomb.tscn")
+@onready var bombScene = preload("res://scenes/weaponBomb.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
 @onready var animPl: AnimationPlayer = $AnimationPlayer
 @onready var deathShader: MeshInstance2D = $deathShader
 
-var key
-var shaderMaterial = preload("res://assets/weaponBomb.tres")
-var deathShaderShowDur = Time.get_ticks_msec()
-var deathShaderRan = false
-var commands = ["move", "fire", "damage"]
-var ammo = ["torpedo", "laser", "railgun", "bomb"]
-var xDrag = 0.02
-var yDrag = 0.02
-var HP = 100.0
-var deathDelayValid = true
-var attackDamage = 0.0
-var shakeDur: float = INF
+@export var shaking: bool = false
 @export var shakeScale: float = 0.0
+
+var shaderMaterial: ShaderMaterial = preload("res://assets/weaponBomb.tres")
+var deathShaderShowDur: float = Time.get_ticks_msec()
+var deathShaderRan: bool = false
+var commands: Array = ["move", "fire", "damage"]
+var ammo: Array = ["torpedo", "laser", "railgun", "bomb"]
+var xDrag: float = 0.02
+var yDrag: float = 0.02
+var HP: float = 100.0
+var deathDelayValid: bool = true
+var attackDamage: float = 0.0
 var amplitude: float = 1
 var frequency: float = 15
 var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
 var originalPosition: Vector2
-var shaking: bool = false
-var root 
+var root
 
 func _physics_process(delta: float) -> void:
 	originalPosition = position
@@ -58,7 +57,7 @@ func _physics_process(delta: float) -> void:
 				break
 		commandInterpret(commandInput, self, event)
 
-	if HP <= 0 and deathDelayValid == true and deathDelay.is_stopped():
+	if HP <= 0 and deathDelayValid == true:
 		attackDamageLabel.hide()
 		collision_layer = 1 << 19
 		collision_mask = 1 << 17
@@ -96,11 +95,11 @@ func _physics_process(delta: float) -> void:
 		var newgpup2D5 = gpup2D5.duplicate() as GPUParticles2D
 		var colPos = colInfo.get_position()
 		newgpup2D4.global_position = colPos
-		newgpup2D4.rotation_degrees = rad_to_deg(colInfo.get_normal().angle()) - 90
+		newgpup2D4.rotation = colInfo.get_normal().angle() - 90
 		newgpup2D4.amount_ratio = particleRatio
 		newgpup2D4.emitting = true
 		newgpup2D5.global_position = colPos
-		newgpup2D5.rotation_degrees = rad_to_deg(colInfo.get_normal().angle()) + 90
+		newgpup2D5.rotation = colInfo.get_normal().angle() + 90
 		newgpup2D5.amount_ratio = particleRatio
 		newgpup2D5.emitting = true
 		get_tree().root.add_child(newgpup2D4)
@@ -113,15 +112,11 @@ func _physics_process(delta: float) -> void:
 		)
 
 
-func commandInterpret(input: LineEdit, characterBody: CharacterBody2D, event: InputEvent):
-	key = char(event.unicode)
-	print("KEY: ", key)
+func commandInterpret(input, characterBody, event):
+	var key = char(event.unicode)
 	
 	if str(input.text).ends_with(key) and key != "":
 		input.text = str(input.text).erase(str(input.text).length()-1)
-	else:
-		print("String does not end with: ", key)
-	print("Input: ", input.text)
 	var text = input.text.to_lower().strip_edges()
 	var parts = text.split(" ")
 	if parts.size() > 0:
@@ -163,7 +158,6 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 	if parts.size() >= 3:
 		var ammoType = parts[1].to_lower()
 		var angle = parts[2]
-		
 		if angle.is_valid_float():
 			var angleDegreesInput = angle.to_int()
 			if ammoType.is_valid_float():
@@ -180,10 +174,9 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				return
 			if ammoType == "torpedo":
 				var torpedo = torpedoScene.instantiate()
-				torpedo.rotation = deg_to_rad(angleDegreesInput)
+				torpedo.rotation_degrees = angleDegreesInput
 				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
-				var velocity = direction * 324
-				torpedo.linear_velocity = velocity
+				torpedo.linear_velocity = direction * 324
 				var offset = direction * 100
 				torpedo.position = characterBody.position + offset
 				get_tree().root.add_child(torpedo)
@@ -199,21 +192,26 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				get_tree().root.add_child(laser)
 				laser.player = self
 				laser.reparent(self)
-				
 			elif ammoType == "railgun":
 				var sabotT = sabotScene.instantiate()
 				var sabotB = sabotScene.instantiate()
 				var railgun = railgunScene.instantiate()
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
-				var offset = direction * 100
-				var velocity = direction * 6144
-				railgun.linear_velocity = velocity
+				var offset = direction * 250
+				railgun.linear_velocity = direction * 6144
 				railgun.position = characterBody.position + offset
-				sabotT.position = railgun.position - Vector2(3.84, 12.8)
-				sabotT.linear_velocity = velocity + Vector2(-1200, 1600)
-				sabotB.position = railgun.position - Vector2(3.84, -12.8)
-				sabotB.linear_velocity = velocity + Vector2(-1200, -1600)
+				
+				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)
+				sabotT.position = railgun.position + sabotOffsetT
+				sabotT.linear_velocity = railgun.linear_velocity + Vector2(-1200, 1200).rotated(railgun.rotation)
+				sabotT.rotation = railgun.rotation
+				
+				var sabotOffsetB = Vector2(-3.84, -12.8).rotated(railgun.rotation)
+				sabotB.position = railgun.position + sabotOffsetB
+				sabotB.linear_velocity = railgun.linear_velocity + Vector2(-1200, -1200).rotated(railgun.rotation)
+				sabotB.rotation = railgun.rotation
+				
 				get_tree().root.add_child(railgun)
 				get_tree().root.add_child(sabotT)
 				get_tree().root.add_child(sabotB)
@@ -226,8 +224,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				bomb.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(bomb.rotation), sin(bomb.rotation))
 				var offset = direction * 150
-				var velocity = direction * 1536
-				bomb.linear_velocity = velocity
+				bomb.linear_velocity = direction * 1536
 				bomb.position = characterBody.position + offset
 				bomb.player = self
 				get_tree().root.add_child(bomb)
@@ -272,7 +269,7 @@ func _on_queue_free_delay_timeout() -> void:
 
 func _explodeDelayEnd() -> void:
 	var bodies = explosionRadii.get_overlapping_bodies()
-	var distances = []
+	var rangeToTargets = []
 	
 	for body in bodies:
 		if body != self and "HP" in body:
@@ -286,38 +283,32 @@ func _explodeDelayEnd() -> void:
 					newRaycast.queue_free()
 					var relativePos = to_local(body.global_position)
 					var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-					distances.append({"body": body, "distance": distance})
+					rangeToTargets.append({"body": body, "distance": distance})
 				else:
 					print("Target obstructed: ", body)
 			else:
 				newRaycast.queue_free()
 	
-	distances.sort_custom(func(a, b):
+	rangeToTargets.sort_custom(func(a, b):
 		return a["distance"] < b["distance"]
 	)
 	
-	var maxDamageBodies = min(2, distances.size())
+	var maxDamageBodies = min(2, rangeToTargets.size())
 	for i in range(maxDamageBodies):
-		var target = distances[i]["body"]
-		var distance = distances[i]["distance"]
+		var target = rangeToTargets[i]["body"]
+		var distance = rangeToTargets[i]["distance"]
 		var damage = 24000 / (distance + 1) * pow(distance / (distance + 12), 6)
 		target.HP -= damage
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
 
 		
 func attackDamageF(damage, reset):
-	var attackDamageR = int(attackDamage)
 	if not reset:
 		attackDamage += damage
 	else:
-		attackDamageLabel.text = str("Attack damage: ", attackDamageR)
+		attackDamageLabel.text = str("Attack damage: ", int(attackDamage))
 		print("Attack damage: ", attackDamage)
 		attackDamage = 0.0
-
-func startShake():
-	shaking = true
-	await get_tree().create_timer(shakeDur).timeout
-	shaking = false
 
 func deathShaderAnimS():
 	get_viewport().use_hdr_2d = false

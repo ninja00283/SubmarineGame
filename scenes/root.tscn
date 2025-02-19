@@ -65,7 +65,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_d5v6b"]
 resource_name = "cameraZoom"
-length = 5.0
+length = 4.4
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -73,7 +73,7 @@ tracks/0/path = NodePath("Camera2D:zoom")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 5),
+"times": PackedFloat32Array(0, 4.4),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [Vector2(0.5, 0.5), Vector2(0.55, 0.55)]
@@ -81,7 +81,7 @@ tracks/0/keys = {
 
 [sub_resource type="Animation" id="Animation_k5d0p"]
 resource_name = "cameraZoomPost"
-length = 3.5
+length = 3.2
 step = 0.05
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -90,7 +90,7 @@ tracks/0/path = NodePath("Camera2D:zoom")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.4, 3.5),
+"times": PackedFloat32Array(0, 0.4, 3.2),
 "transitions": PackedFloat32Array(0.2, 0.2, 1.2),
 "update": 0,
 "values": [Vector2(0.55, 0.55), Vector2(0.495, 0.495), Vector2(0.5, 0.5)]
@@ -189,7 +189,7 @@ libraries = {
 }
 
 [node name="cameraZoomTimer" type="Timer" parent="."]
-wait_time = 6.0
+wait_time = 4.4
 one_shot = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]

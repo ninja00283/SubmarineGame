@@ -26,11 +26,11 @@ var player
 var damage
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
 var target = null
-var distance = 0
-var HP = 10
-var gpup2D6C = false
-var exploded = false
-var HEATExploded = false
+var rangeToTarget: float = 0
+var HP: float = 10
+var gpup2D6C: bool = false
+var exploded: bool = false
+var HEATExploded: bool = false
 
 func _ready() -> void:
 	armingDelay.start()
@@ -62,7 +62,7 @@ func _on_area_2d_body_entered(body):
 func _on_detection_radii_body_entered(body):
 	if not is_instance_valid(armingDelay):
 		var relativePos = to_local(body.global_position)
-		distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
+		rangeToTarget = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
 		target = body
 		detectionRadiiDelay.start()
 
@@ -108,14 +108,14 @@ func explode():
 				if body != self and "HP" in body:
 					var relativePos = to_local(body.global_position)
 					var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-					var damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
+					damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
 					body.HP -= damage
 					if damage <= 0:
 						player.attackDamageF(0, true)
 					else:
 						player.attackDamageF(damage, false)
 			else:
-				print("Target obstructed")
+				print("Target(",body,") obstructed")
 
 
 			
