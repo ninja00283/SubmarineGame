@@ -245,7 +245,7 @@ tracks/2/keys = {
 "method": &"deathShaderAnimP"
 }, {
 "args": [],
-"method": &"_on_death_delay_timeout"
+"method": &"postDeath"
 }]
 }
 tracks/3/type = "value"
@@ -364,12 +364,8 @@ shape = SubResource("RectangleShape2D_kimm8")
 scale = Vector2(100, 100)
 mesh = SubResource("QuadMesh_k6w4n")
 
-[node name="deathDelay" type="Timer" parent="."]
-wait_time = 0.1
-one_shot = true
-
 [node name="queueFreeDelay" type="Timer" parent="."]
-wait_time = 10.0
+wait_time = 5.0
 
 [node name="explodeDelay" type="Timer" parent="."]
 wait_time = 0.1
@@ -378,7 +374,7 @@ one_shot = true
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
 self_modulate = Color(1, 0.825, 0.687, 1)
 emitting = false
-amount = 256
+amount = 128
 process_material = ExtResource("3_y6a5f")
 texture = ExtResource("4_20753")
 lifetime = 4.5
@@ -391,7 +387,7 @@ trail_section_subdivisions = 1
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 self_modulate = Color(4, 0.8, 0.6, 1)
 emitting = false
-amount = 64
+amount = 32
 process_material = SubResource("ParticleProcessMaterial_alnvb")
 lifetime = 2.0
 one_shot = true
@@ -483,6 +479,5 @@ material = SubResource("ShaderMaterial_ex233")
 scale = Vector2(99999, 99999)
 mesh = SubResource("QuadMesh_h8co6")
 
-[connection signal="timeout" from="deathDelay" to="." method="_on_death_delay_timeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
 [connection signal="timeout" from="explodeDelay" to="." method="_explodeDelayEnd"]

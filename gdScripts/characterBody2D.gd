@@ -1,6 +1,5 @@
 extends CharacterBody2D
 
-@onready var deathDelay: Timer = $deathDelay
 @onready var queueFreeDelay: Timer = $queueFreeDelay
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
@@ -33,7 +32,7 @@ var ammo: Array = ["torpedo", "laser", "railgun", "bomb"]
 var xDrag: float = 0.02
 var yDrag: float = 0.02
 var HP: float = 100.0
-var deathDelayValid: bool = true
+var alive: bool = true
 var attackDamage: float = 0.0
 var amplitude: float = 1
 var frequency: float = 15
@@ -43,7 +42,8 @@ var originalPosition: Vector2
 var root
 
 func _physics_process(delta: float) -> void:
-	originalPosition = position
+	if not shaking:
+		originalPosition = position
 	if HP > 0:
 		meshIn2D.set_self_modulate(Color(1+0.2-(HP/100),HP/100+0.2,0,1))
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
@@ -57,7 +57,9 @@ func _physics_process(delta: float) -> void:
 				break
 		commandInterpret(commandInput, self, event)
 
-	if HP <= 0 and deathDelayValid == true:
+	if HP <= 0 and alive == true:
+		if root.players.find(self) != -1:
+			root.players.remove_at(root.players.find(self))
 		attackDamageLabel.hide()
 		collision_layer = 1 << 19
 		collision_mask = 1 << 17
@@ -66,7 +68,7 @@ func _physics_process(delta: float) -> void:
 		commandInput.hide()
 		root.positionCamera(position)
 		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
-		deathDelayValid = false
+		alive = false
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	if not is_on_floor():
@@ -249,7 +251,7 @@ func damageCommand(parts: Array, characterBody: CharacterBody2D):
 	else:
 		print("The damage command is only available in debugging mode")
 
-func _on_death_delay_timeout() -> void:
+func postDeath() -> void:
 	animPl.stop()
 	animPl.play("postDeath")
 	explodeDelay.start()
@@ -262,7 +264,6 @@ func _on_death_delay_timeout() -> void:
 	gpup2D2.emitting = true
 	gpup2D3.emitting = true
 	queueFreeDelay.start()
-	deathDelay.queue_free()
 
 func _on_queue_free_delay_timeout() -> void:
 	queue_free()

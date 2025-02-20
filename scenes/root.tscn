@@ -195,6 +195,19 @@ one_shot = true
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_gb58l")
 
+[node name="UI" type="Node2D" parent="."]
+
+[node name="endTextLabel" type="Label" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -813.5
+offset_top = -972.0
+offset_right = 813.5
+offset_bottom = -846.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 92
+
 [node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
 

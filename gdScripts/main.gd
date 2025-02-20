@@ -7,30 +7,38 @@ extends Node2D
 @onready var cameraZoomTimer: Timer = $cameraZoomTimer
 @onready var mainMenu: Node2D = $MainMenu
 @onready var settings: Node2D = $MainMenu/Settings
+@onready var endTextLabel: Label = $UI/endTextLabel
 
-var started = false
-var settingsShown = false
-var spawnFrameCounter = 0.0
-var spawnRate = 0.025
-var holdTime = 0.5
-var holdCounter = 0.0
-var canSpawn = false
-var isSpawning = false
-var debugging = false
-var spawnPos = [Vector2(800, 0), Vector2(-800, 0)]
-var players = []
-var objects = []
+var gameEnded: bool = false
+var started: bool = false
+var settingsShown: bool = false
+var spawnFrameCounter: float = 0.0
+var spawnRate: float = 0.025
+var holdTime: float = 0.5
+var holdCounter: float = 0.0
+var canSpawn: bool = false
+var isSpawning: bool = false
+var debugging: bool = false
+var startPlayerCount: int = 2
+var spawnPos: Array = [Vector2(800, 0), Vector2(-800, 0)]
+var players: Array = []
+var objects: Array = []
 
 func _ready() -> void:
-	for pos in spawnPos:
+	for player in range(startPlayerCount):
+		var arrayIndex = randi_range(0, spawnPos.size() - 1)
+		var pos = spawnPos[arrayIndex]
 		var playerInstance = playerScene.instantiate()
 		playerInstance.position = pos
 		playerInstance.root = self
 		players.append(playerInstance)
 		add_child(playerInstance)
+		spawnPos.remove_at(arrayIndex)
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
+	if not debugging and players.size() < 2 and not gameEnded:
+		gameWon()
 	if players.size() > 0 and not started:
 		for player in players:
 			if settingsShown:
@@ -145,3 +153,23 @@ func _on_debug_button_pressed() -> void:
 	mainMenu.hide()
 	get_tree().paused = false
 	debugging = true
+
+
+func gameWon() -> void:
+	gameEnded = true
+	await get_tree().create_timer(5).timeout
+	if players.size() > 0:
+		print("We have a winner!: ", players[0])
+		endTextLabel.text = str("We have a winner!: ", players[0])
+	else:
+		print("No players lived to tell the tale.")
+		endTextLabel.text = str("No players lived to tell the tale.")
+	await get_tree().create_timer(5.5).timeout
+	for player in players:
+		if is_instance_valid(player):
+			player.queue_free()
+	for object in objects:
+		if is_instance_valid(object):
+			object.queue_free()
+	get_tree().reload_current_scene()
+	
