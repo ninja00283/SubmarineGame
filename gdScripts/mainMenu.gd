@@ -25,7 +25,7 @@ func _input(event: InputEvent) -> void:
 				if lineEdit["Node"].has_focus():
 					lineEdit["Node"].release_focus()
 					lineEdit["Node"].text = ""
-					lineEdit["Node"].placeholder_text = key
+					lineEdit["Node"].placeholder_text = str(key.split(" ")[0], key.split(" ")[1])
 					InputMap.action_erase_event(lineEdit["Keybind"], InputMap.action_get_events(lineEdit["Keybind"])[0])
 					InputMap.action_add_event(lineEdit["Keybind"], event)
 					listening = false
@@ -35,7 +35,7 @@ func _ready() -> void:
 	for lineEdit in lineEdits:
 		var inputEvents = InputMap.action_get_events(lineEdit["Keybind"])
 		if inputEvents.size() > 0:
-			var keyText = inputEvents[0].as_text().split(" ")[0]
+			var keyText = str(inputEvents[0].as_text().split(" ")[0], inputEvents[0].as_text().split(" ")[1])
 			lineEdit["Node"].placeholder_text = keyText
 	for lineEdit in lineEdits:
 		lineEdit["Node"].focus_entered.connect(Callable(_on_focus_entered).bind(lineEdit["Node"]))

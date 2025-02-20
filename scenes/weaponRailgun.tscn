@@ -111,9 +111,9 @@ scale = Vector2(0.09, 0.09)
 polygon = PackedVector2Array(-384, 128, 128, 128, 384, 0, 128, -128, -384, -128)
 
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
-position = Vector2(-48, 0)
+position = Vector2(-96, 0)
 emitting = false
-amount = 256
+amount = 64
 process_material = SubResource("ParticleProcessMaterial_qyavq")
 texture = ExtResource("3_22bnv")
 lifetime = 0.5
@@ -123,7 +123,7 @@ explosiveness = 0.95
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 emitting = false
-amount = 512
+amount = 128
 process_material = SubResource("ParticleProcessMaterial_crat7")
 texture = ExtResource("3_22bnv")
 lifetime = 2.0
