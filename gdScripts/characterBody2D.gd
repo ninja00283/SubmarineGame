@@ -4,6 +4,8 @@ extends CharacterBody2D
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
+@onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
+@onready var gpup2D5: GPUParticles2D = $GPUParticles2D5
 @onready var collider2D: CollisionShape2D = $CollisionShape2D
 @onready var sprite2D: Sprite2D = $Sprite2D
 @onready var meshIn2D: MeshInstance2D = $MeshInstance2D
@@ -25,7 +27,6 @@ extends CharacterBody2D
 var shaderMaterial: ShaderMaterial = preload("res://assets/weaponBomb.tres")
 var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
-var preloadArray: Array = []
 var commands: Array = ["move", "fire", "damage"]
 var ammo: Array = ["torpedo", "laser", "railgun", "bomb"]
 var xDrag: float = 0.02
@@ -87,6 +88,24 @@ func _physics_process(delta: float) -> void:
 			velocity = remainingVelo.bounce(colInfo.get_normal())
 		else:
 			velocity = velocity.bounce(colInfo.get_normal()) * 0.9
+			
+		var velocityLen = velocity.length()
+		var particleRatio = 1.0
+		if velocityLen < 1600.0:
+			particleRatio = velocityLen / 1600.0
+		var newgpup2D4 = gpup2D4.duplicate() as GPUParticles2D
+		var newgpup2D5 = gpup2D5.duplicate() as GPUParticles2D
+		var colPos = colInfo.get_position()
+		newgpup2D4.global_position = colPos
+		newgpup2D4.rotation = colInfo.get_normal().angle() - 90
+		newgpup2D4.amount_ratio = particleRatio
+		newgpup2D4.emitting = true
+		newgpup2D5.global_position = colPos
+		newgpup2D5.rotation = colInfo.get_normal().angle() + 90
+		newgpup2D5.amount_ratio = particleRatio
+		newgpup2D5.emitting = true
+		get_tree().root.add_child(newgpup2D4)
+		get_tree().root.add_child(newgpup2D5)
 		
 	if shaking:
 		position = originalPosition + Vector2(
@@ -242,6 +261,7 @@ func postDeath() -> void:
 	sprite2D.hide()
 	meshIn2D.hide()
 	gpup2D1.emitting = true
+	gpup2D2.emitting = true
 	gpup2D3.emitting = true
 	queueFreeDelay.start()
 
@@ -302,10 +322,3 @@ func deathShaderAnimP():
 	deathShader.hide()
 	deathShaderRan = true
 	get_tree().paused = false
-
-func HTMLPreload():
-	moveCommand(["Test", str(180), str(2000)], self)
-	fireCommand(["Test", str(1), str(20)], self)
-	fireCommand(["Test", str(2), str(0)], self)
-	fireCommand(["Test", str(3), str(340)], self)
-	fireCommand(["Test", str(4), str(320)], self)

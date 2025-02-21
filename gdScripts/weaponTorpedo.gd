@@ -21,7 +21,6 @@ extends RigidBody2D
 @onready var heat: Area2D = $HEAT
 @onready var attackDamageDelay: Timer = $attackDamageDelay
 @onready var inExplosionRadii: RayCast2D = $inExplosionRadii
-@onready var subEmitterTimer: Timer = $subEmitterTimer
 
 var player
 var damage
@@ -78,7 +77,6 @@ func hit():
 	gpup2D4.emitting = true
 	gpup2D5.emitting = true
 	gpup2D6.emitting = true
-	subEmitterTimer.start()
 	gpup2D1.emitting = false
 	gpup2D2.emitting = false
 	gpup2D3.emitting = false
@@ -137,6 +135,3 @@ func _queueFreeDelayTimeout() -> void:
 
 func _onAttackDamageDelayTimeout() -> void:
 	player.attackDamageF(0, true)
-
-func _onSubEmitterTimerTimeout() -> void:
-	gpup2D7.emitting = true

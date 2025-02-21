@@ -112,10 +112,11 @@ reflected_light_source = 1
 glow_enabled = true
 glow_levels/7 = 0.5
 glow_normalized = true
-glow_intensity = 0.9
+glow_intensity = 1.4
 glow_strength = 0.6
 glow_blend_mode = 0
-glow_hdr_threshold = 0.4
+glow_hdr_threshold = 0.1
+glow_hdr_scale = 1.0
 adjustment_enabled = true
 adjustment_brightness = 0.6
 
@@ -252,11 +253,6 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Quit"
 
-[node name="preloadButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 112
-text = "HTML5 Preload"
-
 [node name="Settings" type="Node2D" parent="MainMenu"]
 visible = false
 script = ExtResource("2_2wqq8")
@@ -361,4 +357,3 @@ virtual_keyboard_enabled = false
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_debug_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/settingsButton" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]
-[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/preloadButton" to="." method="_onPreloadButtonPressed"]

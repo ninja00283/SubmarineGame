@@ -101,6 +101,18 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 			players.append(playerInstance)
 			get_tree().root.add_child(playerInstance)
 
+
+func _borderHit(body: Node2D) -> void:
+	if "velocity" in body:
+		var velocityMagnitude = body.velocity.length()
+		var startPosition = 0.0
+		if velocityMagnitude < 400.0:
+			startPosition = lerp(0.2,0.0,clamp(velocityMagnitude/400.0,0.0,1.0))
+		animationPlayer.stop()
+		animationPlayer.play("borderHit")
+		animationPlayer.seek(startPosition, true)
+		print("Body collided with world border. Velocity: ", velocityMagnitude, " Start position: ", startPosition)
+
 func positionCamera(pos):
 	camera2D.position = pos
 	animationPlayer.play("cameraZoom")
@@ -122,7 +134,6 @@ func _on_start_button_pressed() -> void:
 			player.commandInput.show()
 	mainMenu.hide()
 	get_tree().paused = false
-	debugging = false
 
 
 func _on_settings_button_pressed() -> void:
@@ -162,23 +173,3 @@ func gameWon() -> void:
 			object.queue_free()
 	get_tree().reload_current_scene()
 	
-
-
-func _onPreloadButtonPressed() -> void:
-	mainMenu.hide()
-	get_tree().paused = false
-	started = true
-	debugging = true
-	players[0].HTMLPreload()
-	players[1].damageCommand(["Test", str(100)], players[1])
-	Engine.time_scale = 20
-	await get_tree().create_timer(10).timeout
-	for player in players:
-		if is_instance_valid(player):
-			player.queue_free()
-	for object in objects:
-		if is_instance_valid(object):
-			object.queue_free()
-	await get_tree().create_timer(1).timeout
-	get_tree().reload_current_scene()
-	Engine.time_scale = 1

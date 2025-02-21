@@ -12,7 +12,7 @@ config_version=5
 
 config/name="Submarine Game"
 run/main_scene="res://scenes/root.tscn"
-config/features=PackedStringArray("4.3", "Forward Plus")
+config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [display]
@@ -74,6 +74,5 @@ MMB={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=0
-renderer/rendering_method="gl_compatibility"
-renderer/rendering_method.mobile="gl_compatibility"
 textures/vram_compression/import_etc2_astc=true
+viewport/hdr_2d=true
