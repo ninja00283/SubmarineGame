@@ -1,4 +1,4 @@
-[gd_scene load_steps=21 format=3 uid="uid://bmi8j7ndhedm1"]
+[gd_scene load_steps=19 format=3 uid="uid://bmi8j7ndhedm1"]
 
 [ext_resource type="Script" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
 [ext_resource type="Texture2D" uid="uid://gnj4iibriqh" path="res://assets/APDSCore.png" id="2_puneq"]
@@ -53,42 +53,35 @@ color_ramp = SubResource("GradientTexture1D_jr8c8")
 alpha_curve = SubResource("CurveTexture_t2626")
 emission_curve = SubResource("CurveTexture_di43d")
 
-[sub_resource type="Gradient" id="Gradient_op3rw"]
+[sub_resource type="Gradient" id="Gradient_26jxe"]
 offsets = PackedFloat32Array(0, 0.276451, 0.566553, 1)
 colors = PackedColorArray(100, 80, 40, 0.9, 67.9775, 28.764, 14.382, 0.964045, 50, 15, 2, 1, 20, 5, 1, 0.995)
 
-[sub_resource type="GradientTexture1D" id="GradientTexture1D_f53rv"]
-gradient = SubResource("Gradient_op3rw")
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_fa1yn"]
+gradient = SubResource("Gradient_26jxe")
+use_hdr = true
 
-[sub_resource type="Curve" id="Curve_ukglp"]
-_data = [Vector2(1, 1), 0.0, 0.0, 0, 0]
-point_count = 1
-
-[sub_resource type="CurveTexture" id="CurveTexture_ctbsr"]
-curve = SubResource("Curve_ukglp")
-
-[sub_resource type="Curve" id="Curve_3e7lo"]
+[sub_resource type="Curve" id="Curve_mjor0"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0186916, 1), 0.0, 0.0, 0, 0, Vector2(0.847352, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
 point_count = 4
 
-[sub_resource type="CurveTexture" id="CurveTexture_5wmfh"]
-curve = SubResource("Curve_3e7lo")
+[sub_resource type="CurveTexture" id="CurveTexture_hxmnt"]
+curve = SubResource("Curve_mjor0")
 
-[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_crat7"]
-lifetime_randomness = 1.0
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_abu77"]
 particle_flag_align_y = true
 particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
-spread = 30.0
-initial_velocity_min = 3600.0
-initial_velocity_max = 12800.0
+spread = 12.0
+initial_velocity_min = 8192.0
+initial_velocity_max = 32768.0
 gravity = Vector3(0, 0, 0)
-damping_max = 0.04
+damping_min = 0.01
+damping_max = 0.02
 scale_min = 0.01
 scale_max = 0.01
-scale_curve = SubResource("CurveTexture_5wmfh")
-color_ramp = SubResource("GradientTexture1D_f53rv")
-emission_curve = SubResource("CurveTexture_ctbsr")
+scale_curve = SubResource("CurveTexture_hxmnt")
+color_ramp = SubResource("GradientTexture1D_fa1yn")
 turbulence_enabled = true
 
 [node name="RigidBody2D" type="RigidBody2D"]
@@ -113,26 +106,26 @@ polygon = PackedVector2Array(-384, 128, 128, 128, 384, 0, 128, -128, -384, -128)
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
 position = Vector2(-48, 0)
 emitting = false
-amount = 256
+amount = 128
 process_material = SubResource("ParticleProcessMaterial_qyavq")
 texture = ExtResource("3_22bnv")
-lifetime = 0.5
+lifetime = 0.4
 one_shot = true
 speed_scale = 1.5
-explosiveness = 0.95
+explosiveness = 1.0
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 emitting = false
-amount = 512
-process_material = SubResource("ParticleProcessMaterial_crat7")
+amount = 256
+process_material = SubResource("ParticleProcessMaterial_abu77")
 texture = ExtResource("3_22bnv")
-lifetime = 2.0
+lifetime = 0.9
 one_shot = true
 explosiveness = 1.0
 
 [node name="Area2D" type="Area2D" parent="."]
-collision_layer = 262144
-collision_mask = 262144
+collision_layer = 262152
+collision_mask = 262152
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
 position = Vector2(16.4, 0)
@@ -144,5 +137,6 @@ wait_time = 16.0
 one_shot = true
 autostart = true
 
-[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_entered" from="Area2D" to="." method="_onRigidBody2dBodyEntered"]
+[connection signal="body_exited" from="Area2D" to="." method="_onRigidBody2dBodyExited"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
