@@ -15,6 +15,10 @@ run/main_scene="res://scenes/root.tscn"
 config/features=PackedStringArray("4.3", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+GlobalTrail="*res://gdScripts/globalTrail.gd"
+
 [display]
 
 window/size/viewport_width=1920
@@ -69,7 +73,7 @@ MMB={
 
 [physics]
 
-2d/default_gravity=1.0
+2d/default_gravity=0.0
 
 [rendering]
 

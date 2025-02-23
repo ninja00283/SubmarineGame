@@ -1,4 +1,4 @@
-extends Node2D
+extends RigidBody2D
 
 @export var shakeScale: float = 10.0
 @export var shakeRotateScale: float = 1.0
@@ -31,6 +31,7 @@ func _ready() -> void:
 	flashAnim.stop()
 
 func _process(delta):
+	linear_velocity.y += 980 * delta
 	if not attackDmgSubm and shrapnelAmount <= 0:
 		attackDmgSubm = true
 		player.attackDamageF(0.0, true)

@@ -2,6 +2,11 @@ extends RigidBody2D
 
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
+@onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
+@onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
+@onready var gpup2D5: GPUParticles2D = $GPUParticles2D5
+@onready var gpup2D6: GPUParticles2D = $GPUParticles2D6
+
 @onready var area2D: Area2D = $Area2D
 @onready var APDSCore: Sprite2D = $APDSCore
 @onready var queueFreeDelay: Timer = $queueFreeDelay
@@ -20,27 +25,47 @@ var distanceTravelledVec2: Vector2 # Distance travelled between current and last
 var points: Array = [] # Stores all Vector2 positions that should be checked for collision
 var previousCollided: bool # Stores whether or not the previous check resulted in a collision
 
+func _ready() -> void:
+	GlobalTrail.addNode(self, 64)
+
 # These functions are above _process() because "entry" is used in the process function and needs to be determined first
 func _onRigidBody2dBodyEntered(body: Node) -> void:
-	print("Collision")
 	collision = true
 	entry = true
 	if "HP" in body:
-		body.HP -= 120
-		player.attackDamageF(120, false)
+		body.HP -= 150 * (linear_velocity.length() / 6144)
+		player.attackDamageF(150 * (linear_velocity.length() / 6144), false)
 
 
-func _onRigidBody2dBodyExited(body: Node) -> void:
+func _onRigidBody2dBodyExited(_body: Node) -> void:
 	entry = false
-	print("Exit")
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
-func _process(_delta: float) -> void:
+func _process(delta: float) -> void:
+	if linear_velocity.length() < 5121:
+		gpup2D1.amount_ratio = linear_velocity.length() / 5120
+		gpup2D2.amount_ratio = linear_velocity.length() / 5120
+		gpup2D3.amount_ratio = linear_velocity.length() / 5120
+		gpup2D4.amount_ratio = linear_velocity.length() / 5120
+		gpup2D5.amount_ratio = linear_velocity.length() / 5120
+	# Code block to rotate the core perpendicularly to velocity (faster rotation the closer to the normal angle)
+	if cos(rotation) > 0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) > 0.1 + linear_velocity.normalized().angle():
+			angular_velocity -= 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) < -0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) < -0.1 + linear_velocity.normalized().angle():
+			angular_velocity -= 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) > 0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) < -0.1 + linear_velocity.normalized().angle():
+			angular_velocity += 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) < -0.1 + linear_velocity.normalized().angle():
+		if sin(rotation) > 0.1 + linear_velocity.normalized().angle():
+			angular_velocity += 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
 	if collision:
 		attempts += 1
-	print("Attempt: ", attempts, " GPU1.pos: ", gpup2D1.position, " GPU2.pos: ", gpup2D2.position)
 	distanceTravelled = (global_position - previousPosition).length()
 	distanceTravelledVec2 = global_position - previousPosition
+	points.append(global_position)
 	for i in range(int(distanceTravelled / 4)):
 		points.append(previousPosition + i * (distanceTravelledVec2 / (distanceTravelled / 4)))
 	if collision:
@@ -51,10 +76,20 @@ func _process(_delta: float) -> void:
 			if get_world_2d().direct_space_state.intersect_point(query).is_empty():
 				if previousCollided:
 					gpup2D2.position = point
+					gpup2D3.position = point
+					gpup2D4.position = point
+					gpup2D5.position = point
 					if not entry and not gpup2D2Emitted:
 						gpup2D2.emitting = true
+						gpup2D3.emitting = true
+						gpup2D4.emitting = true
+						gpup2D5.emitting = true
 						gpup2D2Emitted = true
-					gpup2D2.reparent(get_tree().root)
+					if gpup2D2.get_parent() != get_tree().root:
+						gpup2D2.reparent(get_tree().root)
+						gpup2D3.reparent(get_tree().root)
+						gpup2D4.reparent(get_tree().root)
+						gpup2D5.reparent(get_tree().root)
 			elif not previousCollided:
 				gpup2D1.position = point
 				if attempts > 3 and not gpup2D1Emitted:
@@ -64,11 +99,11 @@ func _process(_delta: float) -> void:
 			previousCollided = !get_world_2d().direct_space_state.intersect_point(query).is_empty()
 
 	if global_position >= Vector2(2160, 3840) or global_position <= Vector2(-2160, -3840):
+		GlobalTrail.removeNode(self)
 		linear_velocity = Vector2(0, 0)
 		APDSCore.hide()
 		area2D.monitorable = false
 		area2D.monitoring = false
-		global_position = Vector2(0, 0)
 		if not attackDmgS:
 			player.attackDamageF(0.0, true)
 			attackDmgS = true
@@ -76,4 +111,7 @@ func _process(_delta: float) -> void:
 	previousPosition = global_position
 
 func _on_queue_free_delay_timeout() -> void:
+	if not attackDmgS:
+		player.attackDamageF(0.0, true)
+		attackDmgS = true
 	queue_free()

@@ -42,6 +42,9 @@ var originalPosition: Vector2
 var root
 
 func _physics_process(delta: float) -> void:
+	xDrag = (0.02 + 0.08 * (1 - HP / 100.0)) * delta
+	yDrag = (0.02 + 0.08 * (1 - HP / 100.0)) * delta
+	velocity.y += (5 + 40 * (1 - HP / 100.0)) * delta
 	if not shaking:
 		originalPosition = position
 	if HP > 0:
@@ -79,16 +82,15 @@ func _physics_process(delta: float) -> void:
 	if colInfo:
 		var collider = colInfo.get_collider()
 		if collider is CharacterBody2D and "HP" in collider:
-			var transferVelo = velocity * 0.5
-			var remainingVelo = velocity * 0.5
+			var transferVelo = velocity * 0.5 * (HP / 100)
+			var remainingVelo = velocity * 0.5 * (HP / 100)
 
-			collider.HP -= velocity.length() * 0.08
-			HP -= velocity.length() * 0.08
+			collider.HP -= velocity.length() * 0.08 * (HP / 100)
+			HP -= velocity.length() * 0.08 * (HP / 100)
 			collider.velocity += transferVelo
 			velocity = remainingVelo.bounce(colInfo.get_normal())
 		else:
-			velocity = velocity.bounce(colInfo.get_normal()) * 0.9
-			
+			velocity = velocity.bounce(colInfo.get_normal()) * 0.7 * (HP / 100)
 		var velocityLen = velocity.length()
 		var particleRatio = 1.0
 		if velocityLen < 1600.0:
@@ -200,18 +202,18 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				var railgun = railgunScene.instantiate()
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
-				var offset = direction * 250
+				var offset = direction * 100
 				railgun.linear_velocity = direction * 6144
 				railgun.position = characterBody.position + offset
 				
 				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)
 				sabotT.position = railgun.position + sabotOffsetT
-				sabotT.linear_velocity = railgun.linear_velocity + Vector2(-1200, 1200).rotated(railgun.rotation)
+				sabotT.linear_velocity = railgun.linear_velocity + Vector2(-2048, 1200).rotated(railgun.rotation)
 				sabotT.rotation = railgun.rotation
 				
 				var sabotOffsetB = Vector2(-3.84, -12.8).rotated(railgun.rotation)
 				sabotB.position = railgun.position + sabotOffsetB
-				sabotB.linear_velocity = railgun.linear_velocity + Vector2(-1200, -1200).rotated(railgun.rotation)
+				sabotB.linear_velocity = railgun.linear_velocity + Vector2(-2048, -1200).rotated(railgun.rotation)
 				sabotB.rotation = railgun.rotation
 				
 				get_tree().root.add_child(railgun)

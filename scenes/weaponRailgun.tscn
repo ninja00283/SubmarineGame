@@ -1,12 +1,13 @@
-[gd_scene load_steps=19 format=3 uid="uid://bmi8j7ndhedm1"]
+[gd_scene load_steps=24 format=3 uid="uid://bmi8j7ndhedm1"]
 
 [ext_resource type="Script" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
 [ext_resource type="Texture2D" uid="uid://gnj4iibriqh" path="res://assets/APDSCore.png" id="2_puneq"]
 [ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="3_22bnv"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_65cpx"]
-friction = 0.5
-bounce = 0.8
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_58c1u"]
+friction = 0.4
+rough = true
+bounce = 0.4
 
 [sub_resource type="Curve" id="Curve_s3tvk"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0436137, 1), 0.0, 0.0, 0, 0, Vector2(0.850467, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -69,12 +70,13 @@ point_count = 4
 curve = SubResource("Curve_mjor0")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_abu77"]
+lifetime_randomness = 1.0
 particle_flag_align_y = true
 particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
 spread = 12.0
-initial_velocity_min = 8192.0
-initial_velocity_max = 32768.0
+initial_velocity_min = 4096.0
+initial_velocity_max = 16384.0
 gravity = Vector3(0, 0, 0)
 damping_min = 0.01
 damping_max = 0.02
@@ -83,13 +85,51 @@ scale_max = 0.01
 scale_curve = SubResource("CurveTexture_hxmnt")
 color_ramp = SubResource("GradientTexture1D_fa1yn")
 turbulence_enabled = true
+turbulence_noise_strength = 0.3
+
+[sub_resource type="Gradient" id="Gradient_l3jdm"]
+offsets = PackedFloat32Array(0, 0.276451, 0.566553, 1)
+colors = PackedColorArray(100, 80, 40, 0.9, 67.9775, 28.764, 14.382, 0.964045, 50, 15, 2, 1, 20, 5, 1, 0.995)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_vpkk0"]
+gradient = SubResource("Gradient_l3jdm")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_cap4s"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0186916, 1), 0.0, 0.0, 0, 0, Vector2(0.847352, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_glung"]
+curve = SubResource("Curve_cap4s")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_0ymnk"]
+lifetime_randomness = 1.0
+particle_flag_align_y = true
+particle_flag_disable_z = true
+particle_flag_damping_as_friction = true
+spread = 30.0
+initial_velocity_min = 2048.0
+initial_velocity_max = 8192.0
+gravity = Vector3(0, 0, 0)
+damping_max = 0.02
+scale_min = 0.01
+scale_max = 0.01
+scale_curve = SubResource("CurveTexture_glung")
+color_ramp = SubResource("GradientTexture1D_vpkk0")
+turbulence_enabled = true
+turbulence_noise_strength = 0.3
 
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 0
 collision_mask = 0
-mass = 50.0
-physics_material_override = SubResource("PhysicsMaterial_65cpx")
-angular_damp = 1.0
+physics_material_override = SubResource("PhysicsMaterial_58c1u")
+center_of_mass_mode = 1
+center_of_mass = Vector2(-12, 0)
+linear_damp_mode = 1
+linear_damp = 0.02
+angular_damp_mode = 1
+angular_damp = 25.0
+constant_force = Vector2(0, 980)
 script = ExtResource("1_32tfa")
 
 [node name="APDSCore" type="Sprite2D" parent="."]
@@ -116,10 +156,37 @@ explosiveness = 1.0
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 emitting = false
-amount = 256
+amount = 64
 process_material = SubResource("ParticleProcessMaterial_abu77")
 texture = ExtResource("3_22bnv")
-lifetime = 0.9
+lifetime = 0.65
+one_shot = true
+explosiveness = 1.0
+
+[node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 64
+process_material = SubResource("ParticleProcessMaterial_abu77")
+texture = ExtResource("3_22bnv")
+lifetime = 0.55
+one_shot = true
+explosiveness = 1.0
+
+[node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 64
+process_material = SubResource("ParticleProcessMaterial_abu77")
+texture = ExtResource("3_22bnv")
+lifetime = 0.7
+one_shot = true
+explosiveness = 1.0
+
+[node name="GPUParticles2D5" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 128
+process_material = SubResource("ParticleProcessMaterial_0ymnk")
+texture = ExtResource("3_22bnv")
+lifetime = 0.4
 one_shot = true
 explosiveness = 1.0
 
