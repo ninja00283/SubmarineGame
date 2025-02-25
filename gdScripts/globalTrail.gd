@@ -8,13 +8,10 @@ func _process(_delta: float) -> void:
 		var data = nodes[node]
 		var line2D = data[0]
 		if line2D and node.global_position:
-			line2D.add_point(node.global_position)
-	for node in nodes.keys():
-		var data = nodes[node]
-		var line2D = data[0]
-		var segmentCount = data[1]
-		if line2D.points.size() > segmentCount:
-			line2D.remove_point(0)
+			var offsetPosition = node.global_position + (data[2].rotated(node.rotation))
+			line2D.add_point(offsetPosition)
+			while line2D.points.size() > data[1]:
+				line2D.remove_point(0)
 	for node in nodes.keys():
 		var data = nodes[node]
 		var line2D = data[0]
@@ -22,11 +19,13 @@ func _process(_delta: float) -> void:
 			nodes.erase(node)
 			line2D.queue_free()
 
-func addNode(node, segments: int):
+func addNode(node, segments: int, offset: Vector2):
 	var newLine2D = Line2D.new()
 	newLine2D.gradient = TRAIL
 	get_tree().root.add_child(newLine2D)
-	nodes[node] = [newLine2D, segments]
+	nodes[node] = [newLine2D, segments, offset]
+	var offsetPosition = node.global_position + (offset.rotated(node.rotation))
+	newLine2D.add_point(offsetPosition)
 
 func removeNode(node):
 	await get_tree().create_timer(1.0).timeout

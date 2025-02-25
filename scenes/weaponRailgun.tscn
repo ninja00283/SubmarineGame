@@ -122,14 +122,14 @@ turbulence_noise_strength = 0.3
 
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 0
-collision_mask = 8
+collision_mask = 0
 physics_material_override = SubResource("PhysicsMaterial_58c1u")
 center_of_mass_mode = 1
 continuous_cd = 2
 linear_damp_mode = 1
 linear_damp = 0.02
 angular_damp_mode = 1
-angular_damp = 25.0
+angular_damp = 20.0
 constant_force = Vector2(0, 980)
 script = ExtResource("1_32tfa")
 

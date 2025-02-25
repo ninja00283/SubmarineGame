@@ -26,7 +26,7 @@ var points: Array = [] # Stores all Vector2 positions that should be checked for
 var previousCollided: bool # Stores whether or not the previous check resulted in a collision
 
 func _ready() -> void:
-	GlobalTrail.addNode(self, 48)
+	GlobalTrail.addNode(self, 64, Vector2(-24, 0))
 
 # These functions are above _process() because "entry" is used in the process function and needs to be determined first
 func _onRigidBody2dBodyEntered(body: Node) -> void:
@@ -35,13 +35,13 @@ func _onRigidBody2dBodyEntered(body: Node) -> void:
 	entry = true
 	var directionAngle = Vector2(cos(rotation), sin(rotation)).angle()
 	print("Hit angle: ", rad_to_deg(abs(directionAngle - linear_velocity.angle())))
-	if abs(directionAngle - linear_velocity.angle()) < 0.6981:
+	var AoA = abs(directionAngle - linear_velocity.angle())
+	if AoA < 0.6981 or AoA < 3.8397 and AoA > PI:
 		if "HP" in body:
 			body.HP -= 150 * (linear_velocity.length() / 6144)
 			player.attackDamageF(150 * (linear_velocity.length() / 6144), false)
 	else:
-		pass
-
+		collision_mask = 1 << 4
 
 func _onRigidBody2dBodyExited(_body: Node) -> void:
 	var directionAngle = Vector2(cos(rotation), sin(rotation)).angle()
@@ -51,6 +51,7 @@ func _onRigidBody2dBodyExited(_body: Node) -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	print(rotation_degrees)
 	if queueFreeDelay.time_left <= 2.0:
 		GlobalTrail.removeNode(self)
 	if not collision:
@@ -66,16 +67,16 @@ func _process(delta: float) -> void:
 	# Code block to rotate the core perpendicularly to velocity (faster rotation the closer to the normal angle)
 	if cos(rotation) > 0.1 + targetAngle:
 		if sin(rotation) > 0.1 + targetAngle:
-			angular_velocity -= 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation))
+			angular_velocity -= 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation - targetAngle))
 	if cos(rotation) < -0.1 + targetAngle:
 		if sin(rotation) < -0.1 + targetAngle:
-			angular_velocity += 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation)) + 1)
+			angular_velocity += 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation - targetAngle)) + 1)
 	if cos(rotation) > 0.1 + targetAngle:
 		if sin(rotation) < -0.1 + targetAngle:
-			angular_velocity += 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation))
+			angular_velocity += 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation - targetAngle))
 	if cos(rotation) < -0.1 + targetAngle:
 		if sin(rotation) > 0.1 + targetAngle:
-			angular_velocity -= 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation)) + 1)
+			angular_velocity -= 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation - targetAngle)) + 1)
 	if collision:
 		attempts += 1
 	distanceTravelled = (global_position - previousPosition).length()

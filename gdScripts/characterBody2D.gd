@@ -203,7 +203,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
 				var offset = direction * 135
-				railgun.linear_velocity = direction * 2048
+				railgun.linear_velocity = direction * 6144
 				railgun.position = characterBody.position + offset
 				
 				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)
