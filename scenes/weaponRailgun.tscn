@@ -1,8 +1,9 @@
-[gd_scene load_steps=24 format=3 uid="uid://bmi8j7ndhedm1"]
+[gd_scene load_steps=25 format=3 uid="uid://bmi8j7ndhedm1"]
 
 [ext_resource type="Script" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
-[ext_resource type="Texture2D" uid="uid://gnj4iibriqh" path="res://assets/APDSCore.png" id="2_puneq"]
+[ext_resource type="Texture2D" uid="uid://dci44ya8udk5q" path="res://assets/APDSCore.svg" id="2_84fo0"]
 [ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="3_22bnv"]
+[ext_resource type="Texture2D" uid="uid://b0lbxds55xqub" path="res://assets/APFSDSFins.svg" id="3_nfa7l"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_58c1u"]
 friction = 0.4
@@ -121,10 +122,10 @@ turbulence_noise_strength = 0.3
 
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 0
-collision_mask = 0
+collision_mask = 8
 physics_material_override = SubResource("PhysicsMaterial_58c1u")
 center_of_mass_mode = 1
-center_of_mass = Vector2(-12, 0)
+continuous_cd = 2
 linear_damp_mode = 1
 linear_damp = 0.02
 angular_damp_mode = 1
@@ -133,15 +134,19 @@ constant_force = Vector2(0, 980)
 script = ExtResource("1_32tfa")
 
 [node name="APDSCore" type="Sprite2D" parent="."]
-self_modulate = Color(100, 20, 100, 1)
 position = Vector2(12.8, 0)
-scale = Vector2(0.09, 0.09)
-texture = ExtResource("2_puneq")
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("2_84fo0")
+
+[node name="APFSDSFins" type="Sprite2D" parent="."]
+position = Vector2(12.8, 0)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_nfa7l")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 position = Vector2(12.8, 0)
-scale = Vector2(0.09, 0.09)
-polygon = PackedVector2Array(-384, 128, 128, 128, 384, 0, 128, -128, -384, -128)
+scale = Vector2(0.1, 0.1)
+polygon = PackedVector2Array(-512, -54, -512, 54, 262, 54, 522, -1.82, 262, -54)
 
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
 position = Vector2(-48, 0)
@@ -195,9 +200,9 @@ collision_layer = 262152
 collision_mask = 262152
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Area2D"]
-position = Vector2(16.4, 0)
-scale = Vector2(0.09, 0.09)
-polygon = PackedVector2Array(91.1111, 128, 128, 128, 384, 0, 128, -128, 91.1111, -128)
+position = Vector2(29.51, 0)
+scale = Vector2(0.1, 0.1)
+polygon = PackedVector2Array(88.889, 62, 122.222, 62, 388.889, 0, 122.222, -64, 88.889, -64)
 
 [node name="queueFreeDelay" type="Timer" parent="."]
 wait_time = 16.0

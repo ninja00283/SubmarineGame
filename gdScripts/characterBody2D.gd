@@ -42,8 +42,8 @@ var originalPosition: Vector2
 var root
 
 func _physics_process(delta: float) -> void:
-	xDrag = (0.02 + 0.08 * (1 - HP / 100.0)) * delta
-	yDrag = (0.02 + 0.08 * (1 - HP / 100.0)) * delta
+	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
+	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	velocity.y += (5 + 40 * (1 - HP / 100.0)) * delta
 	if not shaking:
 		originalPosition = position
@@ -89,12 +89,12 @@ func _physics_process(delta: float) -> void:
 			HP -= velocity.length() * 0.08 * (HP / 100)
 			collider.velocity += transferVelo
 			velocity = remainingVelo.bounce(colInfo.get_normal())
-		else:
-			velocity = velocity.bounce(colInfo.get_normal()) * 0.7 * (HP / 100)
+		elif velocity.y > 20.0:
+			velocity = velocity.bounce(colInfo.get_normal()) * 0.4 * (HP / 100)
 		var velocityLen = velocity.length()
 		var particleRatio = 1.0
 		if velocityLen < 1600.0:
-			particleRatio = velocityLen / 1600.0
+			particleRatio = (velocityLen / 1600.0) - 0.25
 		var newgpup2D4 = gpup2D4.duplicate() as GPUParticles2D
 		var newgpup2D5 = gpup2D5.duplicate() as GPUParticles2D
 		var colPos = colInfo.get_position()
@@ -202,8 +202,8 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				var railgun = railgunScene.instantiate()
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
-				var offset = direction * 100
-				railgun.linear_velocity = direction * 6144
+				var offset = direction * 135
+				railgun.linear_velocity = direction * 2048
 				railgun.position = characterBody.position + offset
 				
 				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)

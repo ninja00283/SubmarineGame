@@ -5,12 +5,12 @@ extends RigidBody2D
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
 @onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
 @onready var gpup2D5: GPUParticles2D = $GPUParticles2D5
-@onready var gpup2D6: GPUParticles2D = $GPUParticles2D6
-
 @onready var area2D: Area2D = $Area2D
 @onready var APDSCore: Sprite2D = $APDSCore
 @onready var queueFreeDelay: Timer = $queueFreeDelay
+@onready var APFSDSFins: Sprite2D = $APFSDSFins
 
+var targetAngle: float = 0.0 # Floating point to track what angle (radians) the velocity is
 var gpup2D1Emitted: bool = false # Bool to track whether or not gpup2D1 has emitted previously
 var gpup2D2Emitted: bool = false # Bool to track whether or not gpup2D2 has emitted previously
 var collision: bool = false # Bool to track whether or not the object has collided
@@ -26,22 +26,37 @@ var points: Array = [] # Stores all Vector2 positions that should be checked for
 var previousCollided: bool # Stores whether or not the previous check resulted in a collision
 
 func _ready() -> void:
-	GlobalTrail.addNode(self, 64)
+	GlobalTrail.addNode(self, 48)
 
 # These functions are above _process() because "entry" is used in the process function and needs to be determined first
 func _onRigidBody2dBodyEntered(body: Node) -> void:
+	print("Col")
 	collision = true
 	entry = true
-	if "HP" in body:
-		body.HP -= 150 * (linear_velocity.length() / 6144)
-		player.attackDamageF(150 * (linear_velocity.length() / 6144), false)
+	var directionAngle = Vector2(cos(rotation), sin(rotation)).angle()
+	print("Hit angle: ", rad_to_deg(abs(directionAngle - linear_velocity.angle())))
+	if abs(directionAngle - linear_velocity.angle()) < 0.6981:
+		if "HP" in body:
+			body.HP -= 150 * (linear_velocity.length() / 6144)
+			player.attackDamageF(150 * (linear_velocity.length() / 6144), false)
+	else:
+		pass
 
 
 func _onRigidBody2dBodyExited(_body: Node) -> void:
-	entry = false
+	var directionAngle = Vector2(cos(rotation), sin(rotation)).angle()
+	if abs(directionAngle - linear_velocity.angle()) < 0.6981:
+		APFSDSFins.hide()
+		entry = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	if queueFreeDelay.time_left <= 2.0:
+		GlobalTrail.removeNode(self)
+	if not collision:
+		targetAngle = linear_velocity.normalized().angle()
+	else:
+		targetAngle = linear_velocity.normalized().angle() + PI / 2
 	if linear_velocity.length() < 5121:
 		gpup2D1.amount_ratio = linear_velocity.length() / 5120
 		gpup2D2.amount_ratio = linear_velocity.length() / 5120
@@ -49,18 +64,18 @@ func _process(delta: float) -> void:
 		gpup2D4.amount_ratio = linear_velocity.length() / 5120
 		gpup2D5.amount_ratio = linear_velocity.length() / 5120
 	# Code block to rotate the core perpendicularly to velocity (faster rotation the closer to the normal angle)
-	if cos(rotation) > 0.1 + linear_velocity.normalized().angle():
-		if sin(rotation) > 0.1 + linear_velocity.normalized().angle():
-			angular_velocity -= 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
-	if cos(rotation) < -0.1 + linear_velocity.normalized().angle():
-		if sin(rotation) < -0.1 + linear_velocity.normalized().angle():
-			angular_velocity -= 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
-	if cos(rotation) > 0.1 + linear_velocity.normalized().angle():
-		if sin(rotation) < -0.1 + linear_velocity.normalized().angle():
-			angular_velocity += 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
-	if cos(rotation) < -0.1 + linear_velocity.normalized().angle():
-		if sin(rotation) > 0.1 + linear_velocity.normalized().angle():
-			angular_velocity += 0.5 * (linear_velocity.length() / 6144) * (60 * delta)
+	if cos(rotation) > 0.1 + targetAngle:
+		if sin(rotation) > 0.1 + targetAngle:
+			angular_velocity -= 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation))
+	if cos(rotation) < -0.1 + targetAngle:
+		if sin(rotation) < -0.1 + targetAngle:
+			angular_velocity += 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation)) + 1)
+	if cos(rotation) > 0.1 + targetAngle:
+		if sin(rotation) < -0.1 + targetAngle:
+			angular_velocity += 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation))
+	if cos(rotation) < -0.1 + targetAngle:
+		if sin(rotation) > 0.1 + targetAngle:
+			angular_velocity -= 0.8 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation)) + 1)
 	if collision:
 		attempts += 1
 	distanceTravelled = (global_position - previousPosition).length()
