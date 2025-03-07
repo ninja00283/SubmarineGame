@@ -54,6 +54,10 @@ func _process(delta: float) -> void:
 			get_tree().root.add_child(playerInstance)
 			
 	if Input.is_action_just_pressed("Reload") and started:
+		MorseCodeInterpreter.currentMorse.clear()
+		MorseCodeInterpreter.currentMorsePreview.clear()
+		MorseCodeInterpreter.currentText.clear()
+		MorseCodeInterpreter.currentTextPreview.clear()
 		for player in players:
 			if is_instance_valid(player):
 				player.queue_free()
@@ -165,6 +169,10 @@ func gameWon() -> void:
 		print("No players lived to tell the tale.")
 		endTextLabel.text = str("No players lived to tell the tale.")
 	await get_tree().create_timer(5.5).timeout
+	MorseCodeInterpreter.currentMorse.clear()
+	MorseCodeInterpreter.currentMorsePreview.clear()
+	MorseCodeInterpreter.currentText.clear()
+	MorseCodeInterpreter.currentTextPreview.clear()
 	for player in players:
 		if is_instance_valid(player):
 			player.queue_free()

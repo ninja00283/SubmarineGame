@@ -1,6 +1,6 @@
 [gd_scene load_steps=25 format=3 uid="uid://bmi8j7ndhedm1"]
 
-[ext_resource type="Script" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
+[ext_resource type="Script" uid="uid://byl1mic58xq4r" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
 [ext_resource type="Texture2D" uid="uid://dci44ya8udk5q" path="res://assets/APDSCore.svg" id="2_84fo0"]
 [ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="3_22bnv"]
 [ext_resource type="Texture2D" uid="uid://b0lbxds55xqub" path="res://assets/APFSDSFins.svg" id="3_nfa7l"]
@@ -152,48 +152,48 @@ polygon = PackedVector2Array(-512, -54, -512, 54, 262, 54, 522, -1.82, 262, -54)
 position = Vector2(-48, 0)
 emitting = false
 amount = 128
-process_material = SubResource("ParticleProcessMaterial_qyavq")
 texture = ExtResource("3_22bnv")
 lifetime = 0.4
 one_shot = true
 speed_scale = 1.5
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_qyavq")
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 64
-process_material = SubResource("ParticleProcessMaterial_abu77")
 texture = ExtResource("3_22bnv")
 lifetime = 0.65
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_abu77")
 
 [node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 64
-process_material = SubResource("ParticleProcessMaterial_abu77")
 texture = ExtResource("3_22bnv")
 lifetime = 0.55
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_abu77")
 
 [node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 64
-process_material = SubResource("ParticleProcessMaterial_abu77")
 texture = ExtResource("3_22bnv")
 lifetime = 0.7
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_abu77")
 
 [node name="GPUParticles2D5" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 128
-process_material = SubResource("ParticleProcessMaterial_0ymnk")
 texture = ExtResource("3_22bnv")
 lifetime = 0.4
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_0ymnk")
 
 [node name="Area2D" type="Area2D" parent="."]
 collision_layer = 262152

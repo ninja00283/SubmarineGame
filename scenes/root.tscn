@@ -1,7 +1,8 @@
-[gd_scene load_steps=17 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=18 format=3 uid="uid://dyl0pe6kqksw3"]
 
-[ext_resource type="Script" path="res://gdScripts/main.gd" id="1_rqimn"]
-[ext_resource type="Script" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
+[ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
+[ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
+[ext_resource type="Script" uid="uid://blhodkvpxuvj4" path="res://gdScripts/ui.gd" id="2_lrqlo"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
 friction = 0.2
@@ -43,7 +44,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0.1, 0.1)]
+"values": [Vector2(0.5, 0.5)]
 }
 
 [sub_resource type="Animation" id="Animation_37mw4"]
@@ -98,10 +99,10 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_wkegp"]
 _data = {
-"RESET": SubResource("Animation_orpn6"),
-"borderHit": SubResource("Animation_37mw4"),
-"cameraZoom": SubResource("Animation_d5v6b"),
-"cameraZoomPost": SubResource("Animation_k5d0p")
+&"RESET": SubResource("Animation_orpn6"),
+&"borderHit": SubResource("Animation_37mw4"),
+&"cameraZoom": SubResource("Animation_d5v6b"),
+&"cameraZoomPost": SubResource("Animation_k5d0p")
 }
 
 [sub_resource type="Environment" id="Environment_gb58l"]
@@ -150,7 +151,7 @@ scale = Vector2(2000, 100)
 mesh = SubResource("QuadMesh_b37v0")
 
 [node name="Camera2D" type="Camera2D" parent="."]
-zoom = Vector2(0.1, 0.1)
+zoom = Vector2(0.5, 0.5)
 limit_left = -1920
 limit_top = -1080
 limit_right = 1920
@@ -185,7 +186,7 @@ polygon = PackedVector2Array(-1920, -1080, 1920, -1080, 1920, 1080, -1920, 1080)
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_wkegp")
+&"": SubResource("AnimationLibrary_wkegp")
 }
 
 [node name="cameraZoomTimer" type="Timer" parent="."]
@@ -196,6 +197,7 @@ one_shot = true
 environment = SubResource("Environment_gb58l")
 
 [node name="UI" type="Node2D" parent="."]
+script = ExtResource("2_lrqlo")
 
 [node name="endTextLabel" type="Label" parent="UI"]
 anchors_preset = 5
@@ -207,6 +209,36 @@ offset_right = 813.5
 offset_bottom = -846.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 92
+
+[node name="preview" type="VBoxContainer" parent="UI"]
+offset_left = -1865.0
+offset_top = -1025.0
+offset_right = -1353.0
+offset_bottom = -513.0
+
+[node name="currentMorsePreview" type="Label" parent="UI/preview"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.5)
+theme_override_font_sizes/font_size = 96
+
+[node name="currentTextPreview" type="Label" parent="UI/preview"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.5)
+theme_override_font_sizes/font_size = 96
+
+[node name="current" type="VBoxContainer" parent="UI"]
+offset_left = -1865.0
+offset_top = -1025.0
+offset_right = -1353.0
+offset_bottom = -513.0
+
+[node name="currentMorse" type="Label" parent="UI/current"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 96
+
+[node name="currentText" type="Label" parent="UI/current"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 96
 
 [node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
@@ -293,6 +325,14 @@ theme_override_font_sizes/font_size = 64
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Submit Text"
 
+[node name="morseInput" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 64
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Morse Input"
+ellipsis_char = ""
+
 [node name="spawnPlayerMMB" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
@@ -331,6 +371,13 @@ context_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [node name="submitText" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="morseInput" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1

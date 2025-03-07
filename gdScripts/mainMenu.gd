@@ -4,12 +4,15 @@ extends Node2D
 @onready var spawnPlayerMMB: LineEdit = $Keybinds/VBoxContainer/spawnPlayerMMB
 @onready var spawnPlayerY: LineEdit = $Keybinds/VBoxContainer/spawnPlayerY
 @onready var submitText: LineEdit = $Keybinds/VBoxContainer/submitText
+@onready var morseInput: LineEdit = $Keybinds/VBoxContainer/morseInput
+
 
 @onready var lineEdits = [
 	{"Node": reloadScene, "Keybind": "Reload"},
 	{"Node": spawnPlayerMMB, "Keybind": "MMB"},
 	{"Node": spawnPlayerY, "Keybind": "Spawn"},
-	{"Node": submitText, "Keybind": "Submit"}
+	{"Node": submitText, "Keybind": "Submit"},
+	{"Node": morseInput, "Keybind": "MorseInput"}
 ]
 
 var listening = false

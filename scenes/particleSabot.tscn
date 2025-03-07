@@ -1,6 +1,6 @@
 [gd_scene load_steps=4 format=3 uid="uid://cb2au4ork2kqh"]
 
-[ext_resource type="Script" path="res://gdScripts/particleSabot.gd" id="1_mc42d"]
+[ext_resource type="Script" uid="uid://ca2gwqqdgr31n" path="res://gdScripts/particleSabot.gd" id="1_mc42d"]
 [ext_resource type="Texture2D" uid="uid://c3d4rcil8wduk" path="res://assets/APDSSabot.png" id="1_vfs5m"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_i4dsq"]

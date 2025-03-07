@@ -1,6 +1,6 @@
 [gd_scene load_steps=12 format=3 uid="uid://clp730ykoyj6o"]
 
-[ext_resource type="Script" path="res://gdScripts/weaponLaser.gd" id="1_04ec4"]
+[ext_resource type="Script" uid="uid://bxf71ebn1ymg1" path="res://gdScripts/weaponLaser.gd" id="1_04ec4"]
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="2_b4osc"]
 [ext_resource type="Material" uid="uid://uprrg2dc1s6c" path="res://assets/weaponLaser.tres" id="3_830qs"]
 
@@ -241,9 +241,9 @@ tracks/5/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ukykt"]
 _data = {
-"RESET": SubResource("Animation_ajjbc"),
-"laserOff": SubResource("Animation_hm1sq"),
-"laserOn": SubResource("Animation_vsu2t")
+&"RESET": SubResource("Animation_ajjbc"),
+&"laserOff": SubResource("Animation_hm1sq"),
+&"laserOn": SubResource("Animation_vsu2t")
 }
 
 [sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_88g1s"]

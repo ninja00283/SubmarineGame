@@ -1,11 +1,11 @@
 [gd_scene load_steps=32 format=3 uid="uid://couhv4h8umrc7"]
 
-[ext_resource type="Script" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
+[ext_resource type="Script" uid="uid://di5t4kn22mi7n" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
 [ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://assets/Morse Code the art/Protractor.png" id="2_vhsvq"]
 [ext_resource type="Material" uid="uid://cc5oaf4uqttbv" path="res://assets/weaponTorpedo.tres" id="3_y6a5f"]
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="4_20753"]
 [ext_resource type="Texture2D" uid="uid://dmjk0ccufp35n" path="res://assets/paritcle2.png" id="5_3y4eu"]
-[ext_resource type="Shader" path="res://shaders/deathShader.gdshader" id="6_kafhs"]
+[ext_resource type="Shader" uid="uid://bpshehyhqlc4f" path="res://shaders/deathShader.gdshader" id="6_kafhs"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8h28d"]
 radius = 400.0
@@ -74,7 +74,7 @@ gradient = SubResource("Gradient_770go")
 use_hdr = true
 
 [sub_resource type="Curve" id="Curve_egjc8"]
-max_value = 100.0
+_limits = [0.0, 100.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.788945, 0), 0.0, 0.0, 0, 0, Vector2(0.932161, 3.75), 0.0, 0.0, 0, 0]
 point_count = 3
 
@@ -328,9 +328,9 @@ tracks/2/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_fs2rw"]
 _data = {
-"RESET": SubResource("Animation_ua62m"),
-"death": SubResource("Animation_05w1y"),
-"postDeath": SubResource("Animation_dyp61")
+&"RESET": SubResource("Animation_ua62m"),
+&"death": SubResource("Animation_05w1y"),
+&"postDeath": SubResource("Animation_dyp61")
 }
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_ex233"]
@@ -375,7 +375,6 @@ one_shot = true
 self_modulate = Color(1, 0.825, 0.687, 1)
 emitting = false
 amount = 128
-process_material = ExtResource("3_y6a5f")
 texture = ExtResource("4_20753")
 lifetime = 4.5
 one_shot = true
@@ -383,44 +382,45 @@ explosiveness = 0.95
 trail_lifetime = 0.1
 trail_sections = 2
 trail_section_subdivisions = 1
+process_material = ExtResource("3_y6a5f")
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 self_modulate = Color(4, 0.8, 0.6, 1)
 emitting = false
 amount = 32
-process_material = SubResource("ParticleProcessMaterial_alnvb")
 lifetime = 2.0
 one_shot = true
 explosiveness = 1.0
 trail_enabled = true
 trail_lifetime = 0.02
+process_material = SubResource("ParticleProcessMaterial_alnvb")
 
 [node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
 self_modulate = Color(10, 80, 80, 0.8)
 emitting = false
 amount = 1
-process_material = SubResource("ParticleProcessMaterial_ck7vr")
 texture = ExtResource("5_3y4eu")
 lifetime = 5.0
 one_shot = true
+process_material = SubResource("ParticleProcessMaterial_ck7vr")
 
 [node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 768
-process_material = SubResource("ParticleProcessMaterial_egcnw")
 texture = ExtResource("4_20753")
 one_shot = true
 explosiveness = 1.0
 trail_lifetime = 0.05
+process_material = SubResource("ParticleProcessMaterial_egcnw")
 
 [node name="GPUParticles2D5" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 768
-process_material = SubResource("ParticleProcessMaterial_egcnw")
 texture = ExtResource("4_20753")
 one_shot = true
 explosiveness = 1.0
 trail_lifetime = 0.05
+process_material = SubResource("ParticleProcessMaterial_egcnw")
 
 [node name="attackDamageLabel" type="Label" parent="."]
 anchors_preset = 8
@@ -456,6 +456,7 @@ scale = Vector2(0.8, 0.8)
 theme_override_colors/font_color = Color(0.0691731, 0.0381473, 0.0816656, 1)
 theme_override_font_sizes/font_size = 44
 alignment = 1
+keep_editing_on_text_submit = true
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource("Environment_53vx8")
@@ -469,7 +470,7 @@ texture_scale = 48.0
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 process_mode = 3
 libraries = {
-"": SubResource("AnimationLibrary_fs2rw")
+&"": SubResource("AnimationLibrary_fs2rw")
 }
 
 [node name="deathShader" type="MeshInstance2D" parent="."]

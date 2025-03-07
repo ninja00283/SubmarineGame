@@ -1,6 +1,6 @@
 [gd_scene load_steps=20 format=3 uid="uid://tk8n2c20kyqh"]
 
-[ext_resource type="Script" path="res://gdScripts/weaponBomb.gd" id="1_2b1kx"]
+[ext_resource type="Script" uid="uid://cllqibi45hij2" path="res://gdScripts/weaponBomb.gd" id="1_2b1kx"]
 [ext_resource type="Texture2D" uid="uid://clatga6fquhnp" path="res://assets/weaponBomb.svg" id="1_v0v7v"]
 [ext_resource type="Texture2D" uid="uid://b67h04ttb8ste" path="res://assets/bombTrajectory.svg" id="2_d5kgh"]
 [ext_resource type="Material" uid="uid://d36fe8pvtxh5n" path="res://assets/weaponBomb.tres" id="3_wqcs0"]
@@ -159,9 +159,9 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_qn7f4"]
 _data = {
-"RESET": SubResource("Animation_sjrxa"),
-"explode": SubResource("Animation_fqmd7"),
-"timerStarted": SubResource("Animation_wa1da")
+&"RESET": SubResource("Animation_sjrxa"),
+&"explode": SubResource("Animation_fqmd7"),
+&"timerStarted": SubResource("Animation_wa1da")
 }
 
 [sub_resource type="Animation" id="Animation_dmew7"]
@@ -197,15 +197,15 @@ tracks/0/keys = {
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ge5dh"]
 _data = {
-"RESET": SubResource("Animation_dmew7"),
-"flashAnim": SubResource("Animation_sa8j2")
+&"RESET": SubResource("Animation_dmew7"),
+&"flashAnim": SubResource("Animation_sa8j2")
 }
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_stilt"]
 radius = 200.0
 
 [sub_resource type="Curve" id="Curve_l6k8k"]
-max_value = 100.0
+_limits = [0.0, 100.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 36.5266), 0.0, 0.0, 0, 0]
 point_count = 2
 
@@ -276,12 +276,12 @@ polygon = PackedVector2Array(-2.19995, -1609.7, -17, -1605.7, -17, -1599.8, -270
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_qn7f4")
+&"": SubResource("AnimationLibrary_qn7f4")
 }
 
 [node name="flashAnim" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_ge5dh")
+&"": SubResource("AnimationLibrary_ge5dh")
 }
 
 [node name="explosionRadii" type="Area2D" parent="."]
@@ -305,11 +305,11 @@ autostart = true
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
 emitting = false
 amount = 128
-process_material = SubResource("ParticleProcessMaterial_dieju")
 texture = ExtResource("5_jcwks")
 lifetime = 1.5
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_dieju")
 
 [connection signal="body_entered" from="impactFuse" to="." method="_onImpactFuseActivated"]
 [connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]

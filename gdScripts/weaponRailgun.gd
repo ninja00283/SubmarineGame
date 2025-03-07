@@ -26,6 +26,7 @@ var points: Array = [] # Stores all Vector2 positions that should be checked for
 var previousCollided: bool # Stores whether or not the previous check resulted in a collision
 
 func _ready() -> void:
+	rotation_degrees += 90
 	GlobalTrail.addNode(self, 64, Vector2(-24, 0))
 
 # These functions are above _process() because "entry" is used in the process function and needs to be determined first
@@ -33,10 +34,11 @@ func _onRigidBody2dBodyEntered(body: Node) -> void:
 	print("Col")
 	collision = true
 	entry = true
-	var directionAngle = Vector2(cos(rotation), sin(rotation)).angle()
-	print("Hit angle: ", rad_to_deg(abs(directionAngle - linear_velocity.angle())))
-	var AoA = abs(directionAngle - linear_velocity.angle())
-	if AoA < 0.6981 or AoA < 3.8397 and AoA > PI:
+	var AoA = abs(linear_velocity.angle()) - abs(global_rotation)
+	print("Vel angle: ", linear_velocity.angle())
+	print("Rotation(Rad): ", rotation)
+	print("Hit angle: ", AoA)
+	if abs(AoA) < 0.6981:
 		if "HP" in body:
 			body.HP -= 150 * (linear_velocity.length() / 6144)
 			player.attackDamageF(150 * (linear_velocity.length() / 6144), false)
@@ -44,14 +46,12 @@ func _onRigidBody2dBodyEntered(body: Node) -> void:
 		collision_mask = 1 << 4
 
 func _onRigidBody2dBodyExited(_body: Node) -> void:
-	var directionAngle = Vector2(cos(rotation), sin(rotation)).angle()
-	if abs(directionAngle - linear_velocity.angle()) < 0.6981:
+	if abs(rotation - linear_velocity.angle()) < 0.6981:
 		APFSDSFins.hide()
 		entry = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	print(rotation_degrees)
 	if queueFreeDelay.time_left <= 2.0:
 		GlobalTrail.removeNode(self)
 	if not collision:

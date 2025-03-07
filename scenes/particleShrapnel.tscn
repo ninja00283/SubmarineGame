@@ -1,11 +1,11 @@
 [gd_scene load_steps=9 format=3 uid="uid://ce3m25gt77wee"]
 
 [ext_resource type="Texture2D" uid="uid://bpgcmhowno6u5" path="res://assets/projectileShrapnel.svg" id="1_lmmuq"]
-[ext_resource type="Script" path="res://gdScripts/particleShrapnel.gd" id="1_p01yf"]
+[ext_resource type="Script" uid="uid://bdu82kftp6bug" path="res://gdScripts/particleShrapnel.gd" id="1_p01yf"]
 [ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="3_u5v1s"]
 
 [sub_resource type="Curve" id="Curve_16s81"]
-max_value = 100.0
+_limits = [0.0, 100.0, 0.0, 1.0]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 36.5266), 0.0, 0.0, 0, 0]
 point_count = 2
 

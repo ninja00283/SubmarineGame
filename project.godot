@@ -12,12 +12,13 @@ config_version=5
 
 config/name="Submarine Game"
 run/main_scene="res://scenes/root.tscn"
-config/features=PackedStringArray("4.3", "C#", "Forward Plus")
+config/features=PackedStringArray("4.4", "C#", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
 GlobalTrail="*res://gdScripts/globalTrail.gd"
+MorseCodeInterpreter="*res://gdScripts/morseCodeInterpreter.gd"
 
 [display]
 
@@ -73,6 +74,7 @@ MMB={
 
 [physics]
 
+2d/physics_engine="GodotPhysics2D"
 2d/default_gravity=0.0
 
 [rendering]

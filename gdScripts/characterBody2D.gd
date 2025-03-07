@@ -42,6 +42,7 @@ var originalPosition: Vector2
 var root
 
 func _physics_process(delta: float) -> void:
+	commandInput.text = "".join(MorseCodeInterpreter.currentText)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	velocity.y += (5 + 40 * (1 - HP / 100.0)) * delta
