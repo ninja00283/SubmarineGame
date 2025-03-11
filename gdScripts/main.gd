@@ -21,8 +21,10 @@ var isSpawning: bool = false
 var debugging: bool = false
 var startPlayerCount: int = 2
 var spawnPos: Array = [Vector2(800, 0), Vector2(-800, 0)]
+var playerKeybinds: Dictionary = {}
 var players: Array = []
 var objects: Array = []
+var heldObjects: Array = []
 
 func _ready() -> void:
 	for player in range(startPlayerCount):
@@ -37,6 +39,19 @@ func _ready() -> void:
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
+	if debugging:
+		if Input.is_action_pressed("LMB"):
+			var worldMousePos = get_viewport().get_camera_2d().get_global_mouse_position()
+			var query = PhysicsPointQueryParameters2D.new()
+			query.position = worldMousePos
+			query.collide_with_bodies = true
+			for body in get_world_2d().direct_space_state.intersect_point(query):
+				heldObjects.append(body["collider"])
+			for object in heldObjects:
+				object.global_position = worldMousePos
+		else:
+			heldObjects.clear()
+
 	if not debugging and players.size() < 2 and not gameEnded:
 		gameWon()
 	if players.size() > 0 and not started:
@@ -139,7 +154,6 @@ func _on_start_button_pressed() -> void:
 	mainMenu.hide()
 	get_tree().paused = false
 
-
 func _on_settings_button_pressed() -> void:
 	if settingsShown:
 		settings.hide()
@@ -147,7 +161,6 @@ func _on_settings_button_pressed() -> void:
 	else:
 		settings.show()
 		settingsShown = true
-
 
 func _on_debug_button_pressed() -> void:
 	started = true
@@ -157,7 +170,6 @@ func _on_debug_button_pressed() -> void:
 	mainMenu.hide()
 	get_tree().paused = false
 	debugging = true
-
 
 func gameWon() -> void:
 	gameEnded = true

@@ -15,6 +15,7 @@ extends CharacterBody2D
 @onready var railgunScene = preload("res://scenes/weaponRailgun.tscn")
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
 @onready var bombScene = preload("res://scenes/weaponBomb.tscn")
+@onready var firestreakScene = preload("res://scenes/weaponFirestreak.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
@@ -28,7 +29,7 @@ var shaderMaterial: ShaderMaterial = preload("res://assets/weaponBomb.tres")
 var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
-var ammo: Array = ["torpedo", "laser", "railgun", "bomb"]
+var ammo: Array = ["torpedo", "laser", "railgun", "bomb", "firestreak"]
 var xDrag: float = 0.02
 var yDrag: float = 0.02
 var HP: float = 100.0
@@ -40,12 +41,17 @@ var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
 var originalPosition: Vector2
 var root
+var previousMorseCode: String = ""
 
 func _physics_process(delta: float) -> void:
-	commandInput.text = "".join(MorseCodeInterpreter.currentText)
+	if not MorseCodeInterpreter.currentText.is_empty() and "".join(MorseCodeInterpreter.currentText) != previousMorseCode:
+		commandInput.text += MorseCodeInterpreter.currentText[MorseCodeInterpreter.currentText.size() - 1]
+		previousMorseCode = "".join(MorseCodeInterpreter.currentText)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	velocity.y += (5 + 40 * (1 - HP / 100.0)) * delta
+	velocity.x = velocity.x * (1 - xDrag)
+	velocity.y = velocity.y * (1 - yDrag)
 	if not shaking:
 		originalPosition = position
 	if HP > 0:
@@ -73,16 +79,13 @@ func _physics_process(delta: float) -> void:
 		root.positionCamera(position)
 		meshIn2D.set_self_modulate(Color(0,0,0,0.75))
 		alive = false
-	velocity.x = velocity.x * (1 - xDrag)
-	velocity.y = velocity.y * (1 - yDrag)
 	if not is_on_floor():
 		velocity += get_gravity() * delta
 
-	move_and_slide()
 	var colInfo = move_and_collide(velocity * delta)
 	if colInfo:
 		var collider = colInfo.get_collider()
-		if collider is CharacterBody2D and "HP" in collider:
+		if collider is CharacterBody2D:
 			var transferVelo = velocity * 0.5 * (HP / 100)
 			var remainingVelo = velocity * 0.5 * (HP / 100)
 
@@ -90,7 +93,7 @@ func _physics_process(delta: float) -> void:
 			HP -= velocity.length() * 0.08 * (HP / 100)
 			collider.velocity += transferVelo
 			velocity = remainingVelo.bounce(colInfo.get_normal())
-		elif velocity.y > 20.0:
+		else:
 			velocity = velocity.bounce(colInfo.get_normal()) * 0.4 * (HP / 100)
 		var velocityLen = velocity.length()
 		var particleRatio = 1.0
@@ -115,7 +118,7 @@ func _physics_process(delta: float) -> void:
 			randf_range(-shakeScale, shakeScale), 
 			randf_range(-shakeScale, shakeScale)
 		)
-
+	move_and_slide()
 
 func commandInterpret(input, characterBody, event):
 	var key = char(event.unicode)
@@ -181,8 +184,8 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				var torpedo = torpedoScene.instantiate()
 				torpedo.rotation_degrees = angleDegreesInput
 				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
-				torpedo.linear_velocity = direction * 324
 				var offset = direction * 100
+				torpedo.linear_velocity = direction * 384
 				torpedo.position = characterBody.position + offset
 				get_tree().root.add_child(torpedo)
 				root.objects.append(torpedo)
@@ -234,6 +237,15 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				bomb.player = self
 				get_tree().root.add_child(bomb)
 				root.objects.append(bomb)
+			elif ammoType == "firestreak":
+				var firestreak = firestreakScene.instantiate()
+				firestreak.rotation = deg_to_rad(angleDegreesInput)
+				var direction = Vector2(cos(firestreak.rotation), sin(firestreak.rotation))
+				var offset = direction * 150
+				firestreak.position = characterBody.position + offset
+				firestreak.player = self
+				get_tree().root.add_child(firestreak)
+				root.objects.append(firestreak)
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
 			print("Invalid inputs for fire command. Angle must be numeric.")

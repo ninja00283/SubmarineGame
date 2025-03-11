@@ -21,6 +21,7 @@ extends RigidBody2D
 @onready var heat: Area2D = $HEAT
 @onready var attackDamageDelay: Timer = $attackDamageDelay
 @onready var inExplosionRadii: RayCast2D = $inExplosionRadii
+@onready var mesh_instance_2d: MeshInstance2D = $meshInstance2d
 
 var player
 var damage
@@ -31,9 +32,6 @@ var HP: float = 10
 var gpup2D6C: bool = false
 var exploded: bool = false
 var HEATExploded: bool = false
-
-func _ready() -> void:
-	armingDelay.start()
 
 func _process(_delta: float) -> void:
 	if Input.is_action_just_pressed("KillTorpedo"):
@@ -58,7 +56,6 @@ func _on_area_2d_body_entered(body):
 	else:
 		print("Body is self")
 
-
 func _on_detection_radii_body_entered(body):
 	if not is_instance_valid(armingDelay):
 		var relativePos = to_local(body.global_position)
@@ -66,13 +63,13 @@ func _on_detection_radii_body_entered(body):
 		target = body
 		detectionRadiiDelay.start()
 
-
 func _on_detection_radii_delay_timeout() -> void:
 	weaponTorpedo.spread = 180
 	hit()
 	queueFreeDelay.start()
 
 func hit():
+	freeze = true
 	linear_velocity = Vector2(0, 0)
 	gpup2D4.emitting = true
 	gpup2D5.emitting = true
@@ -94,7 +91,7 @@ func hit():
 	explosionRadii.position = Vector2(INF, INF)
 	queueFreeDelay.start()
 	attackDamageDelay.start()
-	
+
 func explode():
 	for body in explosionRadii.get_overlapping_bodies():
 		var newRaycast = RayCast2D.new()
@@ -117,8 +114,6 @@ func explode():
 			else:
 				print("Target(",body,") obstructed")
 
-
-			
 func _onArmingDelayTimeout() -> void:
 	armingDelay.queue_free()
 

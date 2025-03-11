@@ -259,7 +259,7 @@ texture = ExtResource("2_d5kgh")
 
 [node name="WeaponBomb" type="Sprite2D" parent="."]
 material = ExtResource("3_wqcs0")
-scale = Vector2(0.03, 0.03)
+scale = Vector2(0.228, 0.228)
 texture = ExtResource("1_v0v7v")
 
 [node name="Collider" type="CollisionPolygon2D" parent="."]

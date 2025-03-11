@@ -211,6 +211,7 @@ one_shot = true
 
 [node name="armingDelay" type="Timer" parent="."]
 wait_time = 0.5
+autostart = true
 
 [node name="attackDamageDelay" type="Timer" parent="."]
 wait_time = 0.2
@@ -220,25 +221,25 @@ one_shot = true
 self_modulate = Color(1, 1, 1.1, 0.3)
 position = Vector2(-32, 0)
 amount = 128
-process_material = SubResource("ParticleProcessMaterial_b0ilg")
 texture = ExtResource("4_sw6vr")
 lifetime = 5.0
+process_material = SubResource("ParticleProcessMaterial_b0ilg")
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
 self_modulate = Color(1, 1, 1, 0.125)
 position = Vector2(-32, 8)
 amount = 24
-process_material = SubResource("ParticleProcessMaterial_7bady")
 texture = ExtResource("4_sw6vr")
 lifetime = 5.0
+process_material = SubResource("ParticleProcessMaterial_7bady")
 
 [node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
 self_modulate = Color(1, 1, 1, 0.125)
 position = Vector2(-32, -8)
 amount = 24
-process_material = SubResource("ParticleProcessMaterial_7bady")
 texture = ExtResource("4_sw6vr")
 lifetime = 5.0
+process_material = SubResource("ParticleProcessMaterial_7bady")
 
 [node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
 self_modulate = Color(1.75, 1.25, 1.375, 1)
@@ -246,7 +247,6 @@ position = Vector2(32, 0)
 rotation = 2.35619
 emitting = false
 amount = 512
-process_material = ExtResource("5_uf7vu")
 texture = ExtResource("4_sw6vr")
 lifetime = 4.5
 one_shot = true
@@ -254,16 +254,17 @@ explosiveness = 1.0
 trail_lifetime = 0.01
 trail_sections = 2
 trail_section_subdivisions = 1
+process_material = ExtResource("5_uf7vu")
 
 [node name="GPUParticles2D5" type="GPUParticles2D" parent="."]
 position = Vector2(2, 2)
 rotation = 3.14159
 emitting = false
 amount = 64
-process_material = SubResource("ParticleProcessMaterial_qwfro")
 lifetime = 4.0
 one_shot = true
 explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_qwfro")
 
 [node name="GPUParticles2D6" type="GPUParticles2D" parent="."]
 self_modulate = Color(100, 0.815686, 0.54902, 1)
@@ -271,20 +272,20 @@ position = Vector2(32, 0)
 emitting = false
 amount = 1024
 sub_emitter = NodePath("../GPUParticles2D7")
-process_material = SubResource("ParticleProcessMaterial_oe1wh")
 texture = ExtResource("4_sw6vr")
 lifetime = 0.1
 one_shot = true
+process_material = SubResource("ParticleProcessMaterial_oe1wh")
 
 [node name="GPUParticles2D7" type="GPUParticles2D" parent="."]
 self_modulate = Color(10, 4, 0, 1)
 position = Vector2(32, 0)
 emitting = false
 amount = 256
-process_material = SubResource("ParticleProcessMaterial_tl1mo")
 texture = ExtResource("4_sw6vr")
 lifetime = 4.5
 one_shot = true
+process_material = SubResource("ParticleProcessMaterial_tl1mo")
 
 [node name="RayCast2D" type="RayCast2D" parent="."]
 target_position = Vector2(50, 0)

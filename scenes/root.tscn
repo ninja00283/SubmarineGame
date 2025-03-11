@@ -14,7 +14,7 @@ absorbent = true
 [sub_resource type="QuadMesh" id="QuadMesh_b37v0"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_emltp"]
-polygon = PackedVector2Array(1000, 0, -1000, 0, -1000, -100, 1000, -100)
+polygon = PackedVector2Array(950, -25, -950, -25, -950, -75, 950, -75)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
 friction = 0.2

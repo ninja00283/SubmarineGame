@@ -15,6 +15,7 @@ var currentMorsePreview: Array = [] # Array that stores what morse is currently 
 var currentTextPreview: Array = [] # Array that stores all translated characters and what character will be added if the user waited 7 units
 var morsePreviewAppended: bool = false # Bool to track if an element has already been added to any morse preview array, this is to avoid appending excess elements
 var textPreviewAppended: bool = false # Bool to track if an element has already been added to any text preview array, this is to avoid appending excess elements
+var players: Dictionary = {}
 # Below is a dictionary that stores all characters and their associated morse code
 var morseCharacters: Dictionary = {
 	"A": [".", "-"],
@@ -106,8 +107,9 @@ func _process(delta: float) -> void:
 	elif timeSinceMorse > 0.0:
 		if not morseInputPressed:
 			textPreviewAppended = false
-			if currentMorse.size() > 0 and currentTextPreview[currentTextPreview.size() - 1] != " ":
-				currentTextPreview.resize(currentTextPreview.size() - 1)
+			if currentMorse.size() > 0 and currentTextPreview.size() > 0:
+				if currentTextPreview[currentTextPreview.size() - 1] != " ":
+					currentTextPreview.resize(currentTextPreview.size() - 1)
 			currentMorse.append(".")
 			print(currentMorse)
 	if timeSinceLastMorse > spaceLengthS * lengthSMultiplier and currentText.size() > 0:
