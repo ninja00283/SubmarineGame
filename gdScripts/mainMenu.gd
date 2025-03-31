@@ -5,6 +5,8 @@ extends Node2D
 @onready var spawnPlayerY: LineEdit = $Keybinds/VBoxContainer/spawnPlayerY
 @onready var submitText: LineEdit = $Keybinds/VBoxContainer/submitText
 @onready var morseInput: LineEdit = $Keybinds/VBoxContainer/morseInput
+@onready var morseInputP1: LineEdit = $Keybinds/VBoxContainer/morseInputP1
+@onready var morseInputP2: LineEdit = $Keybinds/VBoxContainer/morseInputP2
 
 
 @onready var lineEdits = [
@@ -12,7 +14,9 @@ extends Node2D
 	{"Node": spawnPlayerMMB, "Keybind": "MMB"},
 	{"Node": spawnPlayerY, "Keybind": "Spawn"},
 	{"Node": submitText, "Keybind": "Submit"},
-	{"Node": morseInput, "Keybind": "MorseInput"}
+	{"Node": morseInput, "Keybind": "MorseInput"},
+	{"Node": morseInputP1, "Keybind": "MorseInputP1"},
+	{"Node": morseInputP2, "Keybind": "MorseInputP2"},
 ]
 
 var listening = false
@@ -20,7 +24,7 @@ var key
 
 func _input(event: InputEvent) -> void:
 	if listening:
-		if event.is_action_type() and event.is_pressed() and not event.is_echo():
+		if event.is_action_type() and event.is_pressed() and not event.is_echo() and event.as_text() != "Escape":
 			print(event)
 			key = event.as_text()
 			print(key)
@@ -31,6 +35,15 @@ func _input(event: InputEvent) -> void:
 					lineEdit["Node"].placeholder_text = key
 					InputMap.action_erase_event(lineEdit["Keybind"], InputMap.action_get_events(lineEdit["Keybind"])[0])
 					InputMap.action_add_event(lineEdit["Keybind"], event)
+					listening = false
+					break
+		elif event.as_text() == "Escape":
+			for lineEdit in lineEdits:
+				if lineEdit["Node"].has_focus():
+					lineEdit["Node"].release_focus()
+					lineEdit["Node"].text = ""
+					lineEdit["Node"].placeholder_text = ""
+					InputMap.action_erase_event(lineEdit["Keybind"], InputMap.action_get_events(lineEdit["Keybind"])[0])
 					listening = false
 					break
 

@@ -100,9 +100,7 @@ damping_max = 0.4
 scale_min = 4.0
 scale_max = 4.0
 scale_curve = SubResource("CurveTexture_n7sni")
-collision_mode = 1
-collision_friction = 0.8
-collision_bounce = 0.0
+collision_mode = 2
 collision_use_scale = true
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_oe1wh"]

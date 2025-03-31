@@ -29,6 +29,7 @@ var shaderMaterial: ShaderMaterial = preload("res://assets/weaponBomb.tres")
 var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
+var shortCommands: Array = ["m", "f", "d"]
 var ammo: Array = ["torpedo", "laser", "railgun", "bomb", "firestreak"]
 var xDrag: float = 0.02
 var yDrag: float = 0.02
@@ -49,7 +50,7 @@ func _physics_process(delta: float) -> void:
 		previousMorseCode = "".join(MorseCodeInterpreter.currentText)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
-	velocity.y += (5 + 40 * (1 - HP / 100.0)) * delta
+	velocity.y += (20 * (1 - HP / 100.0)) * delta
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	if not shaking:
@@ -126,16 +127,26 @@ func commandInterpret(input, characterBody, event):
 	if str(input.text).ends_with(key) and key != "":
 		input.text = str(input.text).erase(str(input.text).length()-1)
 	var text = input.text.to_lower().strip_edges()
-	var parts = text.split(" ")
+	var parts: Array = text.split(" ")
+	for char in text.split(""):
+		if char == "_":
+			parts = text.split("_")
+			break
 	if parts.size() > 0:
 		var command = parts[0]
-		if command in commands:
+		if command in commands or command in shortCommands:
 			match command:
 				"move":
 					moveCommand(parts, characterBody)
 				"fire":
 					fireCommand(parts, characterBody)
 				"damage":
+					damageCommand(parts, characterBody)
+				"m":
+					moveCommand(parts, characterBody)
+				"f":
+					fireCommand(parts, characterBody)
+				"d":
 					damageCommand(parts, characterBody)
 			input.clear()
 			return
@@ -337,3 +348,6 @@ func deathShaderAnimP():
 	deathShader.hide()
 	deathShaderRan = true
 	get_tree().paused = false
+
+func addChar(character: String):
+	commandInput.text += character

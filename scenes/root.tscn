@@ -25,26 +25,26 @@ length = 0.001
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Border/Border:self_modulate")
+tracks/0/path = NodePath("Camera2D:zoom")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(4, 1, 1, 1)]
+"values": [Vector2(0.5, 0.5)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Camera2D:zoom")
+tracks/1/path = NodePath("Border/Border:self_modulate")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Vector2(0.5, 0.5)]
+"values": [Color(3, 0.8, 0.8, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_37mw4"]
@@ -59,9 +59,9 @@ tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2),
-"transitions": PackedFloat32Array(0.2, 0.2),
+"transitions": PackedFloat32Array(1, 1),
 "update": 0,
-"values": [Color(100, 1, 100, 1), Color(3.5, 1, 1, 1)]
+"values": [Color(2, 0.9, 2, 1), Color(3, 0.8, 0.8, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_d5v6b"]
@@ -135,6 +135,8 @@ process_mode = 3
 script = ExtResource("1_rqimn")
 
 [node name="Platform" type="StaticBody2D" parent="."]
+self_modulate = Color(1, 1, 1, 0.8)
+light_mask = 2
 position = Vector2(0, -150)
 collision_layer = 15
 collision_mask = 15
@@ -169,11 +171,12 @@ collision_mask = 131079
 physics_material_override = SubResource("PhysicsMaterial_nvee0")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Border"]
+scale = Vector2(1.05, 1.05)
 build_mode = 1
 polygon = PackedVector2Array(-1920, -1080, 1920, -1080, 1920, 1080, -1920, 1080)
 
 [node name="Border" type="Polygon2D" parent="Border"]
-self_modulate = Color(4, 1, 1, 1)
+self_modulate = Color(3, 0.8, 0.8, 1)
 scale = Vector2(1.005, 1.005)
 polygon = PackedVector2Array(-1900, -1060, -1900, 1060, -1940, 1100, -1940, -1100, 1940, -1100, 1940, 1100, -1940, 1100, -1900, 1060, 1900, 1060, 1900, -1060)
 
@@ -210,33 +213,63 @@ offset_bottom = -846.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 92
 
-[node name="preview" type="VBoxContainer" parent="UI"]
+[node name="previewP1" type="VBoxContainer" parent="UI"]
 offset_left = -1865.0
 offset_top = -1025.0
 offset_right = -1353.0
 offset_bottom = -513.0
 
-[node name="currentMorsePreview" type="Label" parent="UI/preview"]
+[node name="currentMorsePreview" type="Label" parent="UI/previewP1"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.5)
 theme_override_font_sizes/font_size = 96
 
-[node name="currentTextPreview" type="Label" parent="UI/preview"]
+[node name="currentTextPreview" type="Label" parent="UI/previewP1"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.5)
 theme_override_font_sizes/font_size = 96
 
-[node name="current" type="VBoxContainer" parent="UI"]
+[node name="previewP2" type="VBoxContainer" parent="UI"]
+offset_left = 1353.0
+offset_top = -1025.0
+offset_right = 1865.0
+offset_bottom = -513.0
+
+[node name="currentMorsePreview" type="Label" parent="UI/previewP2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.5)
+theme_override_font_sizes/font_size = 96
+
+[node name="currentTextPreview" type="Label" parent="UI/previewP2"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 0.5)
+theme_override_font_sizes/font_size = 96
+
+[node name="currentP1" type="VBoxContainer" parent="UI"]
 offset_left = -1865.0
 offset_top = -1025.0
 offset_right = -1353.0
 offset_bottom = -513.0
 
-[node name="currentMorse" type="Label" parent="UI/current"]
+[node name="currentMorse" type="Label" parent="UI/currentP1"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 96
 
-[node name="currentText" type="Label" parent="UI/current"]
+[node name="currentText" type="Label" parent="UI/currentP1"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 96
+
+[node name="currentP2" type="VBoxContainer" parent="UI"]
+offset_left = 1353.0
+offset_top = -1025.0
+offset_right = 1865.0
+offset_bottom = -513.0
+
+[node name="currentMorse" type="Label" parent="UI/currentP2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 96
+
+[node name="currentText" type="Label" parent="UI/currentP2"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 96
 
@@ -298,9 +331,9 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_unaew")
 
 [node name="Actions" type="MarginContainer" parent="MainMenu/Settings"]
 process_mode = 3
-offset_left = -1920.0
+offset_left = -1932.24
 offset_top = -1080.0
-offset_right = -1200.0
+offset_right = -1149.24
 offset_bottom = 1080.0
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 112
@@ -314,36 +347,52 @@ theme_override_constants/separation = 100
 [node name="reloadScene" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Reload Scene"
 
 [node name="submitText" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Submit Text"
 
 [node name="morseInput" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Morse Input"
+ellipsis_char = ""
+
+[node name="morseInputP1" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 70
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Morse Input Player 1"
+ellipsis_char = ""
+
+[node name="morseInputP2" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_font_sizes/font_size = 70
+theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
+text = "Morse Input Player 2"
 ellipsis_char = ""
 
 [node name="spawnPlayerMMB" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Spawn Player (D)"
 
 [node name="spawnPlayerY" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 64
+theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Spawn Player Ring (D)"
 ellipsis_char = ""
@@ -378,6 +427,20 @@ context_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [node name="morseInput" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="morseInputP1" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 64
+alignment = 1
+context_menu_enabled = false
+virtual_keyboard_enabled = false
+
+[node name="morseInputP2" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1

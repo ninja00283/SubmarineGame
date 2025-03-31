@@ -8,6 +8,7 @@ extends Node2D
 @onready var mainMenu: Node2D = $MainMenu
 @onready var settings: Node2D = $MainMenu/Settings
 @onready var endTextLabel: Label = $UI/endTextLabel
+@onready var ui: Node2D = $UI
 
 var gameEnded: bool = false
 var started: bool = false
@@ -20,25 +21,38 @@ var canSpawn: bool = false
 var isSpawning: bool = false
 var debugging: bool = false
 var startPlayerCount: int = 2
-var spawnPos: Array = [Vector2(800, 0), Vector2(-800, 0)]
+var spawnPos: Array = [Vector2(-800, 0), Vector2(800, 0)]
 var playerKeybinds: Dictionary = {}
 var players: Array = []
 var objects: Array = []
 var heldObjects: Array = []
+var currentTextP1: Array
+var currentTextP2: Array
+var previousTextP1: Array = []
+var previousTextP2: Array = []
 
 func _ready() -> void:
 	for player in range(startPlayerCount):
-		var arrayIndex = randi_range(0, spawnPos.size() - 1)
-		var pos = spawnPos[arrayIndex]
 		var playerInstance = playerScene.instantiate()
-		playerInstance.position = pos
+		playerInstance.position = spawnPos[0]
 		playerInstance.root = self
 		players.append(playerInstance)
 		add_child(playerInstance)
-		spawnPos.remove_at(arrayIndex)
+		move_child(playerInstance, 0)
+		spawnPos.remove_at(0)
+		MorseCodeInterpreter.addPlayer(playerInstance, player)
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
+	currentTextP1 = MorseCodeInterpreter.players.values()[0]["currentText"]
+	currentTextP2 = MorseCodeInterpreter.players.values()[1]["currentText"]
+	if previousTextP1 != currentTextP1:
+		players[0].addChar(str(currentTextP1[currentTextP1.size() - 1]))
+		previousTextP1 = currentTextP1
+	if previousTextP2 != currentTextP2:
+		players[1].addChar(str(currentTextP1[currentTextP2.size() - 1]))
+		previousTextP2 = currentTextP2
+	
 	if debugging:
 		if Input.is_action_pressed("LMB"):
 			var worldMousePos = get_viewport().get_camera_2d().get_global_mouse_position()
@@ -69,13 +83,12 @@ func _process(delta: float) -> void:
 			get_tree().root.add_child(playerInstance)
 			
 	if Input.is_action_just_pressed("Reload") and started:
-		MorseCodeInterpreter.currentMorse.clear()
-		MorseCodeInterpreter.currentMorsePreview.clear()
-		MorseCodeInterpreter.currentText.clear()
-		MorseCodeInterpreter.currentTextPreview.clear()
+		ui.morseClear()
 		for player in players:
 			if is_instance_valid(player):
 				player.queue_free()
+				MorseCodeInterpreter.players.erase(player)
+				players.erase(player)
 		for object in objects:
 			if is_instance_valid(object):
 				object.queue_free()
@@ -102,7 +115,6 @@ func _process(delta: float) -> void:
 			if spawnFrameCounter >= spawnRate:
 				spawnPlayerRing(100, 600)
 				spawnFrameCounter = 0
-
 func spawnPlayerRing(innerOffset: float, outerOffset: float):
 	var spawnCount = 1
 	for i in range(spawnCount):
@@ -120,13 +132,12 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 			players.append(playerInstance)
 			get_tree().root.add_child(playerInstance)
 
-
 func _borderHit(body: Node2D) -> void:
 	if "velocity" in body:
 		var velocityMagnitude = body.velocity.length()
 		var startPosition = 0.0
-		if velocityMagnitude < 400.0:
-			startPosition = lerp(0.2,0.0,clamp(velocityMagnitude/400.0,0.0,1.0))
+		if velocityMagnitude < 1200.0:
+			startPosition = lerp(0.2,0.0,clamp(velocityMagnitude/1200.0,0.0,1.0))
 		animationPlayer.stop()
 		animationPlayer.play("borderHit")
 		animationPlayer.seek(startPosition, true)
@@ -181,15 +192,13 @@ func gameWon() -> void:
 		print("No players lived to tell the tale.")
 		endTextLabel.text = str("No players lived to tell the tale.")
 	await get_tree().create_timer(5.5).timeout
-	MorseCodeInterpreter.currentMorse.clear()
-	MorseCodeInterpreter.currentMorsePreview.clear()
-	MorseCodeInterpreter.currentText.clear()
-	MorseCodeInterpreter.currentTextPreview.clear()
+	ui.morseClear()
 	for player in players:
 		if is_instance_valid(player):
 			player.queue_free()
+			MorseCodeInterpreter.players.erase(player)
+			players.erase(player)
 	for object in objects:
 		if is_instance_valid(object):
 			object.queue_free()
 	get_tree().reload_current_scene()
-	

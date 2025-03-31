@@ -33,7 +33,7 @@ func _process(delta: float) -> void:
 		var direction = intercept - position # Vector2 representing which way the interception point is located
 		angleDifference = fmod(direction.angle() - rotation + PI, 2 * PI) - PI
 		if not is_instance_valid(armingDelay):
-			var torqueGain = 800.0
+			var torqueGain = 128.0
 			var torque = angleDifference * torqueGain
 			if abs(angular_velocity) < 1.2:
 				if gpup2D1.emitting:
@@ -51,7 +51,7 @@ func _process(delta: float) -> void:
 	apply_central_force(Vector2.from_angle(targetAngle + PI/2) * lift * linear_velocity.length_squared() * liftMultiplier)
 	if HP > 0 and not exploded:
 		if is_instance_valid(boosterStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 70000 + Vector2(0, 9800)
+			constant_force = Vector2.from_angle(rotation) * 50000 + Vector2(0, 9800)
 			gpup2D2.amount = 512
 			gpup2D2.lifetime = 0.08
 		elif is_instance_valid(cruiseStageTimer):
