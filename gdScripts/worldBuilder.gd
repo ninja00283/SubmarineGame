@@ -10,7 +10,7 @@ var screenSizeX: int # Integer to store the size of the terrain on the X axis
 var cliffs: bool = true # Experimental cliffs
 var cliffPos: Array = [] # Array to store positions cliffs could start at
 var cliffIndices: Array = [] # Stores at which index the position is in 'array' that each cliff was based on
-var cliffCount: int = 0 # How many cliffs have currently been selected in the generation step
+var cliffCount: int = 0 # How many cliffs' positions have been picked out in the generation step
 
 func _ready() -> void:
 	array.clear()
@@ -30,7 +30,7 @@ func fill(offset: float = 0.0, terrainSegments: int = 64, terrainSizeX: int = 38
 		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(200, 800)))
 
 # Function to move the points to resemble terrain
-func build(Xrand: float = 0.15, Yrand: float = 0.25, cliffDistanceEdge: float = 0.85, maxCliffCount: int = 3):
+func build(Xrand: float = 0.15, Yrand: float = 0.25, cliffDistanceEdge: float = 0.85, maxCliffCount: int = 5):
 	var potentialCliffPos = array[randi_range(0, array.size()-1)]
 	if cliffs:
 		while cliffCount < maxCliffCount:

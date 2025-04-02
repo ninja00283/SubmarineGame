@@ -26,7 +26,6 @@ var points: Array = [] # Stores all Vector2 positions that should be checked for
 var previousCollided: bool # Stores whether or not the previous check resulted in a collision
 
 func _ready() -> void:
-	rotation_degrees += 90
 	GlobalTrail.addNode(self, 64, Vector2(-24, 0))
 
 # These functions are above _process() because "entry" is used in the process function and needs to be determined first

@@ -17,7 +17,7 @@ extends RigidBody2D
 @onready var finB: Polygon2D = $finB
 @onready var finT: Polygon2D = $finT
 
-var HP = 25 # The default amount of hit points of the missile
+var HP = 5 # The current amount of hit points the missile has
 var player # The player that fired the weapon
 var targetAngle: float # The prograde vector (radians)
 var dragCoefficient: float = 0.02 # Amount of drag, reduce for less drag

@@ -396,7 +396,7 @@ trail_lifetime = 0.02
 process_material = SubResource("ParticleProcessMaterial_alnvb")
 
 [node name="GPUParticles2D3" type="GPUParticles2D" parent="."]
-self_modulate = Color(10, 80, 80, 0.8)
+self_modulate = Color(10, 40, 80, 0.8)
 emitting = false
 amount = 1
 texture = ExtResource("5_3y4eu")

@@ -57,13 +57,26 @@ func _physics_process(delta: float) -> void:
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
 	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
 	gpup2D3.modulate = Color(brightness,brightness,brightness)
-	if Input.is_action_just_pressed("Submit"):
-		var event = InputEventKey.new()
-		for ev in InputMap.action_get_events("Submit"):
-			if ev is InputEventKey:
-				event = ev
-				break
-		commandInterpret(commandInput, self, event)
+	if root.players.find(self) == 0:
+		if Input.is_action_just_pressed("SubmitP1"):
+			var event = InputEventKey.new()
+			for ev in InputMap.action_get_events("SubmitP1"):
+				if ev is InputEventKey:
+					event = ev
+					break
+			commandInterpret(commandInput, self, event)
+			MorseCodeInterpreter.players.values()[0]["currentText"].clear()
+			MorseCodeInterpreter.players.values()[0]["currentTextPreview"].clear()
+	else:
+		if Input.is_action_just_pressed("SubmitP2"):
+			var event = InputEventKey.new()
+			for ev in InputMap.action_get_events("SubmitP2"):
+				if ev is InputEventKey:
+					event = ev
+					break
+			commandInterpret(commandInput, self, event)
+			MorseCodeInterpreter.players.values()[1]["currentText"].clear()
+			MorseCodeInterpreter.players.values()[1]["currentTextPreview"].clear()
 
 	if HP <= 0 and alive == true:
 		if root.players.find(self) != -1:

@@ -285,7 +285,7 @@ antialiased = true
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 libraries = {
-"": SubResource("AnimationLibrary_ukykt")
+&"": SubResource("AnimationLibrary_ukykt")
 }
 speed_scale = 0.5
 
@@ -307,18 +307,18 @@ rotation = 3.14159
 scale = Vector2(2, 2)
 amount = 32
 amount_ratio = 0.0
-process_material = ExtResource("3_830qs")
 texture = ExtResource("2_b4osc")
 lifetime = 0.2
 speed_scale = 1.5
 collision_base_size = 2.0
 trail_enabled = true
 trail_lifetime = 0.05
+process_material = ExtResource("3_830qs")
 
 [node name="GPUPStart" type="GPUParticles2D" parent="."]
 self_modulate = Color(0.3, 3, 1.5, 1)
 amount = 32
-process_material = SubResource("ParticleProcessMaterial_v4xy5")
 texture = ExtResource("2_b4osc")
 lifetime = 0.6
 preprocess = 2.0
+process_material = SubResource("ParticleProcessMaterial_v4xy5")

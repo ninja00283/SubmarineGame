@@ -51,8 +51,6 @@ func _ready() -> void:
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
-	if Input.is_action_just_pressed("MorseInputP2"):
-		WorldBuilder.mark()
 	currentTextP1 = MorseCodeInterpreter.players[players[0]]["currentText"]
 	currentTextP2 = MorseCodeInterpreter.players[players[1]]["currentText"]
 	if previousTextP1 != currentTextP1:
