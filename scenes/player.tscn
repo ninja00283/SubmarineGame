@@ -480,5 +480,9 @@ material = SubResource("ShaderMaterial_ex233")
 scale = Vector2(99999, 99999)
 mesh = SubResource("QuadMesh_h8co6")
 
+[node name="radarAltimeter" type="RayCast2D" parent="."]
+scale = Vector2(8, 8)
+target_position = Vector2(0, 200)
+
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
 [connection signal="timeout" from="explodeDelay" to="." method="_explodeDelayEnd"]

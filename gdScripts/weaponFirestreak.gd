@@ -32,7 +32,7 @@ func _process(delta: float) -> void:
 		var intercept = target.global_position + target.velocity * eta # Vector2 coordinates on where the missile will intercept the target
 		var direction = intercept - position # Vector2 representing which way the interception point is located
 		angleDifference = fmod(direction.angle() - rotation + PI, 2 * PI) - PI
-		if not is_instance_valid(armingDelay):
+		if not is_instance_valid(armingDelay): 
 			var torqueGain = 128.0
 			var torque = angleDifference * torqueGain
 			if abs(angular_velocity) < 1.2:

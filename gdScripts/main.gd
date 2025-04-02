@@ -9,6 +9,10 @@ extends Node2D
 @onready var settings: Node2D = $MainMenu/Settings
 @onready var endTextLabel: Label = $UI/endTextLabel
 @onready var ui: Node2D = $UI
+@onready var line2D: Line2D = $line2d
+@onready var terrainPolygon: Polygon2D = $terrain/terrainPolygon
+@onready var terrainCollider: CollisionPolygon2D = $terrain/terrainCollider
+@onready var lightOccluder2D: LightOccluder2D = $terrain/lightOccluder2d
 
 var gameEnded: bool = false
 var started: bool = false
@@ -21,7 +25,7 @@ var canSpawn: bool = false
 var isSpawning: bool = false
 var debugging: bool = false
 var startPlayerCount: int = 2
-var spawnPos: Array = [Vector2(-800, 0), Vector2(800, 0)]
+var spawnPos: Array = [Vector2(-1600, 0), Vector2(1600, 0)]
 var playerKeybinds: Dictionary = {}
 var players: Array = []
 var objects: Array = []
@@ -32,6 +36,9 @@ var previousTextP1: Array = []
 var previousTextP2: Array = []
 
 func _ready() -> void:
+	terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
+	terrainCollider.polygon = PackedVector2Array(WorldBuilder.array)
+	lightOccluder2D.occluder.polygon = PackedVector2Array(WorldBuilder.array)
 	for player in range(startPlayerCount):
 		var playerInstance = playerScene.instantiate()
 		playerInstance.position = spawnPos[0]
@@ -44,14 +51,16 @@ func _ready() -> void:
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
-	currentTextP1 = MorseCodeInterpreter.players.values()[0]["currentText"]
-	currentTextP2 = MorseCodeInterpreter.players.values()[1]["currentText"]
+	if Input.is_action_just_pressed("MorseInputP2"):
+		WorldBuilder.mark()
+	currentTextP1 = MorseCodeInterpreter.players[players[0]]["currentText"]
+	currentTextP2 = MorseCodeInterpreter.players[players[1]]["currentText"]
 	if previousTextP1 != currentTextP1:
-		players[0].addChar(str(currentTextP1[currentTextP1.size() - 1]))
-		previousTextP1 = currentTextP1
+		players[0].commandInput.text = "".join(currentTextP1)
 	if previousTextP2 != currentTextP2:
-		players[1].addChar(str(currentTextP1[currentTextP2.size() - 1]))
-		previousTextP2 = currentTextP2
+		players[1].commandInput.text = "".join(currentTextP2)
+	previousTextP1 = currentTextP1.duplicate()
+	previousTextP2 = currentTextP2.duplicate()
 	
 	if debugging:
 		if Input.is_action_pressed("LMB"):
@@ -83,6 +92,9 @@ func _process(delta: float) -> void:
 			get_tree().root.add_child(playerInstance)
 			
 	if Input.is_action_just_pressed("Reload") and started:
+		terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
+		terrainCollider.polygon = PackedVector2Array(WorldBuilder.array)
+		lightOccluder2D.occluder.polygon = PackedVector2Array(WorldBuilder.array)
 		ui.morseClear()
 		for player in players:
 			if is_instance_valid(player):
@@ -93,7 +105,7 @@ func _process(delta: float) -> void:
 			if is_instance_valid(object):
 				object.queue_free()
 		get_tree().reload_current_scene()
-			
+
 	if debugging:
 		if Input.is_action_just_pressed("Spawn"):
 			holdCounter = 0.0
@@ -164,6 +176,11 @@ func _on_start_button_pressed() -> void:
 			player.commandInput.show()
 	mainMenu.hide()
 	get_tree().paused = false
+	for player in players:
+		player.radarAltimeter.force_raycast_update()
+		if player.radarAltimeter.is_colliding():
+			print("Player: ", players.find(player), " Radar altitude: ", player.radarAltimeter.get_collision_point().y)
+			player.position.y = player.radarAltimeter.get_collision_point().y - 100
 
 func _on_settings_button_pressed() -> void:
 	if settingsShown:

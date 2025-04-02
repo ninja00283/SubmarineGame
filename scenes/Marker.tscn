@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cpium33v78plu"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_dhh2c"]
+
+[sub_resource type="SphereMesh" id="SphereMesh_rblai"]
+
+[node name="Marker" type="Node2D"]
+
+[node name="meshInstance2d" type="MeshInstance2D" parent="."]
+self_modulate = Color(1, 0, 0, 1)
+scale = Vector2(50, 50)
+mesh = SubResource("SphereMesh_dhh2c")
+
+[node name="meshInstance2d2" type="MeshInstance2D" parent="."]
+scale = Vector2(40, 40)
+mesh = SubResource("SphereMesh_dhh2c")
+
+[node name="meshInstance2d3" type="MeshInstance2D" parent="."]
+self_modulate = Color(0, 0, 0, 1)
+scale = Vector2(20, 20)
+mesh = SubResource("SphereMesh_rblai")

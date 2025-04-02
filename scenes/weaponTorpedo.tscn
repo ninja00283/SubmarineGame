@@ -31,8 +31,8 @@ initial_velocity_max = 120.0
 gravity = Vector3(0, -3, 0)
 damping_min = 0.2
 damping_max = 0.4
-scale_min = 0.04
-scale_max = 0.08
+scale_min = 0.06
+scale_max = 0.12
 scale_curve = SubResource("CurveTexture_ipv4p")
 
 [sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7bady"]
@@ -46,8 +46,8 @@ initial_velocity_max = 40.0
 gravity = Vector3(0, 0, 0)
 damping_min = 0.2
 damping_max = 0.3
-scale_min = 0.03
-scale_max = 0.04
+scale_min = 0.04
+scale_max = 0.08
 scale_curve = SubResource("CurveTexture_ipv4p")
 turbulence_enabled = true
 turbulence_noise_scale = 2.0
@@ -94,7 +94,7 @@ emission_point_count = 58
 spread = 90.0
 initial_velocity_min = 50.0
 initial_velocity_max = 400.0
-gravity = Vector3(0, 144, 0)
+gravity = Vector3(0, 324, 0)
 damping_min = 0.1
 damping_max = 0.4
 scale_min = 4.0
@@ -144,12 +144,13 @@ spread = 12.0
 initial_velocity_min = 2400.0
 initial_velocity_max = 2800.0
 gravity = Vector3(0, 192, 0)
-damping_min = 0.04
-damping_max = 0.08
+damping_min = 0.004
+damping_max = 0.008
 scale_min = 0.02
 scale_max = 0.02
 scale_curve = SubResource("CurveTexture_emdj6")
 color_ramp = SubResource("GradientTexture1D_cud5p")
+turbulence_enabled = true
 turbulence_noise_strength = 20.0
 turbulence_noise_scale = 0.318
 turbulence_noise_speed_random = 4.0
@@ -160,13 +161,14 @@ sub_emitter_amount_at_end = 1
 sub_emitter_keep_velocity = true
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_5dk4n"]
-size = Vector2(168, 1)
+size = Vector2(240, 1)
 
 [node name="RigidBody2D" type="RigidBody2D"]
 collision_layer = 7
 collision_mask = 7
 mass = 20.0
 gravity_scale = 0.0
+lock_rotation = true
 linear_damp_mode = 1
 script = ExtResource("1_opwgj")
 
@@ -244,7 +246,7 @@ self_modulate = Color(1.75, 1.25, 1.375, 1)
 position = Vector2(32, 0)
 rotation = 2.35619
 emitting = false
-amount = 512
+amount = 128
 texture = ExtResource("4_sw6vr")
 lifetime = 4.5
 one_shot = true
@@ -268,11 +270,12 @@ process_material = SubResource("ParticleProcessMaterial_qwfro")
 self_modulate = Color(100, 0.815686, 0.54902, 1)
 position = Vector2(32, 0)
 emitting = false
-amount = 1024
+amount = 256
 sub_emitter = NodePath("../GPUParticles2D7")
 texture = ExtResource("4_sw6vr")
-lifetime = 0.1
+lifetime = 0.13
 one_shot = true
+fixed_fps = 120
 process_material = SubResource("ParticleProcessMaterial_oe1wh")
 
 [node name="GPUParticles2D7" type="GPUParticles2D" parent="."]
@@ -292,7 +295,7 @@ target_position = Vector2(50, 0)
 collision_mask = 7
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="HEAT"]
-position = Vector2(116, 0)
+position = Vector2(152, 0)
 shape = SubResource("RectangleShape2D_5dk4n")
 
 [node name="inExplosionRadii" type="RayCast2D" parent="."]

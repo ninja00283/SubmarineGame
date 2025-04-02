@@ -21,6 +21,7 @@ extends CharacterBody2D
 @onready var attackDamageLabel: Label = $attackDamageLabel
 @onready var animPl: AnimationPlayer = $AnimationPlayer
 @onready var deathShader: MeshInstance2D = $deathShader
+@onready var radarAltimeter: RayCast2D = $radarAltimeter
 
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
@@ -31,8 +32,8 @@ var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
 var shortCommands: Array = ["m", "f", "d"]
 var ammo: Array = ["torpedo", "laser", "railgun", "bomb", "firestreak"]
-var xDrag: float = 0.02
-var yDrag: float = 0.02
+var xDrag: float = 0.01
+var yDrag: float = 0.01
 var HP: float = 100.0
 var alive: bool = true
 var attackDamage: float = 0.0
@@ -42,12 +43,8 @@ var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
 var originalPosition: Vector2
 var root
-var previousMorseCode: String = ""
 
 func _physics_process(delta: float) -> void:
-	if not MorseCodeInterpreter.currentText.is_empty() and "".join(MorseCodeInterpreter.currentText) != previousMorseCode:
-		commandInput.text += MorseCodeInterpreter.currentText[MorseCodeInterpreter.currentText.size() - 1]
-		previousMorseCode = "".join(MorseCodeInterpreter.currentText)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	velocity.y += (20 * (1 - HP / 100.0)) * delta
@@ -160,14 +157,14 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 		var magnitude = parts[2]
 		if angle.is_valid_float() and magnitude.is_valid_float():
 			angleDegreesInput = angle.to_int()
-			magnitudeInput = clampi(magnitude.to_int(), 0, 300)
+			magnitudeInput = clampi(magnitude.to_int(), 0, 100)
 			
 			var angleRadians = deg_to_rad(angleDegreesInput)
 			var x = magnitudeInput * cos(angleRadians)
 			var y = magnitudeInput * sin(angleRadians)
 			
-			characterBody.velocity += Vector2(x*30, y*30)
-			print(x, " ", y, " Velocity added")
+			characterBody.velocity += Vector2(x*10, y*10)
+			print(x * 10, " ", y * 10, " Velocity added")
 		else:
 			print("Invalid move command. Both angle and magnitude must be numeric values.")
 	else:
@@ -348,6 +345,3 @@ func deathShaderAnimP():
 	deathShader.hide()
 	deathShaderRan = true
 	get_tree().paused = false
-
-func addChar(character: String):
-	commandInput.text += character

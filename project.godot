@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 GlobalTrail="*res://gdScripts/globalTrail.gd"
 MorseCodeInterpreter="*res://gdScripts/morseCodeInterpreter.gd"
+WorldBuilder="*res://gdScripts/worldBuilder.gd"
 
 [display]
 

@@ -1,17 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=16 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
 [ext_resource type="Script" uid="uid://blhodkvpxuvj4" path="res://gdScripts/ui.gd" id="2_lrqlo"]
 
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_85bkh"]
-friction = 0.2
-bounce = 0.5
-absorbent = true
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_7grsg"]
-
-[sub_resource type="QuadMesh" id="QuadMesh_b37v0"]
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lrqlo"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_emltp"]
 polygon = PackedVector2Array(950, -25, -950, -25, -950, -75, 950, -75)
@@ -134,23 +127,20 @@ bg_color = Color(0, 0, 0, 0)
 process_mode = 3
 script = ExtResource("1_rqimn")
 
-[node name="Platform" type="StaticBody2D" parent="."]
-self_modulate = Color(1, 1, 1, 0.8)
-light_mask = 2
-position = Vector2(0, -150)
-collision_layer = 15
-collision_mask = 15
-physics_material_override = SubResource("PhysicsMaterial_85bkh")
+[node name="terrain" type="StaticBody2D" parent="."]
+collision_layer = 9
+collision_mask = 9
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform"]
-position = Vector2(0, 500)
-scale = Vector2(100, 5)
-shape = SubResource("RectangleShape2D_7grsg")
+[node name="terrainCollider" type="CollisionPolygon2D" parent="terrain"]
 
-[node name="MeshInstance2D" type="MeshInstance2D" parent="Platform"]
-position = Vector2(0, 500)
-scale = Vector2(2000, 100)
-mesh = SubResource("QuadMesh_b37v0")
+[node name="terrainPolygon" type="Polygon2D" parent="terrain"]
+color = Color(0.254902, 0.0627451, 0.0235294, 1)
+
+[node name="lightOccluder2d" type="LightOccluder2D" parent="terrain"]
+occluder = SubResource("OccluderPolygon2D_lrqlo")
+
+[node name="line2d" type="Line2D" parent="."]
+closed = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 zoom = Vector2(0.5, 0.5)
