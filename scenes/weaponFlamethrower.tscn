@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3 uid="uid://c463jyt3tm14g"]
+
+[ext_resource type="Script" uid="uid://d1335ny14jpu8" path="res://gdScripts/weaponFlamethrower.gd" id="1_uw1wg"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_uw1wg")
+
+[node name="timer" type="Timer" parent="."]
+wait_time = 11.0
+one_shot = true
+autostart = true
+
+[node name="queueFreeDelay" type="Timer" parent="."]
+wait_time = 1.5
+one_shot = true
+autostart = true
+
+[connection signal="timeout" from="timer" to="." method="_onTimerTimeout"]
+[connection signal="timeout" from="queueFreeDelay" to="." method="_onQueueFreeDelayTimeout"]

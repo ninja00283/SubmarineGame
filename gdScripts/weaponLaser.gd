@@ -24,7 +24,7 @@ var amountRatioMultiplier: float = 0
 var angle: float = 0
 var currentHitObject = null
 var damageTimer: float = 0.0
-var damageRate: float = 1
+var damageRate: float = 0.5
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -61,11 +61,12 @@ func _process(delta: float) -> void:
 
 	if currentHitObject != null:
 		damageTimer += delta
-		if damageTimer >= 0.02:
-			currentHitObject.HP -= damageRate
-			player.attackDamageF(damageRate, false)
-			print(currentHitObject.get_class(), " HP: ", currentHitObject.HP)
-			damageTimer = 0
+		while damageTimer >= 0.01:
+			if damageTimer >= 0.01:
+				currentHitObject.HP -= damageRate
+				player.attackDamageF(damageRate, false)
+				print(currentHitObject.get_class(), " HP: ", currentHitObject.HP)
+				damageTimer -= 0.01
 
 	if rayCast2D.is_colliding():
 		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()

@@ -18,7 +18,7 @@ extends RigidBody2D
 @onready var collider2D: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
 @onready var collider2D2: CollisionPolygon2D = $CollisionPolygon2D2
 @onready var fuseCol: CollisionPolygon2D = $Area2D/CollisionPolygon2D2
-@onready var heat: Area2D = $HEAT
+@onready var heatJet: Area2D = $HEAT
 @onready var attackDamageDelay: Timer = $attackDamageDelay
 @onready var inExplosionRadii: RayCast2D = $inExplosionRadii
 @onready var mesh_instance_2d: MeshInstance2D = $meshInstance2d
@@ -28,14 +28,12 @@ var damage
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
 var target = null
 var rangeToTarget: float = 0
-var HP: float = 10
+var HP: float = 5.0
 var gpup2D6C: bool = false
 var exploded: bool = false
 var HEATExploded: bool = false
 
-func _process(_delta: float) -> void:
-	if Input.is_action_just_pressed("KillTorpedo"):
-		HP = 0
+func _process(delta: float) -> void:
 	if HP <= 0:
 		if gpup2D6C == false:
 			hit()
@@ -86,7 +84,7 @@ func hit():
 		HEATExploded = true
 	collider2D2.position = Vector2(INF, INF)
 	impactFuse.position = Vector2(INF, INF)
-	heat.position = Vector2(INF, INF)
+	heatJet.position = Vector2(INF, INF)
 	detectionRadii.position = Vector2(INF, INF)
 	explosionRadii.position = Vector2(INF, INF)
 	queueFreeDelay.start()
@@ -118,8 +116,8 @@ func _onArmingDelayTimeout() -> void:
 	armingDelay.queue_free()
 
 func HEAT():
-	if is_instance_valid(heat):
-		for body in heat.get_overlapping_bodies():
+	if is_instance_valid(heatJet):
+		for body in heatJet.get_overlapping_bodies():
 			if body != self and "HP" in body:
 				body.HP -= 80
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")

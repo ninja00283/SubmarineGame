@@ -1,13 +1,9 @@
-[gd_scene load_steps=16 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=14 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
-[ext_resource type="Script" uid="uid://blhodkvpxuvj4" path="res://gdScripts/ui.gd" id="2_lrqlo"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lrqlo"]
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_emltp"]
-polygon = PackedVector2Array(950, -25, -950, -25, -950, -75, 950, -75)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
 friction = 0.2
@@ -37,7 +33,7 @@ tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [Color(3, 0.8, 0.8, 1)]
+"values": [Color(2, 0.6, 0.6, 1)]
 }
 
 [sub_resource type="Animation" id="Animation_37mw4"]
@@ -106,11 +102,6 @@ reflected_light_source = 1
 glow_enabled = true
 glow_levels/7 = 0.5
 glow_normalized = true
-glow_intensity = 1.4
-glow_strength = 0.6
-glow_blend_mode = 0
-glow_hdr_threshold = 0.1
-glow_hdr_scale = 1.0
 adjustment_enabled = true
 adjustment_brightness = 0.6
 
@@ -127,6 +118,15 @@ bg_color = Color(0, 0, 0, 0)
 process_mode = 3
 script = ExtResource("1_rqimn")
 
+[node name="colorRect" type="ColorRect" parent="."]
+z_index = -1
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+mouse_filter = 2
+color = Color(0.0646965, 0.0646965, 0.0646965, 1)
+
 [node name="terrain" type="StaticBody2D" parent="."]
 collision_layer = 9
 collision_mask = 9
@@ -134,7 +134,7 @@ collision_mask = 9
 [node name="terrainCollider" type="CollisionPolygon2D" parent="terrain"]
 
 [node name="terrainPolygon" type="Polygon2D" parent="terrain"]
-color = Color(0.254902, 0.0627451, 0.0235294, 1)
+color = Color(0.533333, 0.419608, 0.305882, 1)
 
 [node name="lightOccluder2d" type="LightOccluder2D" parent="terrain"]
 occluder = SubResource("OccluderPolygon2D_lrqlo")
@@ -151,10 +151,6 @@ limit_bottom = 1080
 limit_smoothed = true
 position_smoothing_enabled = true
 
-[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
-position = Vector2(0, 400)
-occluder = SubResource("OccluderPolygon2D_emltp")
-
 [node name="Border" type="StaticBody2D" parent="."]
 collision_layer = 131079
 collision_mask = 131079
@@ -166,7 +162,7 @@ build_mode = 1
 polygon = PackedVector2Array(-1920, -1080, 1920, -1080, 1920, 1080, -1920, 1080)
 
 [node name="Border" type="Polygon2D" parent="Border"]
-self_modulate = Color(3, 0.8, 0.8, 1)
+self_modulate = Color(2, 0.6, 0.6, 1)
 scale = Vector2(1.005, 1.005)
 polygon = PackedVector2Array(-1900, -1060, -1900, 1060, -1940, 1100, -1940, -1100, 1940, -1100, 1940, 1100, -1940, 1100, -1900, 1060, 1900, 1060, 1900, -1060)
 
@@ -190,7 +186,6 @@ one_shot = true
 environment = SubResource("Environment_gb58l")
 
 [node name="UI" type="Node2D" parent="."]
-script = ExtResource("2_lrqlo")
 
 [node name="endTextLabel" type="Label" parent="UI"]
 anchors_preset = 5

@@ -29,7 +29,11 @@ func _process(delta: float) -> void:
 	if target and HP > 0:
 		var distanceToTarget = global_position.distance_to(target.global_position) # The distance to the target
 		var eta = distanceToTarget / linear_velocity.length() # In seconds, how long it will take to get to the target
-		var intercept = target.global_position + target.velocity * eta # Vector2 coordinates on where the missile will intercept the target
+		var intercept # Vector2 coordinates on where the missile will intercept the target
+		if target is CharacterBody2D:
+			intercept = target.global_position + target.velocity * eta
+		else:
+			intercept = target.global_position + target.linear_velocity * eta
 		var direction = intercept - position # Vector2 representing which way the interception point is located
 		angleDifference = fmod(direction.angle() - rotation + PI, 2 * PI) - PI
 		if not is_instance_valid(armingDelay): 
@@ -44,18 +48,18 @@ func _process(delta: float) -> void:
 				apply_torque_impulse(-angular_velocity / 32)
 	targetAngle = linear_velocity.normalized().angle()
 	var lift: float = sin(2 * (rotation - targetAngle)) # Amount of lift, ranges from 1 to -1 depending on the missiles rotation
-	var liftMultiplier: float = 0.015 # How much lift should affect the missile
+	var liftMultiplier: float = 0.025 # How much lift should affect the missile
 	if HP <= 0 and not exploded:
 		explode()
 	apply_central_force(Vector2.from_angle(targetAngle + PI) * abs(sin(rotation - targetAngle)) * linear_velocity.length_squared() * dragCoefficient)
 	apply_central_force(Vector2.from_angle(targetAngle + PI/2) * lift * linear_velocity.length_squared() * liftMultiplier)
 	if HP > 0 and not exploded:
 		if is_instance_valid(boosterStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 50000 + Vector2(0, 9800)
+			constant_force = Vector2.from_angle(rotation) * 50000 + Vector2(0, 29400)
 			gpup2D2.amount = 512
 			gpup2D2.lifetime = 0.08
 		elif is_instance_valid(cruiseStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 30000 + Vector2(0, 9800)
+			constant_force = Vector2.from_angle(rotation) * 30000 + Vector2(0, 29400)
 			gpup2D2.amount = 256
 			gpup2D2.lifetime = 0.05
 			gpup2D1.emitting = true
@@ -121,11 +125,15 @@ func _onQueueFreeDelayTimeout() -> void:
 
 
 func _onIrDetectionRadiiBodyEntered(body: Node2D) -> void:
-	if "HP" in body and body is CharacterBody2D and not target:
-		target = body
-		tip.color = Color(1, 0, 0, 1)
-		finB.color = Color(1, 0, 0, 1)
-		finT.color = Color(1, 0, 0, 1)
+	if "HP" in body and body is CharacterBody2D or "generation" in body:
+		if not target:
+			target = body
+			tip.color = Color(1, 0, 0, 1)
+			finB.color = Color(1, 0, 0, 1)
+			finT.color = Color(1, 0, 0, 1)
+		else:
+			if global_position.distance_to(body.global_position) < global_position.distance_to(target.global_position):
+				target = body
 
 
 func _onBodyCollided(body: Node) -> void:

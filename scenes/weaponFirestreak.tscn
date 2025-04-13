@@ -215,6 +215,8 @@ trail_sections = 2
 process_material = SubResource("ParticleProcessMaterial_6hn1k")
 
 [node name="proximityFuzeRadii" type="Area2D" parent="."]
+collision_layer = 2097153
+collision_mask = 2097153
 
 [node name="collisionShape2d" type="CollisionShape2D" parent="proximityFuzeRadii"]
 scale = Vector2(0.4, 0.4)
@@ -230,10 +232,12 @@ debug_color = Color(1, 0, 0, 0.211765)
 
 [node name="IRDetectionRadii" type="Area2D" parent="."]
 position = Vector2(38, 0)
+collision_layer = 2097153
+collision_mask = 2097153
 monitoring = false
 
 [node name="collisionShape2d" type="CollisionPolygon2D" parent="IRDetectionRadii"]
-polygon = PackedVector2Array(1200, -300, 0, 0, 1200, 300)
+polygon = PackedVector2Array(1400, -400, 0, 0, 1400, 400)
 
 [node name="tip" type="Polygon2D" parent="."]
 color = Color(0, 1, 0, 1)

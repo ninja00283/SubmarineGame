@@ -25,12 +25,16 @@ var shaking: bool = false
 var shrapnelArray = []
 var shrapnelAmount = 6
 var attackDmgSubm = false
+var heat: float = 0.0
 
 func _ready() -> void:
 	animPl.stop()
 	flashAnim.stop()
 
 func _process(delta):
+	if heat > 1.0:
+		HP -= heat * delta
+	heat = heat * (0.5 * (delta * 60))
 	linear_velocity.y += 980 * delta
 	if not attackDmgSubm and shrapnelAmount <= 0:
 		attackDmgSubm = true

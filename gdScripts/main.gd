@@ -47,18 +47,9 @@ func _ready() -> void:
 		add_child(playerInstance)
 		move_child(playerInstance, 0)
 		spawnPos.remove_at(0)
-		MorseCodeInterpreter.addPlayer(playerInstance, player)
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
-	currentTextP1 = MorseCodeInterpreter.players[players[0]]["currentText"]
-	currentTextP2 = MorseCodeInterpreter.players[players[1]]["currentText"]
-	if previousTextP1 != currentTextP1:
-		players[0].commandInput.text = "".join(currentTextP1)
-	if previousTextP2 != currentTextP2:
-		players[1].commandInput.text = "".join(currentTextP2)
-	previousTextP1 = currentTextP1.duplicate()
-	previousTextP2 = currentTextP2.duplicate()
 	
 	if debugging:
 		if Input.is_action_pressed("LMB"):
@@ -93,11 +84,11 @@ func _process(delta: float) -> void:
 		terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
 		terrainCollider.polygon = PackedVector2Array(WorldBuilder.array)
 		lightOccluder2D.occluder.polygon = PackedVector2Array(WorldBuilder.array)
-		ui.morseClear()
+		animationPlayer.stop()
+		animationPlayer.play("RESET")
 		for player in players:
 			if is_instance_valid(player):
 				player.queue_free()
-				MorseCodeInterpreter.players.erase(player)
 				players.erase(player)
 		for object in objects:
 			if is_instance_valid(object):
@@ -211,7 +202,6 @@ func gameWon() -> void:
 	for player in players:
 		if is_instance_valid(player):
 			player.queue_free()
-			MorseCodeInterpreter.players.erase(player)
 			players.erase(player)
 	for object in objects:
 		if is_instance_valid(object):

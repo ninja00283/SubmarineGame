@@ -16,12 +16,14 @@ extends CharacterBody2D
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
 @onready var bombScene = preload("res://scenes/weaponBomb.tscn")
 @onready var firestreakScene = preload("res://scenes/weaponFirestreak.tscn")
+@onready var flamethrowerScene = preload("res://scenes/weaponFlamethrower.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
 @onready var animPl: AnimationPlayer = $AnimationPlayer
 @onready var deathShader: MeshInstance2D = $deathShader
 @onready var radarAltimeter: RayCast2D = $radarAltimeter
+@onready var morseCodeInt: Node = $morseCodeInterpreter
 
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
@@ -31,7 +33,7 @@ var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
 var shortCommands: Array = ["m", "f", "d"]
-var ammo: Array = ["torpedo", "laser", "railgun", "bomb", "firestreak"]
+var ammo: Array = ["torpedo", "laser", "railgun", "bomb", "firestreak", "flamethrower"]
 var xDrag: float = 0.01
 var yDrag: float = 0.01
 var HP: float = 100.0
@@ -57,26 +59,13 @@ func _physics_process(delta: float) -> void:
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
 	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
 	gpup2D3.modulate = Color(brightness,brightness,brightness)
-	if root.players.find(self) == 0:
-		if Input.is_action_just_pressed("SubmitP1"):
-			var event = InputEventKey.new()
-			for ev in InputMap.action_get_events("SubmitP1"):
-				if ev is InputEventKey:
-					event = ev
-					break
-			commandInterpret(commandInput, self, event)
-			MorseCodeInterpreter.players.values()[0]["currentText"].clear()
-			MorseCodeInterpreter.players.values()[0]["currentTextPreview"].clear()
-	else:
-		if Input.is_action_just_pressed("SubmitP2"):
-			var event = InputEventKey.new()
-			for ev in InputMap.action_get_events("SubmitP2"):
-				if ev is InputEventKey:
-					event = ev
-					break
-			commandInterpret(commandInput, self, event)
-			MorseCodeInterpreter.players.values()[1]["currentText"].clear()
-			MorseCodeInterpreter.players.values()[1]["currentTextPreview"].clear()
+	if Input.is_action_just_pressed("Submit"):
+		var event = InputEventKey.new()
+		for ev in InputMap.action_get_events("Submit"):
+			if ev is InputEventKey:
+				event = ev
+				break
+		commandInterpret(commandInput, self, event)
 
 	if HP <= 0 and alive == true:
 		if root.players.find(self) != -1:
@@ -267,6 +256,15 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				firestreak.player = self
 				get_tree().root.add_child(firestreak)
 				root.objects.append(firestreak)
+			elif ammoType == "flamethrower":
+				var flamethrower = flamethrowerScene.instantiate()
+				flamethrower.rotation = deg_to_rad(angleDegreesInput)
+				var direction = Vector2(cos(flamethrower.rotation), sin(flamethrower.rotation))
+				var offset = direction * 100
+				flamethrower.position = characterBody.position + offset
+				get_tree().root.add_child(flamethrower)
+				flamethrower.player = self
+				flamethrower.reparent(self)
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
 			print("Invalid inputs for fire command. Angle must be numeric.")
