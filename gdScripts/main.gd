@@ -206,3 +206,26 @@ func gameWon() -> void:
 		if is_instance_valid(object):
 			object.queue_free()
 	get_tree().reload_current_scene()
+
+func _onSubmitButtonPressed() -> void:
+	var ev = InputEventAction.new()
+	ev.action = "Submit"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await get_tree().process_frame
+	var evUp = InputEventAction.new()
+	evUp.action = "Submit"
+	evUp.pressed = false
+	Input.parse_input_event(evUp)
+
+
+func _onReloadButtonPressed() -> void:
+	var ev = InputEventAction.new()
+	ev.action = "Reload"
+	ev.pressed = true
+	Input.parse_input_event(ev)
+	await get_tree().process_frame
+	var evUp = InputEventAction.new()
+	evUp.action = "Reload"
+	evUp.pressed = false
+	Input.parse_input_event(evUp)

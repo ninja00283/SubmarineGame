@@ -1,8 +1,9 @@
-[gd_scene load_steps=14 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=16 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
 [ext_resource type="Environment" uid="uid://4qhtyd6p6yvx" path="res://assets/worldEnv.tres" id="2_lrqlo"]
+[ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="3_sqa0i"]
 
 [sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lrqlo"]
 
@@ -95,6 +96,9 @@ _data = {
 &"cameraZoomPost": SubResource("Animation_k5d0p")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jh1ax"]
+bg_color = Color(0, 0, 0, 0)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u15to"]
 bg_color = Color(0, 1, 1, 0.313726)
 
@@ -109,6 +113,7 @@ process_mode = 3
 script = ExtResource("1_rqimn")
 
 [node name="background" type="ColorRect" parent="."]
+process_mode = 4
 z_index = -1
 offset_left = -2000.0
 offset_top = -2000.0
@@ -179,6 +184,52 @@ offset_right = 813.5
 offset_bottom = -846.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 92
+
+[node name="submitButton" type="Button" parent="UI"]
+offset_left = -1909.0
+offset_top = -1065.0
+offset_right = -1653.0
+offset_bottom = -809.0
+scale = Vector2(2, 2)
+theme_override_styles/normal = SubResource("StyleBoxFlat_jh1ax")
+keep_pressed_outside = true
+icon = ExtResource("3_sqa0i")
+expand_icon = true
+
+[node name="label" type="Label" parent="UI/submitButton"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 95.0
+offset_right = 211.0
+offset_bottom = 162.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 48
+text = "Submit"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="reloadButton" type="Button" parent="UI"]
+offset_left = -1397.0
+offset_top = -1065.0
+offset_right = -1141.0
+offset_bottom = -809.0
+scale = Vector2(2, 2)
+theme_override_styles/normal = SubResource("StyleBoxFlat_jh1ax")
+keep_pressed_outside = true
+icon = ExtResource("3_sqa0i")
+expand_icon = true
+
+[node name="label" type="Label" parent="UI/reloadButton"]
+layout_mode = 0
+offset_left = 46.0
+offset_top = 95.0
+offset_right = 211.0
+offset_bottom = 162.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 48
+text = "Reload"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
@@ -372,6 +423,8 @@ context_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
+[connection signal="pressed" from="UI/submitButton" to="." method="_onSubmitButtonPressed"]
+[connection signal="pressed" from="UI/reloadButton" to="." method="_onReloadButtonPressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_debug_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/settingsButton" to="." method="_on_settings_button_pressed"]

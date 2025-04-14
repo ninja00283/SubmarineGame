@@ -28,8 +28,8 @@ func _process(delta: float) -> void:
 		end()
 	for object in objectsInArea:
 		if "HP" in object and not "generation" in object and arming.is_stopped():
-			object.HP -= 130.0 / (global_position - object.global_position).length() / (generation + 1) * delta
-			flamethrower.damage += 130.0 / (global_position - object.global_position).length() / (generation + 1) * delta
+			object.HP -= 200.0 / (global_position - object.global_position).length() / (generation + 1) * delta
+			flamethrower.damage += 200.0 / (global_position - object.global_position).length() / (generation + 1) * delta
 	if locked:
 		velocity = Vector2(0.0, 0.0)
 		if bodyLocked:

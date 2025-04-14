@@ -15,14 +15,14 @@ func _process(delta: float) -> void:
 	if fire:
 		timeElapsed += delta
 		thingy += delta
-		if thingy > 0.015:
-			for i in range(int(thingy / 0.015)):
+		if thingy > 0.03:
+			for i in range(int(thingy / 0.03)):
 				var projectile: CharacterBody2D = flamethrowerProjectile.instantiate()
 				projectile.global_position = self.global_position
 				projectile.velocity = Vector2.from_angle(rotation + randf_range(-0.03, 0.03)) * 800
 				get_tree().root.add_child(projectile)
 				projectile.flamethrower = self
-				thingy -= 0.015
+				thingy -= 0.03
 
 func _onQueueFreeDelayTimeout() -> void:
 	fire = false

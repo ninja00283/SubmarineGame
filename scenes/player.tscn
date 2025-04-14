@@ -446,6 +446,7 @@ layout_mode = 3
 anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
+scale = Vector2(1.75, 1.75)
 
 [node name="commandInput" type="LineEdit" parent="Control"]
 process_mode = 3

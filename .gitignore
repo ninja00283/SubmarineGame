@@ -1,2 +1,4 @@
 # Godot 4+ specific ignores
 .godot/
+# Godot Android build files
+/.godot/android/
