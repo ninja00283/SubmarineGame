@@ -39,27 +39,27 @@ func _process(delta: float) -> void:
 		if not is_instance_valid(armingDelay): 
 			var torqueGain = 128.0
 			var torque = angleDifference * torqueGain
-			if abs(angular_velocity) < 1.2:
+			if abs(angular_velocity) < 1.0:
 				if gpup2D1.emitting:
-					apply_torque_impulse(clamp(torque / 2, -128, 128))
+					apply_torque_impulse(clamp(torque, -512, 512) + torque * 0.2)
 				else:
-					apply_torque_impulse(clamp(torque / 2, -384, 384))
+					apply_torque_impulse(clamp(torque, -1024, 1024) + torque * 0.2)
 			if rad_to_deg(abs(angleDifference)) > 20 * abs(angular_velocity):
 				apply_torque_impulse(-angular_velocity / 32)
 	targetAngle = linear_velocity.normalized().angle()
 	var lift: float = sin(2 * (rotation - targetAngle)) # Amount of lift, ranges from 1 to -1 depending on the missiles rotation
-	var liftMultiplier: float = 0.025 # How much lift should affect the missile
+	var liftMultiplier: float = 0.5 # How much lift should affect the missile
 	if HP <= 0 and not exploded:
 		explode()
 	apply_central_force(Vector2.from_angle(targetAngle + PI) * abs(sin(rotation - targetAngle)) * linear_velocity.length_squared() * dragCoefficient)
 	apply_central_force(Vector2.from_angle(targetAngle + PI/2) * lift * linear_velocity.length_squared() * liftMultiplier)
 	if HP > 0 and not exploded:
 		if is_instance_valid(boosterStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 50000 + Vector2(0, 29400)
+			constant_force = Vector2.from_angle(rotation) * 40000 + Vector2(0, 19600)
 			gpup2D2.amount = 512
 			gpup2D2.lifetime = 0.08
 		elif is_instance_valid(cruiseStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 30000 + Vector2(0, 29400)
+			constant_force = Vector2.from_angle(rotation) * 20000 + Vector2(0, 19600)
 			gpup2D2.amount = 256
 			gpup2D2.lifetime = 0.05
 			gpup2D1.emitting = true

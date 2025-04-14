@@ -44,7 +44,10 @@ var frequency: float = 15
 var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
 var originalPosition: Vector2
+var keybind: InputEvent
 var root
+func _ready() -> void:
+	morseCodeInt.player = self
 
 func _physics_process(delta: float) -> void:
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
@@ -69,6 +72,7 @@ func _physics_process(delta: float) -> void:
 
 	if HP <= 0 and alive == true:
 		if root.players.find(self) != -1:
+			InputMap.erase_action(str("P", root.players.find(self), "MorseInput"))
 			root.players.remove_at(root.players.find(self))
 		attackDamageLabel.hide()
 		collision_layer = 1 << 19
@@ -93,8 +97,10 @@ func _physics_process(delta: float) -> void:
 			HP -= velocity.length() * 0.08 * (HP / 100)
 			collider.velocity += transferVelo
 			velocity = remainingVelo.bounce(colInfo.get_normal())
-		else:
-			velocity = velocity.bounce(colInfo.get_normal()) * 0.4 * (HP / 100)
+		elif velocity.length() > 20.0:
+			velocity = velocity.bounce(colInfo.get_normal()) * 0.6 * (HP / 100)
+			if colInfo.get_collider().name == "Border":
+				root.borderHit(self)
 		var velocityLen = velocity.length()
 		var particleRatio = 1.0
 		if velocityLen < 1600.0:
@@ -347,6 +353,7 @@ func attackDamageF(damage, reset):
 
 func deathShaderAnimS():
 	get_viewport().use_hdr_2d = false
+	deathShader.process_mode = Node.PROCESS_MODE_INHERIT
 	deathShader.show()
 	deathShaderRan = true
 	get_tree().paused = true
@@ -354,5 +361,13 @@ func deathShaderAnimS():
 func deathShaderAnimP():
 	get_viewport().use_hdr_2d = true
 	deathShader.hide()
+	deathShader.process_mode = Node.PROCESS_MODE_DISABLED
 	deathShaderRan = true
 	get_tree().paused = false
+
+func addKeybind(key: InputEvent):
+	if not str("P", root.players.find(self), "MorseInput") in InputMap.get_actions():
+		InputMap.add_action(str("P", root.players.find(self), "MorseInput"))
+	if not InputMap.action_get_events(str("P", root.players.find(self), "MorseInput")).size() >= 1:
+		InputMap.action_add_event(str("P", root.players.find(self), "MorseInput"), key)
+		keybind = key

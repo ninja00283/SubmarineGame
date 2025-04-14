@@ -17,23 +17,19 @@ extends Node2D
 var gameEnded: bool = false
 var started: bool = false
 var settingsShown: bool = false
+var canSpawn: bool = false
+var isSpawning: bool = false
+var debugging: bool = false
+var listening: bool = false
 var spawnFrameCounter: float = 0.0
 var spawnRate: float = 0.025
 var holdTime: float = 0.5
 var holdCounter: float = 0.0
-var canSpawn: bool = false
-var isSpawning: bool = false
-var debugging: bool = false
 var startPlayerCount: int = 2
 var spawnPos: Array = [Vector2(-1600, 0), Vector2(1600, 0)]
-var playerKeybinds: Dictionary = {}
 var players: Array = []
 var objects: Array = []
 var heldObjects: Array = []
-var currentTextP1: Array
-var currentTextP2: Array
-var previousTextP1: Array = []
-var previousTextP2: Array = []
 
 func _ready() -> void:
 	terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
@@ -50,20 +46,6 @@ func _ready() -> void:
 	get_tree().paused = true
 
 func _process(delta: float) -> void:
-	
-	if debugging:
-		if Input.is_action_pressed("LMB"):
-			var worldMousePos = get_viewport().get_camera_2d().get_global_mouse_position()
-			var query = PhysicsPointQueryParameters2D.new()
-			query.position = worldMousePos
-			query.collide_with_bodies = true
-			for body in get_world_2d().direct_space_state.intersect_point(query):
-				heldObjects.append(body["collider"])
-			for object in heldObjects:
-				object.global_position = worldMousePos
-		else:
-			heldObjects.clear()
-
 	if not debugging and players.size() < 2 and not gameEnded:
 		gameWon()
 	if players.size() > 0 and not started:
@@ -72,20 +54,14 @@ func _process(delta: float) -> void:
 				player.commandInput.hide()
 			else:
 				player.commandInput.show()   
-	if debugging:
-		if Input.is_action_just_pressed("MMB"):
-			var playerInstance = playerScene.instantiate()
-			playerInstance.position = get_global_mouse_position()
-			playerInstance.root = self
-			players.append(playerInstance)
-			get_tree().root.add_child(playerInstance)
-			
+
 	if Input.is_action_just_pressed("Reload") and started:
 		terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
 		terrainCollider.polygon = PackedVector2Array(WorldBuilder.array)
 		lightOccluder2D.occluder.polygon = PackedVector2Array(WorldBuilder.array)
 		animationPlayer.stop()
 		animationPlayer.play("RESET")
+		animationPlayer.stop()
 		for player in players:
 			if is_instance_valid(player):
 				player.queue_free()
@@ -96,6 +72,24 @@ func _process(delta: float) -> void:
 		get_tree().reload_current_scene()
 
 	if debugging:
+		if Input.is_action_pressed("LMB"):
+			var worldMousePos = get_viewport().get_camera_2d().get_global_mouse_position()
+			var query = PhysicsPointQueryParameters2D.new()
+			query.position = worldMousePos
+			query.collide_with_bodies = true
+			for body in get_world_2d().direct_space_state.intersect_point(query):
+				heldObjects.append(body["collider"])
+			for object in heldObjects:
+				if is_instance_valid(object):
+					object.global_position = worldMousePos
+		else:
+			heldObjects.clear()
+		if Input.is_action_just_pressed("MMB"):
+			var playerInstance = playerScene.instantiate()
+			playerInstance.position = get_global_mouse_position()
+			playerInstance.root = self
+			players.append(playerInstance)
+			get_tree().root.add_child(playerInstance)
 		if Input.is_action_just_pressed("Spawn"):
 			holdCounter = 0.0
 			canSpawn = false
@@ -116,6 +110,11 @@ func _process(delta: float) -> void:
 			if spawnFrameCounter >= spawnRate:
 				spawnPlayerRing(100, 600)
 				spawnFrameCounter = 0
+
+func _input(event: InputEvent) -> void:
+	if listening:
+		pass
+
 func spawnPlayerRing(innerOffset: float, outerOffset: float):
 	var spawnCount = 1
 	for i in range(spawnCount):
@@ -133,12 +132,12 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 			players.append(playerInstance)
 			get_tree().root.add_child(playerInstance)
 
-func _borderHit(body: Node2D) -> void:
+func borderHit(body: Node2D) -> void:
 	if "velocity" in body:
 		var velocityMagnitude = body.velocity.length()
 		var startPosition = 0.0
-		if velocityMagnitude < 1200.0:
-			startPosition = lerp(0.2,0.0,clamp(velocityMagnitude/1200.0,0.0,1.0))
+		if velocityMagnitude < 600.0:
+			startPosition = lerp(0.2,0.0,clamp(velocityMagnitude/600.0,0.0,1.0))
 		animationPlayer.stop()
 		animationPlayer.play("borderHit")
 		animationPlayer.seek(startPosition, true)

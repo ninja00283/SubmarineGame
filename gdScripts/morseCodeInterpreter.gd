@@ -15,6 +15,7 @@ var currentMorsePreview: Array = [] # Array that stores what morse is currently 
 var currentTextPreview: Array = [] # Array that stores all translated characters and what character will be added if the user waited 7 units
 var morsePreviewAppended: bool = false # Bool to track if an element has already been added to any morse preview array, this is to avoid appending excess elements
 var textPreviewAppended: bool = false # Bool to track if an element has already been added to any text preview array, this is to avoid appending excess elements
+var player: CharacterBody2D # The player this morse interpreter belongs to
 # Below is a dictionary that stores all characters and their associated morse code
 var morseCharacters: Dictionary = {
 	"A": [".", "-"],
@@ -56,14 +57,15 @@ var morseCharacters: Dictionary = {
 }
 # _unhandled_key_input() is above _process() because morseInputPressed needs to be updated before _process() is ran
 func _unhandled_key_input(event: InputEvent) -> void:
-	if event.as_text() == InputMap.action_get_events("MorseInput")[0].as_text().split(" ")[0]:
-		if not event.is_echo():
-			if event.is_pressed():
-				morseInputPressed = true
-				currentMorsePreview.append(".")
-				morsePreviewAppended = false
-			else:
-				morseInputPressed = false
+	if str("P", player.root.players.find(self), "MorseInput") in InputMap.get_actions():
+		if event.as_text() == InputMap.action_get_events(str("P", player.root.players.find(self), "MorseInput"))[0].as_text().split(" ")[0]:
+			if not event.is_echo():
+				if event.is_pressed():
+					morseInputPressed = true
+					currentMorsePreview.append(".")
+					morsePreviewAppended = false
+				else:
+					morseInputPressed = false
 
 func _ready() -> void:
 	pass

@@ -24,7 +24,7 @@ particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
 emission_shape_scale = Vector3(1.2, 1.2, 1)
 emission_shape = 1
-emission_sphere_radius = 12.0
+emission_sphere_radius = 8.0
 direction = Vector3(-1, 0, 0)
 spread = 4.0
 initial_velocity_min = 128.0
@@ -32,8 +32,8 @@ initial_velocity_max = 256.0
 gravity = Vector3(0, 0, 0)
 damping_min = 0.05
 damping_max = 0.1
-scale_min = 0.06
-scale_max = 0.1
+scale_min = 0.04
+scale_max = 0.07
 scale_curve = SubResource("CurveTexture_d8qhs")
 color_ramp = SubResource("GradientTexture1D_d8qhs")
 turbulence_noise_scale = 0.5
@@ -65,8 +65,8 @@ curve = SubResource("Curve_mm276")
 particle_flag_disable_z = true
 particle_flag_damping_as_friction = true
 direction = Vector3(-1, 0, 0)
-spread = 10.0
-initial_velocity_min = 1024.0
+spread = 8.0
+initial_velocity_min = 512.0
 initial_velocity_max = 1024.0
 directional_velocity_min = -720.0
 directional_velocity_max = 720.0
@@ -75,7 +75,7 @@ gravity = Vector3(0, 0, 0)
 damping_min = 0.02
 damping_max = 0.1
 scale_min = 0.03
-scale_max = 0.06
+scale_max = 0.04
 scale_curve = SubResource("CurveTexture_rrlf8")
 color = Color(1, 1, 0.608, 0.1)
 color_ramp = SubResource("GradientTexture1D_icc5a")
@@ -131,10 +131,10 @@ color = Color(4, 2, 0.8, 1)
 collision_mode = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_87052"]
-radius = 128.0
+radius = 102.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_icc5a"]
-radius = 256.0
+radius = 224.0
 
 [node name="rigidBody2d" type="RigidBody2D"]
 mass = 80.0
@@ -142,15 +142,14 @@ continuous_cd = 1
 contact_monitor = true
 max_contacts_reported = 10
 linear_damp = 0.05
-angular_damp = 8.0
 script = ExtResource("1_hx5ic")
 
 [node name="sprite2d" type="Sprite2D" parent="."]
-scale = Vector2(0.15, 0.15)
+scale = Vector2(0.113, 0.113)
 texture = ExtResource("1_hxi75")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
-scale = Vector2(0.15, 0.15)
+scale = Vector2(0.113, 0.113)
 polygon = PackedVector2Array(-129, -49, -129, -17, -197, -17, -197, -45, -219, -45, -219, -17, -250, -17, -256, -14, -256, 14, -250, 17, -219, 17, -219, 45, -197, 45, -197, 17, -129, 17, -129, 49, -26, 49, 28, 17, 226, 17, 259, 0, 226, -17, 28, -17, -26, -49)
 
 [node name="armingDelay" type="Timer" parent="."]
@@ -172,16 +171,16 @@ wait_time = 8.0
 one_shot = true
 
 [node name="GPUParticles2D1" type="GPUParticles2D" parent="."]
-position = Vector2(-38.025, 0)
-amount = 192
+position = Vector2(-29, 0)
+amount = 128
 texture = ExtResource("3_87052")
 lifetime = 0.5
 fixed_fps = 120
 process_material = SubResource("ParticleProcessMaterial_1p778")
 
 [node name="GPUParticles2D2" type="GPUParticles2D" parent="."]
-position = Vector2(-38, 0)
-amount = 256
+position = Vector2(-29, 0)
+amount = 128
 texture = ExtResource("3_87052")
 lifetime = 0.05
 fixed_fps = 240
@@ -237,19 +236,23 @@ collision_mask = 2097153
 monitoring = false
 
 [node name="collisionShape2d" type="CollisionPolygon2D" parent="IRDetectionRadii"]
-polygon = PackedVector2Array(1400, -400, 0, 0, 1400, 400)
+position = Vector2(-8.75, 0)
+polygon = PackedVector2Array(1200, -300, 0, 0, 1200, 300)
 
 [node name="tip" type="Polygon2D" parent="."]
+scale = Vector2(0.75, 0.75)
 color = Color(0, 1, 0, 1)
 polygon = PackedVector2Array(39, 0, 34, 2.5, 32, 2.5, 32, -2.5, 34, -2.5)
 
 [node name="finB" type="Polygon2D" parent="."]
-position = Vector2(-51, 5)
+position = Vector2(-38.469, 3.785)
+scale = Vector2(0.75, 0.75)
 color = Color(0, 1, 0, 1)
 polygon = PackedVector2Array(55.49, -2.6, 47.1, 2.21, 31.745, 2.21, 31.745, -2.6)
 
 [node name="finT" type="Polygon2D" parent="."]
-position = Vector2(-51, -4.61)
+position = Vector2(-38.464, -3.53)
+scale = Vector2(0.75, 0.75)
 color = Color(0, 1, 0, 1)
 polygon = PackedVector2Array(47.1, -2.6, 55.49, 2.21, 31.745, 2.21, 31.745, -2.6)
 

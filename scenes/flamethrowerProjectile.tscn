@@ -1,11 +1,7 @@
-[gd_scene load_steps=22 format=3 uid="uid://fnuyobd77ixp"]
+[gd_scene load_steps=21 format=3 uid="uid://fnuyobd77ixp"]
 
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="1_0wegq"]
 [ext_resource type="Script" uid="uid://b0p7fs0ryybi6" path="res://gdScripts/flamethrowerProjectile.gd" id="1_2wtk4"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_2wtk4"]
-rough = true
-bounce = 0.4
 
 [sub_resource type="SphereMesh" id="SphereMesh_2wtk4"]
 
@@ -112,12 +108,9 @@ radius = 20.0
 [sub_resource type="CircleShape2D" id="CircleShape2D_ofiuq"]
 radius = 64.0
 
-[node name="rigidBody2d" type="RigidBody2D"]
+[node name="characterBody2D" type="CharacterBody2D"]
 collision_layer = 2097152
 collision_mask = 8
-mass = 0.2
-physics_material_override = SubResource("PhysicsMaterial_2wtk4")
-angular_damp = 1.0
 script = ExtResource("1_2wtk4")
 
 [node name="meshInstance2d" type="MeshInstance2D" parent="."]
@@ -176,7 +169,6 @@ one_shot = true
 autostart = true
 
 [connection signal="body_entered" from="area2d" to="." method="_onArea2dBodyEntered"]
-[connection signal="body_exited" from="area2d" to="." method="_onArea2dBodyExited"]
 [connection signal="body_entered" from="area2d2" to="." method="_onArea2d2BodyEntered"]
 [connection signal="body_exited" from="area2d2" to="." method="_onArea2d2BodyExited"]
 [connection signal="timeout" from="lifetime" to="." method="_onLifetimeTimeout"]
