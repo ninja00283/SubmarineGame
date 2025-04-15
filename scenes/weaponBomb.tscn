@@ -1,14 +1,10 @@
-[gd_scene load_steps=20 format=3 uid="uid://tk8n2c20kyqh"]
+[gd_scene load_steps=19 format=3 uid="uid://tk8n2c20kyqh"]
 
 [ext_resource type="Script" uid="uid://cllqibi45hij2" path="res://gdScripts/weaponBomb.gd" id="1_2b1kx"]
 [ext_resource type="Texture2D" uid="uid://clatga6fquhnp" path="res://assets/weaponBomb.svg" id="1_v0v7v"]
 [ext_resource type="Texture2D" uid="uid://b67h04ttb8ste" path="res://assets/bombTrajectory.svg" id="2_d5kgh"]
 [ext_resource type="Material" uid="uid://d36fe8pvtxh5n" path="res://assets/weaponBomb.tres" id="3_wqcs0"]
 [ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="5_jcwks"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_fqli1"]
-friction = 0.7
-rough = true
 
 [sub_resource type="Animation" id="Animation_sjrxa"]
 length = 0.001
@@ -242,13 +238,9 @@ turbulence_initial_displacement_min = 1.49012e-06
 turbulence_initial_displacement_max = 1.0
 collision_use_scale = true
 
-[node name="RigidBody2D" type="RigidBody2D"]
+[node name="RigidBody2D" type="CharacterBody2D"]
 collision_layer = 8
 collision_mask = 8
-mass = 80.0
-physics_material_override = SubResource("PhysicsMaterial_fqli1")
-gravity_scale = 980.0
-continuous_cd = 1
 script = ExtResource("1_2b1kx")
 shakeScale = 1.0
 shakeRotateScale = 0.0
@@ -264,7 +256,7 @@ texture = ExtResource("1_v0v7v")
 
 [node name="Collider" type="CollisionPolygon2D" parent="."]
 scale = Vector2(0.03, 0.03)
-polygon = PackedVector2Array(-5.09998, -1581.7, -11, -1580.1, -11, -1577.2, -259.4, -1145.3, -340.7, -1123, -344.7, -1123, -424.8, -1094, -427.9, -1094, -582, -1019, -584.2, -1019, -677.1, -958, -679.4, -958, -741.4, -909, -743.6, -909, -869.7, -790, -1231, -787, -1371.3, -787, -1373.6, -783, -1121.6, -347.2, -1158.2, -187, -1159.7, -187, -1174, -8.19995, -1174, 8.19995, -1160, 176.3, -1160, 183.5, -1118.2, 357, -1366, 790.9, -1366, 798, -864, 797, -861.6, 797, -789, 868.6, -789, 869.9, -726, 921.8, -726, 923.1, -587, 1016, -587, 1017.5, -431, 1091.5, -431, 1093, -248.6, 1148, 3.69995, 1581, 9.30005, 1581, 259.3, 1145.2, 340.7, 1123, 344.7, 1123, 424.8, 1094, 427.9, 1094, 582, 1019, 584.2, 1019, 677.1, 958, 679.4, 958, 741.4, 909, 743.6, 909, 869.6, 789.9, 1225, 787, 1371.3, 787, 1373.6, 783, 1121.5, 347.1, 1158.2, 187, 1159.7, 187, 1174, 7.19995, 1174, -7.19995, 1160, -176.3, 1160, -183.5, 1118.1, -357.1, 1366, -790.9, 1366, -798, 864, -797, 861.6, -797, 789, -868.7, 789, -869.9, 726, -921.9, 726, -923.1, 587, -1016.1, 587, -1017.5, 431, -1091.6, 431, -1093, 248.6, -1148)
+polygon = PackedVector2Array(-5.09998, -1581.7, -259.4, -1145.3, -869.7, -790, -1371.3, -787, -1121.6, -347.2, -1118.2, 357, -1366, 798, -864, 797, -248.6, 1148, 9.30005, 1581, 259.3, 1145.2, 869.6, 789.9, 1373.6, 783, 1121.5, 347.1, 1118.1, -357.1, 1366, -798, 864, -797, 248.6, -1148)
 
 [node name="impactFuse" type="Area2D" parent="."]
 collision_layer = 8

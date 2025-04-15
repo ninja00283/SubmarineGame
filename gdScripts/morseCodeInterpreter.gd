@@ -12,9 +12,7 @@ var timeSinceLastMorse: float = 0.0 # Floating point that stores how long it has
 var currentMorse: Array = [] # Array that stores what morse is currently entered, cleared after 7 units
 var currentText: Array = [] # Array that stores all translated characters, cleared when submit is pressed
 var currentMorsePreview: Array = [] # Array that stores what morse is currently entered and what morse will be added if the user lets go
-var currentTextPreview: Array = [] # Array that stores all translated characters and what character will be added if the user waited 7 units
 var morsePreviewAppended: bool = false # Bool to track if an element has already been added to any morse preview array, this is to avoid appending excess elements
-var textPreviewAppended: bool = false # Bool to track if an element has already been added to any text preview array, this is to avoid appending excess elements
 var player: CharacterBody2D # The player this morse interpreter belongs to
 # Below is a dictionary that stores all characters and their associated morse code
 var morseCharacters: Dictionary = {
@@ -57,8 +55,8 @@ var morseCharacters: Dictionary = {
 }
 # _unhandled_key_input() is above _process() because morseInputPressed needs to be updated before _process() is ran
 func _unhandled_key_input(event: InputEvent) -> void:
-	if str("P", player.root.players.find(self), "MorseInput") in InputMap.get_actions():
-		if event.as_text() == InputMap.action_get_events(str("P", player.root.players.find(self), "MorseInput"))[0].as_text().split(" ")[0]:
+	if str("P", player.index, "MorseInput") in InputMap.get_actions():
+		if event.as_text() == InputMap.action_get_events(str("P", player.index, "MorseInput"))[0].as_text().split(" ")[0]:
 			if not event.is_echo():
 				if event.is_pressed():
 					morseInputPressed = true
@@ -85,39 +83,30 @@ func _process(delta: float) -> void:
 		if morseIsKey:
 			if timeSinceLastMorse > characterLengthS * lengthSMultiplier and not morseInputPressed:
 				currentText.append(char)
+				player.addChar(char)
 				print(currentText)
 				currentMorse.clear()
 				currentMorsePreview.clear()
-			if not textPreviewAppended:
-				currentTextPreview.append(char)
-				textPreviewAppended = true
 			break
 	if timeSinceMorse > dashLengthS * lengthSMultiplier:
 		if not morseInputPressed:
-			textPreviewAppended = false
-			if currentMorse.size() > 0 and currentTextPreview[currentTextPreview.size() - 1] != " ":
-				currentTextPreview.resize(currentTextPreview.size() - 1)
 			currentMorse.append("-")
-			currentMorsePreview.resize(currentMorsePreview.size() - 1)
-			currentMorsePreview.append("-")
+			currentMorsePreview = currentMorse.duplicate()
 			print(currentMorse)
 		if not morsePreviewAppended:
-			currentMorsePreview.resize(currentMorsePreview.size() - 1)
+			currentMorsePreview.resize(currentMorse.size())
 			currentMorsePreview.append("-")
 			morsePreviewAppended = true
 	elif timeSinceMorse > 0.0:
 		if not morseInputPressed:
-			textPreviewAppended = false
-			if currentMorse.size() > 0 and currentTextPreview[currentTextPreview.size() - 1] != " ":
-				currentTextPreview.resize(currentTextPreview.size() - 1)
 			currentMorse.append(".")
+			currentMorsePreview = currentMorse.duplicate()
 			print(currentMorse)
 	if timeSinceLastMorse > spaceLengthS * lengthSMultiplier and currentText.size() > 0:
 		if not currentText[currentText.size() - 1] == " ":
 			currentText.append(" ")
-			currentTextPreview.append(" ")
+			player.addChar(str(" "))
 			print(currentText)
-			print("curtextpre ", currentTextPreview)
 	if not morseInputPressed:
 		timeSinceLastMorse += delta
 		timeSinceMorse = 0.0

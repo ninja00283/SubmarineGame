@@ -8,11 +8,14 @@ extends Node2D
 @onready var mainMenu: Node2D = $MainMenu
 @onready var settings: Node2D = $MainMenu/Settings
 @onready var endTextLabel: Label = $UI/endTextLabel
-@onready var ui: Node2D = $UI
 @onready var line2D: Line2D = $line2d
 @onready var terrainPolygon: Polygon2D = $terrain/terrainPolygon
 @onready var terrainCollider: CollisionPolygon2D = $terrain/terrainCollider
 @onready var lightOccluder2D: LightOccluder2D = $terrain/lightOccluder2d
+@onready var inputPrompt: Label = $UI/vBoxContainer/inputPrompt
+@onready var inputPromptCover: ColorRect = $UI/inputPromptCover
+@onready var keyInUse: Label = $UI/vBoxContainer/keyInUse
+@onready var keyInUseTimer: Timer = $UI/vBoxContainer/keyInUseTimer
 
 var gameEnded: bool = false
 var started: bool = false
@@ -21,15 +24,19 @@ var canSpawn: bool = false
 var isSpawning: bool = false
 var debugging: bool = false
 var listening: bool = false
+var listeningSubmit: bool = false
 var spawnFrameCounter: float = 0.0
 var spawnRate: float = 0.025
 var holdTime: float = 0.5
 var holdCounter: float = 0.0
 var startPlayerCount: int = 2
+var keybinds: int = 0
+var keybindsSubmit: int = 0
 var spawnPos: Array = [Vector2(-1600, 0), Vector2(1600, 0)]
 var players: Array = []
 var objects: Array = []
 var heldObjects: Array = []
+var keysAsText: Array = []
 
 func _ready() -> void:
 	terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
@@ -40,6 +47,7 @@ func _ready() -> void:
 		playerInstance.position = spawnPos[0]
 		playerInstance.root = self
 		players.append(playerInstance)
+		playerInstance.index = player
 		add_child(playerInstance)
 		move_child(playerInstance, 0)
 		spawnPos.remove_at(0)
@@ -112,8 +120,55 @@ func _process(delta: float) -> void:
 				spawnFrameCounter = 0
 
 func _input(event: InputEvent) -> void:
-	if listening:
-		pass
+	if listening and not started:
+		for i in range(players.size()):
+			if not str("P", i, "MorseInput") in InputMap.get_actions():
+				if event.is_action_type() and event.is_released() and not event.is_echo():
+					if not event.as_text() in keysAsText:
+						addKeybind(event, true, i)
+						keybinds += 1
+						print("Keybind set, action: ", str("P", i, "MorseInput"), " Event: ", event)
+						keysAsText.append(event.as_text())
+						if i == players.size() - 1:
+							listening = false
+							listeningSubmit = true
+						break
+					else:
+						keyInUse.show()
+						keyInUseTimer.stop()
+						keyInUseTimer.start()
+						break
+	elif listeningSubmit and not started:
+		for i in range(players.size()):
+			if not str("P", i, "TextSubmit") in InputMap.get_actions():
+				if event.is_action_type() and event.is_released() and not event.is_echo():
+					if not event.as_text() in keysAsText:
+						addKeybind(event, false, i)
+						keybindsSubmit += 1
+						print("Keybind set, action: ", str("P", i, "TextSubmit"), " Event: ", event)
+						keysAsText.append(event.as_text())
+						if i == players.size():
+							listeningSubmit = false
+						break
+					else:
+						keyInUse.show()
+						keyInUseTimer.stop()
+						keyInUseTimer.start()
+						break
+	if keybinds < 2:
+		inputPrompt.text = str("Player ", keybinds + 1, ": Press any key to set as morse input")
+	elif keybindsSubmit < 2:
+		inputPrompt.text = str("Player ", keybindsSubmit + 1, ": Press any key to set as text submit")
+
+func addKeybind(key: InputEvent, morseInput: bool, index: int):
+	if morseInput:
+		if not str("P", index, "MorseInput") in InputMap.get_actions():
+			InputMap.add_action(str("P", index, "MorseInput"))
+			InputMap.action_add_event(str("P", index, "MorseInput"), key)
+	else:
+		if not str("P", index, "TextSubmit") in InputMap.get_actions():
+			InputMap.add_action(str("P", index, "TextSubmit"))
+			InputMap.action_add_event(str("P", index, "TextSubmit"), key)
 
 func spawnPlayerRing(innerOffset: float, outerOffset: float):
 	var spawnCount = 1
@@ -158,11 +213,17 @@ func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
 func _on_start_button_pressed() -> void:
+	listening = true
+	inputPrompt.show()
+	inputPromptCover.show()
+	mainMenu.hide()
+	await waitForPlayers()
+	inputPrompt.hide()
+	inputPromptCover.hide()
 	started = true
 	if players.size() > 0:
 		for player in players:
 			player.commandInput.show()
-	mainMenu.hide()
 	get_tree().paused = false
 	for player in players:
 		player.radarAltimeter.force_raycast_update()
@@ -197,7 +258,6 @@ func gameWon() -> void:
 		print("No players lived to tell the tale.")
 		endTextLabel.text = str("No players lived to tell the tale.")
 	await get_tree().create_timer(5.5).timeout
-	ui.morseClear()
 	for player in players:
 		if is_instance_valid(player):
 			player.queue_free()
@@ -206,3 +266,11 @@ func gameWon() -> void:
 		if is_instance_valid(object):
 			object.queue_free()
 	get_tree().reload_current_scene()
+
+func waitForPlayers():
+	while players.size() > keybinds or players.size() > keybindsSubmit:
+		await get_tree().create_timer(0.1).timeout
+
+
+func _onKeyInUseTimerTimeout() -> void:
+	keyInUse.hide()

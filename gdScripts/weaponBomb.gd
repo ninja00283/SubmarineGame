@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends CharacterBody2D
 
 @export var shakeScale: float = 10.0
 @export var shakeRotateScale: float = 1.0
@@ -25,17 +25,15 @@ var shaking: bool = false
 var shrapnelArray = []
 var shrapnelAmount = 6
 var attackDmgSubm = false
-var heat: float = 0.0
 
 func _ready() -> void:
+	velocity = Vector2.from_angle(rotation) * 1536
 	animPl.stop()
 	flashAnim.stop()
 
-func _process(delta):
-	if heat > 1.0:
-		HP -= heat * delta
-	heat = heat * (0.5 * (delta * 60))
-	linear_velocity.y += 980 * delta
+func _physics_process(delta):
+	rotation += velocity.x / bombSprite.texture.get_size().x
+	velocity.y += 980 * delta
 	if not attackDmgSubm and shrapnelAmount <= 0:
 		attackDmgSubm = true
 		player.attackDamageF(0.0, true)
@@ -55,6 +53,11 @@ func _process(delta):
 	else:
 		originalPosition = position
 		originalRotation = rotation_degrees
+	var colInfo = move_and_collide(velocity * delta)
+	if colInfo:
+		var collider = colInfo.get_collider()
+		velocity = velocity.bounce(colInfo.get_normal()) * 0.2
+	move_and_slide()
 
 
 func _onImpactFuseActivated(body: Node2D) -> void:

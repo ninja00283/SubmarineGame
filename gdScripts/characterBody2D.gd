@@ -24,6 +24,8 @@ extends CharacterBody2D
 @onready var deathShader: MeshInstance2D = $deathShader
 @onready var radarAltimeter: RayCast2D = $radarAltimeter
 @onready var morseCodeInt: Node = $morseCodeInterpreter
+@onready var morse: Label = $morse
+@onready var morsePreview: Label = $morsePreview
 
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
@@ -43,13 +45,19 @@ var amplitude: float = 1
 var frequency: float = 15
 var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
+var index: int 
 var originalPosition: Vector2
 var keybind: InputEvent
 var root
+
 func _ready() -> void:
 	morseCodeInt.player = self
 
 func _physics_process(delta: float) -> void:
+	if Input.is_action_just_pressed("LoseFocus"):
+		commandInput.release_focus()
+	morse.text = "".join(morseCodeInt.currentMorse)
+	morsePreview.text = "".join(morseCodeInt.currentMorsePreview)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	velocity.y += (20 * (1 - HP / 100.0)) * delta
@@ -62,7 +70,15 @@ func _physics_process(delta: float) -> void:
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
 	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
 	gpup2D3.modulate = Color(brightness,brightness,brightness)
-	if Input.is_action_just_pressed("Submit"):
+	if not root.debugging:
+		if Input.is_action_just_pressed(str("P", index, "TextSubmit")):
+			var event = InputEventKey.new()
+			for ev in InputMap.action_get_events(str("P", index, "TextSubmit")):
+				if ev is InputEventKey:
+					event = ev
+					break
+			commandInterpret(commandInput, self, event)
+	elif Input.is_action_just_pressed("Submit"):
 		var event = InputEventKey.new()
 		for ev in InputMap.action_get_events("Submit"):
 			if ev is InputEventKey:
@@ -248,7 +264,6 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				bomb.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(bomb.rotation), sin(bomb.rotation))
 				var offset = direction * 150
-				bomb.linear_velocity = direction * 1536
 				bomb.position = characterBody.position + offset
 				bomb.player = self
 				get_tree().root.add_child(bomb)
@@ -365,9 +380,5 @@ func deathShaderAnimP():
 	deathShaderRan = true
 	get_tree().paused = false
 
-func addKeybind(key: InputEvent):
-	if not str("P", root.players.find(self), "MorseInput") in InputMap.get_actions():
-		InputMap.add_action(str("P", root.players.find(self), "MorseInput"))
-	if not InputMap.action_get_events(str("P", root.players.find(self), "MorseInput")).size() >= 1:
-		InputMap.action_add_event(str("P", root.players.find(self), "MorseInput"), key)
-		keybind = key
+func addChar(char: String):
+	commandInput.text += char

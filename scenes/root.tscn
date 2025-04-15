@@ -108,15 +108,6 @@ bg_color = Color(0, 0, 0, 0)
 process_mode = 3
 script = ExtResource("1_rqimn")
 
-[node name="background" type="ColorRect" parent="."]
-z_index = -1
-offset_left = -2000.0
-offset_top = -2000.0
-offset_right = 2000.0
-offset_bottom = 2000.0
-mouse_filter = 2
-color = Color(0.0646965, 0.0646965, 0.0646965, 1)
-
 [node name="terrain" type="StaticBody2D" parent="."]
 collision_layer = 9
 collision_mask = 9
@@ -179,6 +170,55 @@ offset_right = 813.5
 offset_bottom = -846.0
 grow_horizontal = 2
 theme_override_font_sizes/font_size = 92
+
+[node name="background" type="ColorRect" parent="UI"]
+z_index = -1
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+mouse_filter = 2
+color = Color(0.0646965, 0.0646965, 0.0646965, 1)
+
+[node name="vBoxContainer" type="VBoxContainer" parent="UI"]
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -748.0
+offset_right = 748.0
+offset_bottom = 246.0
+grow_horizontal = 2
+
+[node name="inputPrompt" type="Label" parent="UI/vBoxContainer"]
+process_mode = 4
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 88
+text = "Player 1: Press any key to set as morse input"
+horizontal_alignment = 1
+
+[node name="keyInUse" type="Label" parent="UI/vBoxContainer"]
+process_mode = 4
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 0.752941)
+theme_override_font_sizes/font_size = 64
+text = "Key already used, select another"
+horizontal_alignment = 1
+
+[node name="keyInUseTimer" type="Timer" parent="UI/vBoxContainer"]
+one_shot = true
+
+[node name="inputPromptCover" type="ColorRect" parent="UI"]
+process_mode = 4
+visible = false
+top_level = true
+offset_left = -2000.0
+offset_top = -2000.0
+offset_right = 2000.0
+offset_bottom = 2000.0
+mouse_filter = 2
+color = Color(0, 0, 0, 0.25)
 
 [node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
@@ -372,6 +412,7 @@ context_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
+[connection signal="timeout" from="UI/vBoxContainer/keyInUseTimer" to="." method="_onKeyInUseTimerTimeout"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_debug_button_pressed"]
 [connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/settingsButton" to="." method="_on_settings_button_pressed"]

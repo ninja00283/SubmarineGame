@@ -27,10 +27,10 @@ func fill(offset: float = 0.0, terrainSegments: int = 64, terrainSizeX: int = 38
 	screenSizeX = terrainSizeX
 	step = terrainSizeX / (terrainSegments - 1)
 	for i in range(terrainSegments + 1):
-		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(200, 800)))
+		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(100, 800)))
 
 # Function to move the points to resemble terrain
-func build(Xrand: float = 0.15, Yrand: float = 0.25, cliffDistanceEdge: float = 0.85, maxCliffCount: int = 5):
+func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 0.75, maxCliffCount: int = 3):
 	var potentialCliffPos = array[randi_range(0, array.size()-1)]
 	if cliffs:
 		while cliffCount < maxCliffCount:
@@ -46,7 +46,13 @@ func build(Xrand: float = 0.15, Yrand: float = 0.25, cliffDistanceEdge: float = 
 			if cliff == array[i]:
 				cliff.x += xRandomization
 		array[i].y = array[i-1].y
-		var yRandomization: float = randf_range(-step * Yrand, step * Yrand)
+		var yRandomization
+		if i < array.size() / 2:
+			yRandomization = randf_range(-step * Yrand, step * (Yrand * 0.2))
+		else:
+			yRandomization = randf_range(-step * (Yrand * 0.2), step * Yrand)
+		var diff = array[i-1].y - array[i-2].y
+		array[i].y += diff * 0.2
 		array[i].y += yRandomization
 		if cliffIndices.has(i):
 			array[i].y = cliffPos[cliffIndices.find(i)].y
@@ -56,7 +62,7 @@ func build(Xrand: float = 0.15, Yrand: float = 0.25, cliffDistanceEdge: float = 
 func evaluate(pos: Vector2, cliffDistanceEdge: float):
 	if abs(pos.x) < (screenSizeX / 2) * cliffDistanceEdge:
 		for position in cliffPos:
-			if abs(pos.x - position.x) < 300.0:
+			if abs(pos.x - position.x) < 200.0:
 				return false
 				break
 		return true
