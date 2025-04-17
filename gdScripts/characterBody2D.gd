@@ -14,7 +14,6 @@ extends CharacterBody2D
 @onready var laserScene = preload("res://scenes/weaponLaser.tscn")
 @onready var railgunScene = preload("res://scenes/weaponRailgun.tscn")
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
-@onready var bombScene = preload("res://scenes/weaponBomb.tscn")
 @onready var firestreakScene = preload("res://scenes/weaponFirestreak.tscn")
 @onready var flamethrowerScene = preload("res://scenes/weaponFlamethrower.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
@@ -30,12 +29,11 @@ extends CharacterBody2D
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
 
-var shaderMaterial: ShaderMaterial = preload("res://assets/weaponBomb.tres")
 var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
 var shortCommands: Array = ["m", "f", "d"]
-var ammo: Array = ["torpedo", "laser", "railgun", "bomb", "firestreak", "flamethrower"]
+var ammo: Array = ["torpedo", "laser", "railgun", "firestreak", "flamethrower"]
 var xDrag: float = 0.01
 var yDrag: float = 0.01
 var HP: float = 100.0
@@ -217,7 +215,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				torpedo.rotation_degrees = angleDegreesInput
 				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
 				var offset = direction * 100
-				torpedo.linear_velocity = direction * 384
+				torpedo.velocity = direction * 384
 				torpedo.position = characterBody.position + offset
 				get_tree().root.add_child(torpedo)
 				root.objects.append(torpedo)
@@ -259,15 +257,6 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				root.objects.append(sabotT)
 				root.objects.append(sabotB)
 				railgun.player = self
-			elif ammoType == "bomb":
-				var bomb = bombScene.instantiate()
-				bomb.rotation = deg_to_rad(angleDegreesInput)
-				var direction = Vector2(cos(bomb.rotation), sin(bomb.rotation))
-				var offset = direction * 150
-				bomb.position = characterBody.position + offset
-				bomb.player = self
-				get_tree().root.add_child(bomb)
-				root.objects.append(bomb)
 			elif ammoType == "firestreak":
 				var firestreak = firestreakScene.instantiate()
 				firestreak.rotation = deg_to_rad(angleDegreesInput)

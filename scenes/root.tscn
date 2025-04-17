@@ -3,8 +3,7 @@
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
 [ext_resource type="Environment" uid="uid://4qhtyd6p6yvx" path="res://assets/worldEnv.tres" id="2_lrqlo"]
-
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_lrqlo"]
+[ext_resource type="OccluderPolygon2D" uid="uid://ckcvdmb7aka10" path="res://assets/lightOccluderPolygon2D.tres" id="2_sqa0i"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
 friction = 0.2
@@ -118,7 +117,7 @@ collision_mask = 9
 color = Color(0.533333, 0.419608, 0.305882, 1)
 
 [node name="lightOccluder2d" type="LightOccluder2D" parent="terrain"]
-occluder = SubResource("OccluderPolygon2D_lrqlo")
+occluder = ExtResource("2_sqa0i")
 
 [node name="line2d" type="Line2D" parent="."]
 closed = true

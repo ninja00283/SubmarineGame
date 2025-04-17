@@ -27,7 +27,7 @@ func fill(offset: float = 0.0, terrainSegments: int = 64, terrainSizeX: int = 38
 	screenSizeX = terrainSizeX
 	step = terrainSizeX / (terrainSegments - 1)
 	for i in range(terrainSegments + 1):
-		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(100, 800)))
+		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(350, 800)))
 
 # Function to move the points to resemble terrain
 func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 0.75, maxCliffCount: int = 3):
@@ -58,6 +58,29 @@ func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 
 			array[i].y = cliffPos[cliffIndices.find(i)].y
 	array.append(Vector2(screenSizeX / 2, screenSizeX / 2))
 	array.append(Vector2(-screenSizeX / 2, screenSizeX / 2))
+
+	var newArray: Array = []
+	for i in range(segments):
+		var seg: Array = []
+		var base = i
+		if i == 0:
+			seg.append(Vector2(-screenSizeX / 2, screenSizeX / 2))
+			seg.append(array[base])
+			seg.append(array[base + 1])
+			seg.append(Vector2(array[base + 1].x, screenSizeX / 2))
+		elif i == segments - 1:
+			seg.append(Vector2(array[base].x, screenSizeX / 2))
+			seg.append(array[base])
+			seg.append(array[base + 1])
+			seg.append(Vector2(screenSizeX / 2, screenSizeX / 2))
+		else:
+			seg.append(Vector2(array[base].x, screenSizeX / 2))
+			seg.append(array[base])
+			seg.append(array[base + 1])
+			seg.append(Vector2(array[base + 1].x, screenSizeX / 2))
+		newArray.append(seg)
+	array = newArray
+
 
 func evaluate(pos: Vector2, cliffDistanceEdge: float):
 	if abs(pos.x) < (screenSizeX / 2) * cliffDistanceEdge:

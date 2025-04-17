@@ -137,11 +137,6 @@ radius = 102.0
 radius = 224.0
 
 [node name="rigidBody2d" type="RigidBody2D"]
-mass = 80.0
-continuous_cd = 1
-contact_monitor = true
-max_contacts_reported = 10
-linear_damp = 0.05
 script = ExtResource("1_hx5ic")
 
 [node name="sprite2d" type="Sprite2D" parent="."]
@@ -235,9 +230,15 @@ collision_layer = 2097153
 collision_mask = 2097153
 monitoring = false
 
-[node name="collisionShape2d" type="CollisionPolygon2D" parent="IRDetectionRadii"]
+[node name="collisionPolygon2d" type="CollisionPolygon2D" parent="IRDetectionRadii"]
 position = Vector2(-8.75, 0)
 polygon = PackedVector2Array(1200, -300, 0, 0, 1200, 300)
+
+[node name="terrainExplosionRadii" type="Area2D" parent="."]
+
+[node name="collisionShape2d" type="CollisionPolygon2D" parent="terrainExplosionRadii"]
+scale = Vector2(0.8, 0.8)
+polygon = PackedVector2Array(163, 0, 115.46, 115.46, 0, 163, -115.46, 115.46, -163, 0, -115.46, -115.46, 0, -163, 115.46, -115.46)
 
 [node name="tip" type="Polygon2D" parent="."]
 scale = Vector2(0.75, 0.75)
@@ -256,11 +257,9 @@ scale = Vector2(0.75, 0.75)
 color = Color(0, 1, 0, 1)
 polygon = PackedVector2Array(47.1, -2.6, 55.49, 2.21, 31.745, 2.21, 31.745, -2.6)
 
-[connection signal="body_entered" from="." to="." method="_onBodyCollided"]
 [connection signal="timeout" from="armingDelay" to="." method="_onArmingDelayTimeout"]
 [connection signal="timeout" from="boosterStageTimer" to="." method="_onBoosterStageTimerTimeout"]
 [connection signal="timeout" from="cruiseStageTimer" to="." method="_onCruiseStageTimerTimeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_onQueueFreeDelayTimeout"]
 [connection signal="body_entered" from="proximityFuzeRadii" to="." method="_onDetectionRadiiBodyEntered"]
-[connection signal="body_entered" from="explosionRadii" to="." method="_onArea2dBodyEntered"]
 [connection signal="body_entered" from="IRDetectionRadii" to="." method="_onIrDetectionRadiiBodyEntered"]

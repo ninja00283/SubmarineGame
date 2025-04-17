@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends CharacterBody2D
 
 @onready var armingDelay: Timer = $armingDelay
 @onready var detectionRadiiDelay: Timer = $detectionRadiiDelay
@@ -39,6 +39,7 @@ func _process(delta: float) -> void:
 			hit()
 			queueFreeDelay.start()
 			gpup2D6C = true
+	move_and_slide()
 
 func _on_area_2d_body_entered(body):
 	print("_on_area_2d_body_entered(body)")
@@ -67,8 +68,7 @@ func _on_detection_radii_delay_timeout() -> void:
 	queueFreeDelay.start()
 
 func hit():
-	freeze = true
-	linear_velocity = Vector2(0, 0)
+	velocity = Vector2(0, 0)
 	gpup2D4.emitting = true
 	gpup2D5.emitting = true
 	gpup2D6.emitting = true
@@ -91,6 +91,9 @@ func hit():
 	attackDamageDelay.start()
 
 func explode():
+	for body in $terrainExplosionRadii.get_overlapping_bodies():
+		if body.is_in_group("Terrain"):
+			body.get_parent().clip($terrainExplosionRadii/collisionShape2d)
 	for body in explosionRadii.get_overlapping_bodies():
 		var newRaycast = RayCast2D.new()
 		add_child(newRaycast)

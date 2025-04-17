@@ -9,6 +9,7 @@ extends Node2D
 @onready var settings: Node2D = $MainMenu/Settings
 @onready var endTextLabel: Label = $UI/endTextLabel
 @onready var line2D: Line2D = $line2d
+@onready var terrain: StaticBody2D = $terrain
 @onready var terrainPolygon: Polygon2D = $terrain/terrainPolygon
 @onready var terrainCollider: CollisionPolygon2D = $terrain/terrainCollider
 @onready var lightOccluder2D: LightOccluder2D = $terrain/lightOccluder2d
@@ -39,9 +40,26 @@ var heldObjects: Array = []
 var keysAsText: Array = []
 
 func _ready() -> void:
-	terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
-	terrainCollider.polygon = PackedVector2Array(WorldBuilder.array)
-	lightOccluder2D.occluder.polygon = PackedVector2Array(WorldBuilder.array)
+	if not terrain.is_in_group("Terrain"):
+		terrain.add_to_group("Terrain")
+	for action in InputMap.get_actions():
+		if action.begins_with("P") and (action.ends_with("MorseInput") or action.ends_with("TextSubmit")):
+			InputMap.erase_action(action)
+	for child in terrain.get_children():
+		if child is Polygon2D or child is CollisionPolygon2D:
+			child.queue_free()
+	for polygonPoints in WorldBuilder.array:
+		var poly = Polygon2D.new()
+		poly.polygon = PackedVector2Array(polygonPoints)
+		terrain.add_child(poly)
+		var collider = CollisionPolygon2D.new()
+		collider.polygon = PackedVector2Array(polygonPoints)
+		terrain.add_child(collider)
+		var lightOccluder = LightOccluder2D.new()
+		var lightOccluderPolygon = OccluderPolygon2D.new()
+		lightOccluder.occluder = lightOccluderPolygon
+		lightOccluder.occluder.polygon = PackedVector2Array(polygonPoints)
+		terrain.add_child(lightOccluder)
 	for player in range(startPlayerCount):
 		var playerInstance = playerScene.instantiate()
 		playerInstance.position = spawnPos[0]
@@ -52,6 +70,7 @@ func _ready() -> void:
 		move_child(playerInstance, 0)
 		spawnPos.remove_at(0)
 	get_tree().paused = true
+
 
 func _process(delta: float) -> void:
 	if not debugging and players.size() < 2 and not gameEnded:
@@ -64,9 +83,17 @@ func _process(delta: float) -> void:
 				player.commandInput.show()   
 
 	if Input.is_action_just_pressed("Reload") and started:
-		terrainPolygon.polygon = PackedVector2Array(WorldBuilder.array)
-		terrainCollider.polygon = PackedVector2Array(WorldBuilder.array)
-		lightOccluder2D.occluder.polygon = PackedVector2Array(WorldBuilder.array)
+		for child in terrain.get_children():
+			if child is Polygon2D or child is CollisionPolygon2D:
+				child.queue_free()
+		for i in range(WorldBuilder.array.size()):
+			var polygonPoints = WorldBuilder.array[i]
+			var poly = Polygon2D.new()
+			poly.polygon = PackedVector2Array(polygonPoints)
+			terrain.add_child(poly)
+			var collider = CollisionPolygon2D.new()
+			collider.polygon = PackedVector2Array(polygonPoints)
+			terrain.add_child(collider)
 		animationPlayer.stop()
 		animationPlayer.play("RESET")
 		animationPlayer.stop()
@@ -271,6 +298,20 @@ func waitForPlayers():
 	while players.size() > keybinds or players.size() > keybindsSubmit:
 		await get_tree().create_timer(0.1).timeout
 
-
 func _onKeyInUseTimerTimeout() -> void:
 	keyInUse.hide()
+
+func clip(poly):
+	for child in terrain.get_children():
+		if "polygon" in child:
+			if abs(poly.global_position.x - child.polygon[0].x) < 200:
+				poly.scale *= 1.2
+				var offsetPoly = Polygon2D.new()
+				var transformed_points = []
+				for point in poly.polygon:
+					transformed_points.append(poly.to_global(point))
+				offsetPoly.polygon = transformed_points
+				var res = Geometry2D.clip_polygons(child.polygon, offsetPoly.polygon)
+				child.set_deferred("polygon", res[0])
+				offsetPoly.queue_free()
+				poly.scale *= 0.83333333333

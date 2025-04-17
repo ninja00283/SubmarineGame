@@ -25,6 +25,7 @@ var angle: float = 0
 var currentHitObject = null
 var damageTimer: float = 0.0
 var damageRate: float = 0.5
+var timeSinceTerrainHit: float = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
@@ -32,6 +33,15 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	timeSinceTerrainHit += delta
+	$terrainExplosionRadii.global_position = laserHit.global_position
+	for body in $terrainExplosionRadii.get_overlapping_bodies():
+		if body.is_in_group("Terrain"):
+			timeSinceTerrainHit += delta
+			if timeSinceTerrainHit > 0.015:
+				for i in range(int(timeSinceTerrainHit / 0.015)):
+					body.get_parent().clip($terrainExplosionRadii/collisionShape2d)
+					timeSinceTerrainHit -= 0.015
 	var hitObject = rayCast2D.get_collider()
 	if hitObject != null and "HP" in hitObject:
 		amountRatioMultiplier = 1

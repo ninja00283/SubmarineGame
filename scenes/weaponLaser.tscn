@@ -322,3 +322,9 @@ texture = ExtResource("2_b4osc")
 lifetime = 0.6
 preprocess = 2.0
 process_material = SubResource("ParticleProcessMaterial_v4xy5")
+
+[node name="terrainExplosionRadii" type="Area2D" parent="."]
+
+[node name="collisionShape2d" type="CollisionPolygon2D" parent="terrainExplosionRadii"]
+scale = Vector2(0.2, 0.2)
+polygon = PackedVector2Array(163, 0, 115.46, 115.46, 0, 163, -115.46, 115.46, -163, 0, -115.46, -115.46, 0, -163, 115.46, -115.46)

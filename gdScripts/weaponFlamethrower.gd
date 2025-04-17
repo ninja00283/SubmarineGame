@@ -4,7 +4,6 @@ extends Node2D
 @onready var timer: Timer = $timer
 
 var player: CharacterBody2D # The player that fired the flamethrower
-var timeElapsed: float = 0.0 # Time passed since the weapon was fired
 var thingy: float = 0.0 # Temp variable, will rename in the future
 var fire = true # Whether or not the weapon should fire
 var flames = true # Whether or not any flames are present
@@ -13,7 +12,6 @@ var damage: float = 0.0 # The amount of damage dealt after 5.25s after firing
 
 func _process(delta: float) -> void:
 	if fire:
-		timeElapsed += delta
 		thingy += delta
 		if thingy > 0.015:
 			for i in range(int(thingy / 0.015)):

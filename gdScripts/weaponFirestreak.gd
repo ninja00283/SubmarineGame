@@ -13,6 +13,7 @@ extends RigidBody2D
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
 @onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
 @onready var queueFreeDelay: Timer = $queueFreeDelay
+@onready var terrainExplosionRadii: Area2D = $terrainExplosionRadii
 @onready var tip: Polygon2D = $tip
 @onready var finB: Polygon2D = $finB
 @onready var finT: Polygon2D = $finT
@@ -87,6 +88,9 @@ func _onDetectionRadiiBodyEntered(body: Node2D) -> void:
 		explode()
 
 func explode():
+	for body in terrainExplosionRadii.get_overlapping_bodies():
+		if body.is_in_group("Terrain"):
+			body.get_parent().clip($terrainExplosionRadii/collisionShape2d)
 	exploded = true
 	queueFreeDelay.start()
 	sprite2D.hide()

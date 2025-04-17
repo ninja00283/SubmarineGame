@@ -81,13 +81,16 @@ func _process(delta: float) -> void:
 		if morseCharacters[char] == currentMorse:
 			morseIsKey = true
 		if morseIsKey:
-			if timeSinceLastMorse > characterLengthS * lengthSMultiplier and not morseInputPressed:
+			if timeSinceLastMorse > characterLengthS * lengthSMultiplier:
 				currentText.append(char)
 				player.addChar(char)
 				print(currentText)
 				currentMorse.clear()
 				currentMorsePreview.clear()
 			break
+		elif timeSinceLastMorse > characterLengthS * lengthSMultiplier:
+			currentMorse.clear()
+			currentMorsePreview.clear()
 	if timeSinceMorse > dashLengthS * lengthSMultiplier:
 		if not morseInputPressed:
 			currentMorse.append("-")
