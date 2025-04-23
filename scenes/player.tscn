@@ -338,7 +338,7 @@ _data = {
 shader = ExtResource("6_kafhs")
 shader_parameter/lineThickness = 3
 
-[sub_resource type="QuadMesh" id="QuadMesh_h8co6"]
+[sub_resource type="QuadMesh" id="QuadMesh_fjrip"]
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 process_mode = 1
@@ -464,6 +464,7 @@ offset_bottom = 40.0
 
 [node name="commandInput" type="LineEdit" parent="Control"]
 process_mode = 3
+visible = false
 light_mask = 0
 layout_mode = 0
 offset_left = -240.0
@@ -499,9 +500,10 @@ libraries = {
 [node name="deathShader" type="MeshInstance2D" parent="."]
 visible = false
 top_level = true
+texture_filter = 2
 material = SubResource("ShaderMaterial_ex233")
 scale = Vector2(99999, 99999)
-mesh = SubResource("QuadMesh_h8co6")
+mesh = SubResource("QuadMesh_fjrip")
 
 [node name="radarAltimeter" type="RayCast2D" parent="."]
 scale = Vector2(8, 8)

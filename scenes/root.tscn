@@ -1,9 +1,11 @@
-[gd_scene load_steps=14 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=18 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
-[ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/mainMenu.gd" id="2_2wqq8"]
+[ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/keybinds.gd" id="2_2wqq8"]
 [ext_resource type="Environment" uid="uid://4qhtyd6p6yvx" path="res://assets/worldEnv.tres" id="2_lrqlo"]
 [ext_resource type="OccluderPolygon2D" uid="uid://ckcvdmb7aka10" path="res://assets/lightOccluderPolygon2D.tres" id="2_sqa0i"]
+[ext_resource type="Script" uid="uid://owy6qdwv6cvp" path="res://gdScripts/MainMenu.gd" id="4_kycxp"]
+[ext_resource type="PackedScene" uid="uid://b8gxcth4c7hu0" path="res://scenes/tooltip.tscn" id="6_kycxp"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
 friction = 0.2
@@ -97,7 +99,13 @@ _data = {
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u15to"]
 bg_color = Color(0, 1, 1, 0.313726)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jh1ax"]
+bg_color = Color(1, 0, 1, 0.313726)
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unaew"]
+bg_color = Color(1, 1, 0, 0.313726)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kycxp"]
 bg_color = Color(1, 0, 0, 0.313726)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ppqkh"]
@@ -221,6 +229,7 @@ color = Color(0, 0, 0, 0.25)
 
 [node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
+script = ExtResource("4_kycxp")
 
 [node name="Panel" type="Panel" parent="MainMenu"]
 offset_left = 960.0
@@ -230,7 +239,7 @@ offset_bottom = 1080.0
 mouse_filter = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_u15to")
 
-[node name="MarginContainer" type="MarginContainer" parent="MainMenu"]
+[node name="Buttons" type="MarginContainer" parent="MainMenu"]
 process_mode = 3
 offset_left = 960.0
 offset_top = -1080.0
@@ -241,47 +250,144 @@ theme_override_constants/margin_top = 112
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/MarginContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Buttons"]
 layout_mode = 2
 theme_override_constants/separation = 100
 
-[node name="startButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
+[node name="startButton" type="Button" parent="MainMenu/Buttons/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Start"
 
-[node name="debuggingButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
+[node name="debuggingButton" type="Button" parent="MainMenu/Buttons/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Debugging"
 
-[node name="settingsButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
+[node name="settingsButton" type="Button" parent="MainMenu/Buttons/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Settings"
 
-[node name="quitButton" type="Button" parent="MainMenu/MarginContainer/VBoxContainer"]
+[node name="quitButton" type="Button" parent="MainMenu/Buttons/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Quit"
 
 [node name="Settings" type="Node2D" parent="MainMenu"]
+
+[node name="Panel" type="Panel" parent="MainMenu/Settings"]
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -660.0
+offset_bottom = 1080.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_jh1ax")
+
+[node name="Menus" type="MarginContainer" parent="MainMenu/Settings"]
+process_mode = 3
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -960.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 112
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Menus"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="Misc" type="Button" parent="MainMenu/Settings/Menus/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 112
+text = "Miscellaneous"
+
+[node name="Keybinds" type="Button" parent="MainMenu/Settings/Menus/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 112
+text = "Keybinds"
+
+[node name="Tooltips" type="MarginContainer" parent="MainMenu/Settings"]
+offset_left = -960.0
+offset_top = -1080.0
+offset_right = -680.0
+offset_bottom = 1080.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 112
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Tooltips"]
+layout_mode = 2
+theme_override_constants/separation = 100
+
+[node name="MiscTool" parent="MainMenu/Settings/Tooltips/VBoxContainer" instance=ExtResource("6_kycxp")]
+layout_mode = 2
+displayText = "Most uncategorized variables."
+
+[node name="KeybindsTool" parent="MainMenu/Settings/Tooltips/VBoxContainer" instance=ExtResource("6_kycxp")]
+layout_mode = 2
+displayText = "All keybinds."
+
+[node name="Misc" type="Node2D" parent="MainMenu"]
+visible = false
+
+[node name="Panel" type="Panel" parent="MainMenu/Misc"]
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -120.0
+offset_bottom = 1080.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_unaew")
+
+[node name="Variables" type="MarginContainer" parent="MainMenu/Misc"]
+process_mode = 3
+offset_left = -1895.0
+offset_top = -1055.0
+offset_right = -1020.0
+offset_bottom = -844.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="GridContainer" type="GridContainer" parent="MainMenu/Misc/Variables"]
+layout_mode = 2
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = 25
+columns = 2
+
+[node name="attackDamageF" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
+custom_minimum_size = Vector2(825, 161)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Show attack damage: True"
+
+[node name="ShowMorse" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
+custom_minimum_size = Vector2(825, 161)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Show morse: True"
+
+[node name="Keybinds" type="Node2D" parent="MainMenu"]
 visible = false
 script = ExtResource("2_2wqq8")
 
-[node name="Panel" type="Panel" parent="MainMenu/Settings"]
+[node name="Panel" type="Panel" parent="MainMenu/Keybinds"]
 offset_left = -1920.0
 offset_top = -1080.0
 offset_right = -480.0
 offset_bottom = 1080.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_unaew")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kycxp")
 
-[node name="Actions" type="MarginContainer" parent="MainMenu/Settings"]
+[node name="Actions" type="MarginContainer" parent="MainMenu/Keybinds"]
 process_mode = 3
-offset_left = -1932.24
+offset_left = -1932.0
 offset_top = -1080.0
-offset_right = -1149.24
+offset_right = -1149.0
 offset_bottom = 1080.0
 mouse_filter = 2
 theme_override_constants/margin_left = 25
@@ -289,25 +395,25 @@ theme_override_constants/margin_top = 112
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Actions"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Keybinds/Actions"]
 layout_mode = 2
 theme_override_constants/separation = 100
 
-[node name="reloadScene" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="reloadScene" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Reload Scene"
 
-[node name="submitText" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="submitText" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Submit Text"
 
-[node name="morseInput" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="morseInput" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
@@ -315,7 +421,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Morse Input"
 ellipsis_char = ""
 
-[node name="morseInputP1" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="morseInputP1" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
@@ -323,7 +429,7 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Morse Input Player 1"
 ellipsis_char = ""
 
-[node name="morseInputP2" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="morseInputP2" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
@@ -331,14 +437,14 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Morse Input Player 2"
 ellipsis_char = ""
 
-[node name="spawnPlayerMMB" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="spawnPlayerMMB" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
 theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Spawn Player (D)"
 
-[node name="spawnPlayerY" type="Label" parent="MainMenu/Settings/Actions/VBoxContainer"]
+[node name="spawnPlayerY" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
 theme_override_font_sizes/font_size = 70
@@ -346,64 +452,64 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Spawn Player Ring (D)"
 ellipsis_char = ""
 
-[node name="Keybinds" type="MarginContainer" parent="MainMenu/Settings"]
+[node name="Keybinds" type="MarginContainer" parent="MainMenu/Keybinds"]
 process_mode = 3
-offset_left = -1200.0
+offset_left = -1186.64
 offset_top = -1080.0
-offset_right = -480.0
+offset_right = -466.635
 offset_bottom = 1080.0
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 112
 theme_override_constants/margin_right = 25
 theme_override_constants/margin_bottom = 25
 
-[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Keybinds"]
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Keybinds/Keybinds"]
 layout_mode = 2
 theme_override_constants/separation = 100
 
-[node name="reloadScene" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="reloadScene" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="submitText" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="submitText" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="morseInput" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="morseInput" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="morseInputP1" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="morseInputP1" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="morseInputP2" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="morseInputP2" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="spawnPlayerMMB" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="spawnPlayerMMB" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
-[node name="spawnPlayerY" type="LineEdit" parent="MainMenu/Settings/Keybinds/VBoxContainer"]
+[node name="spawnPlayerY" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
@@ -412,7 +518,11 @@ virtual_keyboard_enabled = false
 
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
 [connection signal="timeout" from="UI/vBoxContainer/keyInUseTimer" to="." method="_onKeyInUseTimerTimeout"]
-[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/debuggingButton" to="." method="_on_debug_button_pressed"]
-[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/settingsButton" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="MainMenu/MarginContainer/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
+[connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/debuggingButton" to="." method="_on_debug_button_pressed"]
+[connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/settingsButton" to="MainMenu" method="_onSettingsButtonPressed"]
+[connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]
+[connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Misc" to="MainMenu" method="_onMiscPressed"]
+[connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Keybinds" to="MainMenu" method="_onKeybindsPressed"]
+[connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/attackDamageF" to="MainMenu" method="_onAttackDamageFPressed"]
+[connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/ShowMorse" to="MainMenu" method="_onShowMorsePressed"]

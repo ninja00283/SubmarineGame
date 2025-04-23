@@ -128,15 +128,19 @@ scale_min = 0.04
 scale_max = 0.08
 scale_curve = SubResource("CurveTexture_6miwm")
 color = Color(4, 2, 0.8, 1)
-collision_mode = 2
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_87052"]
-radius = 102.0
+radius = 156.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_icc5a"]
 radius = 224.0
 
 [node name="rigidBody2d" type="RigidBody2D"]
+mass = 80.0
+continuous_cd = 1
+contact_monitor = true
+max_contacts_reported = 10
+linear_damp = 0.05
 script = ExtResource("1_hx5ic")
 
 [node name="sprite2d" type="Sprite2D" parent="."]
@@ -198,8 +202,9 @@ process_material = SubResource("ParticleProcessMaterial_rrlf8")
 
 [node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
 emitting = false
-amount = 256
+amount = 128
 texture = ExtResource("3_87052")
+lifetime = 0.8
 one_shot = true
 explosiveness = 1.0
 fixed_fps = 60
@@ -230,15 +235,9 @@ collision_layer = 2097153
 collision_mask = 2097153
 monitoring = false
 
-[node name="collisionPolygon2d" type="CollisionPolygon2D" parent="IRDetectionRadii"]
+[node name="collisionShape2d" type="CollisionPolygon2D" parent="IRDetectionRadii"]
 position = Vector2(-8.75, 0)
-polygon = PackedVector2Array(1200, -300, 0, 0, 1200, 300)
-
-[node name="terrainExplosionRadii" type="Area2D" parent="."]
-
-[node name="collisionShape2d" type="CollisionPolygon2D" parent="terrainExplosionRadii"]
-scale = Vector2(0.8, 0.8)
-polygon = PackedVector2Array(163, 0, 115.46, 115.46, 0, 163, -115.46, 115.46, -163, 0, -115.46, -115.46, 0, -163, 115.46, -115.46)
+polygon = PackedVector2Array(900, -300, 0, 0, 900, 300)
 
 [node name="tip" type="Polygon2D" parent="."]
 scale = Vector2(0.75, 0.75)
@@ -257,9 +256,33 @@ scale = Vector2(0.75, 0.75)
 color = Color(0, 1, 0, 1)
 polygon = PackedVector2Array(47.1, -2.6, 55.49, 2.21, 31.745, 2.21, 31.745, -2.6)
 
+[node name="line2dT" type="Line2D" parent="."]
+position = Vector2(29.25, -4)
+points = PackedVector2Array(0, 0, 120, -40)
+width = 2.0
+default_color = Color(0.489622, 0.489622, 0.489622, 0.5)
+end_cap_mode = 2
+
+[node name="line2dB" type="Line2D" parent="."]
+position = Vector2(29.25, 4)
+points = PackedVector2Array(0, 0, 120, 40)
+width = 2.0
+default_color = Color(0.489622, 0.489622, 0.489622, 0.5)
+end_cap_mode = 2
+
+[node name="line2dE" type="Line2D" parent="."]
+position = Vector2(929.25, 0)
+points = PackedVector2Array(0, -45, 0, 45)
+width = 4.0
+default_color = Color(0.49, 0.49, 0.49, 0.5)
+begin_cap_mode = 2
+end_cap_mode = 2
+
+[connection signal="body_entered" from="." to="." method="_onBodyCollided"]
 [connection signal="timeout" from="armingDelay" to="." method="_onArmingDelayTimeout"]
 [connection signal="timeout" from="boosterStageTimer" to="." method="_onBoosterStageTimerTimeout"]
 [connection signal="timeout" from="cruiseStageTimer" to="." method="_onCruiseStageTimerTimeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_onQueueFreeDelayTimeout"]
 [connection signal="body_entered" from="proximityFuzeRadii" to="." method="_onDetectionRadiiBodyEntered"]
+[connection signal="body_entered" from="explosionRadii" to="." method="_onArea2dBodyEntered"]
 [connection signal="body_entered" from="IRDetectionRadii" to="." method="_onIrDetectionRadiiBodyEntered"]

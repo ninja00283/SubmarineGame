@@ -1,0 +1,26 @@
+[gd_scene load_steps=3 format=3 uid="uid://b8gxcth4c7hu0"]
+
+[ext_resource type="Texture2D" uid="uid://cx1r3jygjipcs" path="res://assets/tooltip.svg" id="1_oxk8h"]
+[ext_resource type="Script" uid="uid://cku2om0yqb1p5" path="res://gdScripts/Tooltip.gd" id="2_abxgm"]
+
+[node name="Tooltip" type="TextureRect"]
+process_mode = 3
+custom_minimum_size = Vector2(0, 161)
+mouse_filter = 0
+texture = ExtResource("1_oxk8h")
+stretch_mode = 3
+script = ExtResource("2_abxgm")
+
+[node name="TooltipDisplay" type="Label" parent="."]
+offset_left = -1320.0
+offset_top = -391.0
+offset_right = -820.0
+offset_bottom = -346.0
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 16
+theme_override_font_sizes/font_size = 32
+
+[node name="Timer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="timeout" from="Timer" to="." method="_onTooltipDelayTimeout"]

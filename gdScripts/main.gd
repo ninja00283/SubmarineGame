@@ -6,7 +6,6 @@ extends Node2D
 @onready var camera2D: Camera2D = $Camera2D
 @onready var cameraZoomTimer: Timer = $cameraZoomTimer
 @onready var mainMenu: Node2D = $MainMenu
-@onready var settings: Node2D = $MainMenu/Settings
 @onready var endTextLabel: Label = $UI/endTextLabel
 @onready var line2D: Line2D = $line2d
 @onready var terrain: StaticBody2D = $terrain
@@ -17,10 +16,10 @@ extends Node2D
 @onready var inputPromptCover: ColorRect = $UI/inputPromptCover
 @onready var keyInUse: Label = $UI/vBoxContainer/keyInUse
 @onready var keyInUseTimer: Timer = $UI/vBoxContainer/keyInUseTimer
+@onready var settings: Node2D = $MainMenu/Settings
 
 var gameEnded: bool = false
 var started: bool = false
-var settingsShown: bool = false
 var canSpawn: bool = false
 var isSpawning: bool = false
 var debugging: bool = false
@@ -73,14 +72,11 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	for object in objects:
+		if not is_instance_valid(object):
+			objects.remove_at(objects.find(object))
 	if not debugging and players.size() < 2 and not gameEnded:
 		gameWon()
-	if players.size() > 0 and not started:
-		for player in players:
-			if settingsShown:
-				player.commandInput.hide()
-			else:
-				player.commandInput.show()   
 
 	if Input.is_action_just_pressed("Reload") and started:
 		for child in terrain.get_children():
@@ -130,18 +126,18 @@ func _process(delta: float) -> void:
 			canSpawn = false
 			isSpawning = true
 			spawnPlayerRing(100, 600)
-			
+
 		if Input.is_action_pressed("Spawn"):
 			holdCounter += delta
 			if holdCounter >= holdTime:
 				canSpawn = true
-				
+
 		if Input.is_action_just_released("Spawn"):
 			isSpawning = false
-			
+
 		if isSpawning and canSpawn:
 			spawnFrameCounter += delta
-			
+
 			if spawnFrameCounter >= spawnRate:
 				spawnPlayerRing(100, 600)
 				spawnFrameCounter = 0
@@ -206,7 +202,7 @@ func spawnPlayerRing(innerOffset: float, outerOffset: float):
 		var pointQueryParams = PhysicsPointQueryParameters2D.new()
 		pointQueryParams.position = spawnPosition
 		var collision = get_world_2d().direct_space_state.intersect_point(pointQueryParams)
-		
+
 		if collision != null:
 			var playerInstance = playerScene.instantiate()
 			playerInstance.root = self
@@ -258,14 +254,6 @@ func _on_start_button_pressed() -> void:
 			print("Player: ", players.find(player), " Radar altitude: ", player.radarAltimeter.get_collision_point().y)
 			player.position.y = player.radarAltimeter.get_collision_point().y - 100
 
-func _on_settings_button_pressed() -> void:
-	if settingsShown:
-		settings.hide()
-		settingsShown = false
-	else:
-		settings.show()
-		settingsShown = true
-
 func _on_debug_button_pressed() -> void:
 	started = true
 	if players.size() > 0:
@@ -304,14 +292,14 @@ func _onKeyInUseTimerTimeout() -> void:
 func clip(poly):
 	for child in terrain.get_children():
 		if "polygon" in child:
-			if abs(poly.global_position.x - child.polygon[0].x) < 200:
-				poly.scale *= 1.2
-				var offsetPoly = Polygon2D.new()
-				var transformed_points = []
-				for point in poly.polygon:
-					transformed_points.append(poly.to_global(point))
-				offsetPoly.polygon = transformed_points
-				var res = Geometry2D.clip_polygons(child.polygon, offsetPoly.polygon)
-				child.set_deferred("polygon", res[0])
-				offsetPoly.queue_free()
-				poly.scale *= 0.83333333333
+			for i in range(child.polygon.size()):
+				if abs(poly.global_position.x - child.polygon[i].x) < 244.5:
+					var offsetPoly = Polygon2D.new()
+					var transformed_points = []
+					for point in poly.polygon:
+						transformed_points.append(poly.to_global(point))
+					offsetPoly.polygon = transformed_points
+					var res = Geometry2D.clip_polygons(child.polygon, offsetPoly.polygon)
+					child.set_deferred("polygon", res[0])
+					offsetPoly.queue_free()
+					break

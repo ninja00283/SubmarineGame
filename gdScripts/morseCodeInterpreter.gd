@@ -67,7 +67,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _ready() -> void:
 	pass
-	
+
 func _process(delta: float) -> void:
 	if morseInputPressed:
 		timeSinceMorse += delta
@@ -88,7 +88,7 @@ func _process(delta: float) -> void:
 				currentMorse.clear()
 				currentMorsePreview.clear()
 			break
-		elif timeSinceLastMorse > characterLengthS * lengthSMultiplier:
+		elif timeSinceLastMorse > characterLengthS * (lengthSMultiplier * 1.2):
 			currentMorse.clear()
 			currentMorsePreview.clear()
 	if timeSinceMorse > dashLengthS * lengthSMultiplier:

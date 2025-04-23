@@ -13,10 +13,12 @@ extends RigidBody2D
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
 @onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
 @onready var queueFreeDelay: Timer = $queueFreeDelay
-@onready var terrainExplosionRadii: Area2D = $terrainExplosionRadii
 @onready var tip: Polygon2D = $tip
 @onready var finB: Polygon2D = $finB
 @onready var finT: Polygon2D = $finT
+@onready var line2DT: Line2D = $line2dT
+@onready var line2DB: Line2D = $line2dB
+@onready var line2DE: Line2D = $line2dE
 
 var HP = 5 # The current amount of hit points the missile has
 var player # The player that fired the weapon
@@ -37,17 +39,18 @@ func _process(delta: float) -> void:
 			intercept = target.global_position + target.linear_velocity * eta
 		var direction = intercept - position # Vector2 representing which way the interception point is located
 		angleDifference = fmod(direction.angle() - rotation + PI, 2 * PI) - PI
-		if not is_instance_valid(armingDelay): 
+		if not is_instance_valid(armingDelay):
 			var torqueGain = 128.0
 			var torque = angleDifference * torqueGain
 			if abs(angular_velocity) < 1.0:
 				if gpup2D1.emitting:
-					apply_torque_impulse(clamp(torque, -512, 512) + torque * 0.2)
+					apply_torque_impulse(clamp(torque, -512, 512) + torque * 0.35)
 				else:
-					apply_torque_impulse(clamp(torque, -1024, 1024) + torque * 0.2)
+					apply_torque_impulse(clamp(torque, -1024, 1024) + torque * 0.35)
 			if rad_to_deg(abs(angleDifference)) > 20 * abs(angular_velocity):
 				apply_torque_impulse(-angular_velocity / 32)
 	targetAngle = linear_velocity.normalized().angle()
+	apply_torque((Vector2.from_angle(rotation).angle() - targetAngle) * -75)
 	var lift: float = sin(2 * (rotation - targetAngle)) # Amount of lift, ranges from 1 to -1 depending on the missiles rotation
 	var liftMultiplier: float = 0.5 # How much lift should affect the missile
 	if HP <= 0 and not exploded:
@@ -56,11 +59,11 @@ func _process(delta: float) -> void:
 	apply_central_force(Vector2.from_angle(targetAngle + PI/2) * lift * linear_velocity.length_squared() * liftMultiplier)
 	if HP > 0 and not exploded:
 		if is_instance_valid(boosterStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 40000 + Vector2(0, 19600)
+			constant_force = Vector2.from_angle(rotation) * 30000 + Vector2(0, 19600)
 			gpup2D2.amount = 512
 			gpup2D2.lifetime = 0.08
 		elif is_instance_valid(cruiseStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 20000 + Vector2(0, 19600)
+			constant_force = Vector2.from_angle(rotation) * 15000 + Vector2(0, 19600)
 			gpup2D2.amount = 256
 			gpup2D2.lifetime = 0.05
 			gpup2D1.emitting = true
@@ -88,9 +91,6 @@ func _onDetectionRadiiBodyEntered(body: Node2D) -> void:
 		explode()
 
 func explode():
-	for body in terrainExplosionRadii.get_overlapping_bodies():
-		if body.is_in_group("Terrain"):
-			body.get_parent().clip($terrainExplosionRadii/collisionShape2d)
 	exploded = true
 	queueFreeDelay.start()
 	sprite2D.hide()
@@ -100,6 +100,9 @@ func explode():
 	tip.hide()
 	finB.hide()
 	finT.hide()
+	line2DT.hide()
+	line2DB.hide()
+	line2DE.hide()
 	gpup2D1.emitting = false
 	gpup2D2.emitting = false
 	gpup2D3.emitting = true
@@ -135,6 +138,9 @@ func _onIrDetectionRadiiBodyEntered(body: Node2D) -> void:
 			tip.color = Color(1, 0, 0, 1)
 			finB.color = Color(1, 0, 0, 1)
 			finT.color = Color(1, 0, 0, 1)
+			line2DT.hide()
+			line2DB.hide()
+			line2DE.hide()
 		else:
 			if global_position.distance_to(body.global_position) < global_position.distance_to(target.global_position):
 				target = body

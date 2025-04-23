@@ -67,7 +67,7 @@ func _unhandled_key_input(event: InputEvent) -> void:
 
 func _ready() -> void:
 	pass
-	
+
 func _process(delta: float) -> void:
 	if morseInputPressed:
 		timeSinceMorse += delta

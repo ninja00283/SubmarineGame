@@ -1,14 +1,9 @@
-[gd_scene load_steps=25 format=3 uid="uid://bmi8j7ndhedm1"]
+[gd_scene load_steps=24 format=3 uid="uid://bmi8j7ndhedm1"]
 
 [ext_resource type="Script" uid="uid://byl1mic58xq4r" path="res://gdScripts/weaponRailgun.gd" id="1_32tfa"]
 [ext_resource type="Texture2D" uid="uid://dci44ya8udk5q" path="res://assets/APDSCore.svg" id="2_84fo0"]
 [ext_resource type="Texture2D" uid="uid://4nmo3e0jrruy" path="res://assets/particleS.png" id="3_22bnv"]
 [ext_resource type="Texture2D" uid="uid://b0lbxds55xqub" path="res://assets/APFSDSFins.svg" id="3_nfa7l"]
-
-[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_58c1u"]
-friction = 0.4
-rough = true
-bounce = 0.4
 
 [sub_resource type="Curve" id="Curve_s3tvk"]
 _data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0436137, 1), 0.0, 0.0, 0, 0, Vector2(0.850467, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -120,17 +115,9 @@ color_ramp = SubResource("GradientTexture1D_vpkk0")
 turbulence_enabled = true
 turbulence_noise_strength = 0.3
 
-[node name="RigidBody2D" type="RigidBody2D"]
+[node name="CharacterBody2D" type="CharacterBody2D"]
 collision_layer = 0
 collision_mask = 0
-physics_material_override = SubResource("PhysicsMaterial_58c1u")
-center_of_mass_mode = 1
-continuous_cd = 2
-linear_damp_mode = 1
-linear_damp = 0.02
-angular_damp_mode = 1
-angular_damp = 20.0
-constant_force = Vector2(0, 980)
 script = ExtResource("1_32tfa")
 
 [node name="APDSCore" type="Sprite2D" parent="."]

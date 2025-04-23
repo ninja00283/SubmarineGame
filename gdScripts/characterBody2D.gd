@@ -29,6 +29,8 @@ extends CharacterBody2D
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
 
+var attackDamageS: bool = true
+var showMorse: bool = true
 var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
@@ -43,17 +45,22 @@ var amplitude: float = 1
 var frequency: float = 15
 var minBrightness: float = 0.85
 var maxBrightness: float = 1.15
-var index: int 
+var index: int
 var originalPosition: Vector2
 var keybind: InputEvent
 var root
 
 func _ready() -> void:
 	morseCodeInt.player = self
+	await get_tree().create_timer(0.1, false).timeout
+	commandInput.show()
 
 func _physics_process(delta: float) -> void:
 	if Input.is_action_just_pressed("LoseFocus"):
 		commandInput.release_focus()
+	if not showMorse:
+		morse.hide()
+		morsePreview.hide()
 	morse.text = "".join(morseCodeInt.currentMorse)
 	morsePreview.text = "".join(morseCodeInt.currentMorsePreview)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
@@ -132,17 +139,17 @@ func _physics_process(delta: float) -> void:
 		newgpup2D5.emitting = true
 		get_tree().root.add_child(newgpup2D4)
 		get_tree().root.add_child(newgpup2D5)
-		
+
 	if shaking:
 		position = originalPosition + Vector2(
-			randf_range(-shakeScale, shakeScale), 
+			randf_range(-shakeScale, shakeScale),
 			randf_range(-shakeScale, shakeScale)
 		)
 	move_and_slide()
 
 func commandInterpret(input, characterBody, event):
 	var key = char(event.unicode)
-	
+
 	if str(input.text).ends_with(key) and key != "":
 		input.text = str(input.text).erase(str(input.text).length()-1)
 	var text = input.text.to_lower().strip_edges()
@@ -180,11 +187,11 @@ func moveCommand(parts: Array, characterBody: CharacterBody2D):
 		if angle.is_valid_float() and magnitude.is_valid_float():
 			angleDegreesInput = angle.to_int()
 			magnitudeInput = clampi(magnitude.to_int(), 0, 100)
-			
+
 			var angleRadians = deg_to_rad(angleDegreesInput)
 			var x = magnitudeInput * cos(angleRadians)
 			var y = magnitudeInput * sin(angleRadians)
-			
+
 			characterBody.velocity += Vector2(x*10, y*10)
 			print(x * 10, " ", y * 10, " Velocity added")
 		else:
@@ -220,7 +227,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				get_tree().root.add_child(torpedo)
 				root.objects.append(torpedo)
 				torpedo.player = self
-				
+
 			elif ammoType == "laser":
 				var laser = laserScene.instantiate()
 				laser.rotation = deg_to_rad(angleDegreesInput)
@@ -237,19 +244,19 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
 				var offset = direction * 135
-				railgun.linear_velocity = direction * 6144
+				railgun.velocity = direction * 8192
 				railgun.position = characterBody.position + offset
-				
+
 				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)
 				sabotT.position = railgun.position + sabotOffsetT
-				sabotT.linear_velocity = railgun.linear_velocity + Vector2(-2048, 1200).rotated(railgun.rotation)
+				sabotT.linear_velocity = railgun.velocity + Vector2(-2048, 1200).rotated(railgun.rotation)
 				sabotT.rotation = railgun.rotation
-				
+
 				var sabotOffsetB = Vector2(-3.84, -12.8).rotated(railgun.rotation)
 				sabotB.position = railgun.position + sabotOffsetB
-				sabotB.linear_velocity = railgun.linear_velocity + Vector2(-2048, -1200).rotated(railgun.rotation)
+				sabotB.linear_velocity = railgun.velocity + Vector2(-2048, -1200).rotated(railgun.rotation)
 				sabotB.rotation = railgun.rotation
-				
+
 				get_tree().root.add_child(railgun)
 				get_tree().root.add_child(sabotT)
 				get_tree().root.add_child(sabotB)
@@ -277,7 +284,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				flamethrower.reparent(self)
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
-			print("Invalid inputs for fire command. Angle must be numeric.")
+			print("Invalid inputs for fire command. Angle must be numeric.", " ", angle)
 	else:
 		print("Needs 3 parts: command type, ammo type, and firing angle. Parts: ", parts.size())
 
@@ -315,7 +322,7 @@ func _on_queue_free_delay_timeout() -> void:
 func _explodeDelayEnd() -> void:
 	var bodies = explosionRadii.get_overlapping_bodies()
 	var rangeToTargets = []
-	
+
 	for body in bodies:
 		if body != self and "HP" in body:
 			var newRaycast = RayCast2D.new()
@@ -333,11 +340,11 @@ func _explodeDelayEnd() -> void:
 					print("Target obstructed: ", body)
 			else:
 				newRaycast.queue_free()
-	
+
 	rangeToTargets.sort_custom(func(a, b):
 		return a["distance"] < b["distance"]
 	)
-	
+
 	var maxDamageBodies = min(2, rangeToTargets.size())
 	for i in range(maxDamageBodies):
 		var target = rangeToTargets[i]["body"]
@@ -346,14 +353,15 @@ func _explodeDelayEnd() -> void:
 		target.HP -= damage
 		print("Damaged:", target, "Damage:", damage, "Remaining HP:", target.HP, "Method: Death")
 
-		
+
 func attackDamageF(damage, reset):
-	if not reset:
-		attackDamage += damage
-	else:
-		attackDamageLabel.text = str("Attack damage: ", int(attackDamage))
-		print("Attack damage: ", attackDamage)
-		attackDamage = 0.0
+	if attackDamageS:
+		if not reset:
+			attackDamage += damage
+		else:
+			attackDamageLabel.text = str("Attack damage: ", int(attackDamage))
+			print("Attack damage: ", attackDamage)
+			attackDamage = 0.0
 
 func deathShaderAnimS():
 	get_viewport().use_hdr_2d = false

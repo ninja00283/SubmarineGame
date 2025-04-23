@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends CharacterBody2D
 
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
@@ -10,7 +10,6 @@ extends RigidBody2D
 @onready var queueFreeDelay: Timer = $queueFreeDelay
 @onready var APFSDSFins: Sprite2D = $APFSDSFins
 
-var targetAngle: float = 0.0 # Floating point to track what angle (radians) the velocity is
 var gpup2D1Emitted: bool = false # Bool to track whether or not gpup2D1 has emitted previously
 var gpup2D2Emitted: bool = false # Bool to track whether or not gpup2D2 has emitted previously
 var collision: bool = false # Bool to track whether or not the object has collided
@@ -26,56 +25,37 @@ var points: Array = [] # Stores all Vector2 positions that should be checked for
 var previousCollided: bool # Stores whether or not the previous check resulted in a collision
 
 func _ready() -> void:
-	GlobalTrail.addNode(self, 64, Vector2(-24, 0))
+	GlobalTrail.addNode(self, 32, Vector2(-24, 0))
 
 # These functions are above _process() because "entry" is used in the process function and needs to be determined first
 func _onRigidBody2dBodyEntered(body: Node) -> void:
-	print("Col")
 	collision = true
 	entry = true
-	var AoA = abs(linear_velocity.angle()) - abs(global_rotation)
-	print("Vel angle: ", linear_velocity.angle())
+	var AoA = abs(velocity.angle()) - abs(global_rotation)
+	print("Vel angle: ", velocity.angle())
 	print("Rotation(Rad): ", rotation)
 	print("Hit angle: ", AoA)
-	if abs(AoA) < 0.6981:
-		if "HP" in body:
-			body.HP -= 150 * (linear_velocity.length() / 6144)
-			player.attackDamageF(150 * (linear_velocity.length() / 6144), false)
-	else:
-		collision_mask = 1 << 4
+	if "HP" in body:
+		body.HP -= 150 * (velocity.length() / 6144)
+		player.attackDamageF(150 * (velocity.length() / 6144), false)
 
 func _onRigidBody2dBodyExited(_body: Node) -> void:
-	if abs(rotation - linear_velocity.angle()) < 0.6981:
+	if abs(rotation - velocity.angle()) < 0.6981:
 		APFSDSFins.hide()
 		entry = false
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	velocity.y += 980 * delta
+	rotation = velocity.angle()
 	if queueFreeDelay.time_left <= 2.0:
 		GlobalTrail.removeNode(self)
-	if not collision:
-		targetAngle = linear_velocity.normalized().angle()
-	else:
-		targetAngle = linear_velocity.normalized().angle() + PI / 2
-	if linear_velocity.length() < 5121:
-		gpup2D1.amount_ratio = linear_velocity.length() / 5120
-		gpup2D2.amount_ratio = linear_velocity.length() / 5120
-		gpup2D3.amount_ratio = linear_velocity.length() / 5120
-		gpup2D4.amount_ratio = linear_velocity.length() / 5120
-		gpup2D5.amount_ratio = linear_velocity.length() / 5120
-	# Code block to rotate the core perpendicularly to velocity (faster rotation the closer to the normal angle)
-	if cos(rotation) > 0.1 + targetAngle:
-		if sin(rotation) > 0.1 + targetAngle:
-			angular_velocity -= 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation - targetAngle))
-	if cos(rotation) < -0.1 + targetAngle:
-		if sin(rotation) < -0.1 + targetAngle:
-			angular_velocity += 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation - targetAngle)) + 1)
-	if cos(rotation) > 0.1 + targetAngle:
-		if sin(rotation) < -0.1 + targetAngle:
-			angular_velocity += 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * abs(sin(rotation - targetAngle))
-	if cos(rotation) < -0.1 + targetAngle:
-		if sin(rotation) > 0.1 + targetAngle:
-			angular_velocity -= 0.02 * (linear_velocity.length() / 6144) * (60 * delta) * (abs(cos(rotation - targetAngle)) + 1)
+	if velocity.length() <= 5120:
+		gpup2D1.amount_ratio = velocity.length() / 5120
+		gpup2D2.amount_ratio = velocity.length() / 5120
+		gpup2D3.amount_ratio = velocity.length() / 5120
+		gpup2D4.amount_ratio = velocity.length() / 5120
+		gpup2D5.amount_ratio = velocity.length() / 5120
 	if collision:
 		attempts += 1
 	distanceTravelled = (global_position - previousPosition).length()
@@ -115,15 +95,15 @@ func _process(delta: float) -> void:
 
 	if global_position >= Vector2(2160, 3840) or global_position <= Vector2(-2160, -3840):
 		GlobalTrail.removeNode(self)
-		linear_velocity = Vector2(0, 0)
+		velocity = Vector2(0, 0)
 		APDSCore.hide()
 		area2D.monitorable = false
 		area2D.monitoring = false
 		if not attackDmgS:
 			player.attackDamageF(0.0, true)
 			attackDmgS = true
-	
 	previousPosition = global_position
+	move_and_slide()
 
 func _on_queue_free_delay_timeout() -> void:
 	if not attackDmgS:
