@@ -1,10 +1,10 @@
-[gd_scene load_steps=18 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=19 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/keybinds.gd" id="2_2wqq8"]
 [ext_resource type="Environment" uid="uid://4qhtyd6p6yvx" path="res://assets/worldEnv.tres" id="2_lrqlo"]
 [ext_resource type="OccluderPolygon2D" uid="uid://ckcvdmb7aka10" path="res://assets/lightOccluderPolygon2D.tres" id="2_sqa0i"]
-[ext_resource type="Script" uid="uid://owy6qdwv6cvp" path="res://gdScripts/MainMenu.gd" id="4_kycxp"]
+[ext_resource type="Script" uid="uid://owy6qdwv6cvp" path="res://gdScripts/mainMenu.gd" id="4_kycxp"]
 [ext_resource type="PackedScene" uid="uid://b8gxcth4c7hu0" path="res://scenes/tooltip.tscn" id="6_kycxp"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
@@ -111,6 +111,9 @@ bg_color = Color(1, 0, 0, 0.313726)
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ppqkh"]
 bg_color = Color(0, 0, 0, 0)
 
+[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_kycxp"]
+polygon = PackedVector2Array(-2112, 1188, -2112, 0, -1920, 0, -1920, 1080, 1920, 1080, 1920, 0, 2112, 0, 2112, 1188)
+
 [node name="Root" type="Node2D"]
 process_mode = 3
 script = ExtResource("1_rqimn")
@@ -185,7 +188,7 @@ offset_top = -2000.0
 offset_right = 2000.0
 offset_bottom = 2000.0
 mouse_filter = 2
-color = Color(0.0646965, 0.0646965, 0.0646965, 1)
+color = Color(0.230315, 0.230315, 0.230315, 1)
 
 [node name="vBoxContainer" type="VBoxContainer" parent="UI"]
 anchors_preset = 5
@@ -515,6 +518,13 @@ theme_override_font_sizes/font_size = 64
 alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
+
+[node name="Sun" type="PointLight2D" parent="."]
+
+[node name="Moon" type="PointLight2D" parent="."]
+
+[node name="SunMoonOccluder" type="LightOccluder2D" parent="."]
+occluder = SubResource("OccluderPolygon2D_kycxp")
 
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
 [connection signal="timeout" from="UI/vBoxContainer/keyInUseTimer" to="." method="_onKeyInUseTimerTimeout"]

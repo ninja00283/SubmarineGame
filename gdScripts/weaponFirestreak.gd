@@ -42,11 +42,11 @@ func _process(delta: float) -> void:
 		if not is_instance_valid(armingDelay):
 			var torqueGain = 128.0
 			var torque = angleDifference * torqueGain
-			if abs(angular_velocity) < 1.0:
+			if abs(angular_velocity) < 2.0:
 				if gpup2D1.emitting:
-					apply_torque_impulse(clamp(torque, -512, 512) + torque * 0.35)
+					apply_torque_impulse(clamp(torque, -512, 512) + torque * 4.0)
 				else:
-					apply_torque_impulse(clamp(torque, -1024, 1024) + torque * 0.35)
+					apply_torque_impulse(clamp(torque, -1024, 1024) + torque * 4.0)
 			if rad_to_deg(abs(angleDifference)) > 20 * abs(angular_velocity):
 				apply_torque_impulse(-angular_velocity / 32)
 	targetAngle = linear_velocity.normalized().angle()

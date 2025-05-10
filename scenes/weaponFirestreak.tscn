@@ -140,7 +140,6 @@ mass = 80.0
 continuous_cd = 1
 contact_monitor = true
 max_contacts_reported = 10
-linear_damp = 0.05
 script = ExtResource("1_hx5ic")
 
 [node name="sprite2d" type="Sprite2D" parent="."]
@@ -284,5 +283,4 @@ end_cap_mode = 2
 [connection signal="timeout" from="cruiseStageTimer" to="." method="_onCruiseStageTimerTimeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_onQueueFreeDelayTimeout"]
 [connection signal="body_entered" from="proximityFuzeRadii" to="." method="_onDetectionRadiiBodyEntered"]
-[connection signal="body_entered" from="explosionRadii" to="." method="_onArea2dBodyEntered"]
 [connection signal="body_entered" from="IRDetectionRadii" to="." method="_onIrDetectionRadiiBodyEntered"]

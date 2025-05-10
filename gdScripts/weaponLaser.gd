@@ -24,7 +24,7 @@ var amountRatioMultiplier: float = 0
 var angle: float = 0
 var currentHitObject = null
 var damageTimer: float = 0.0
-var damageRate: float = 0.5
+var damageRate: float = 0.25
 var timeSinceTerrainHit: float = 0.0
 
 # Called when the node enters the scene tree for the first time.

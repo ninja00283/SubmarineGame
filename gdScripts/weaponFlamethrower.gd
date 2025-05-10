@@ -22,8 +22,8 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if fire:
 		thingy += delta
-		if thingy > 0.015:
-			for i in range(int(thingy / 0.015)):
+		if thingy > 0.02:
+			for i in range(int(thingy / 0.02)):
 				var projectile: CharacterBody2D
 				if projectilePool.size() > 0:
 					projectile = projectilePool.pop_back()
@@ -38,7 +38,7 @@ func _process(delta: float) -> void:
 				get_tree().root.add_child(projectile)
 				projectile.flamethrower = self
 				projectile.set_process(true)
-				thingy -= 0.015
+				thingy -= 0.02
 
 func _onQueueFreeDelayTimeout() -> void:
 	fire = false

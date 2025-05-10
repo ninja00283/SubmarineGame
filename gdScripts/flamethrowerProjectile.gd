@@ -20,7 +20,7 @@ var ended = false
 
 func _ready() -> void:
 	if generation <= 1:
-		lifetime.wait_time = (1.5 / float(generation + 1)) + randf_range(1.0 / float(-(generation + 1)), 1.0 / float(generation + 1))
+		lifetime.wait_time = (2.5 / float(generation + 1)) + randf_range(1.0 / float(-(generation + 1)), 1.0 / float(generation + 1))
 	lifetime.start()
 
 func _process(delta: float) -> void:
@@ -34,7 +34,7 @@ func _process(delta: float) -> void:
 		velocity = Vector2(0.0, 0.0)
 		if bodyLocked:
 			global_position = bodyLocked.global_position - (bodyLockedPos - positionWhenLocked)
-	velocity += Vector2(0.0, -340.0) * delta
+	velocity += Vector2(0.0, 340.0) * delta
 	var colInfo = move_and_collide(velocity * delta)
 	if colInfo:
 		var collider = colInfo.get_collider()

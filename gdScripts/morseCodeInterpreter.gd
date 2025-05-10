@@ -3,7 +3,7 @@ extends Node
 var lengthSMultiplier: float = 0.2 # By how much morse characters should be multiplied in time required to parse
 var dotLengthS: int = 1 # Length in units (seconds * multiplier) the button needs to pressed for a dot(.) to parse
 var dashLengthS: int = 3 # Length in units (seconds * multiplier) the button needs to pressed for a dash(-) to parse
-var characterLengthS: int = 3 # Length in units (seconds * multiplier) the button should not be held for the correct morse code to translate
+var characterLengthS: int = 6 # Length in units (seconds * multiplier) the button should not be held for the correct morse code to translate
 var spaceLengthS: int = 10 # Length in units (seconds * multiplier) the button should not be held down for a space( ) to parse
 var morseInputLength: float # Amount of time the assinged key has been held down
 var morseInputPressed: bool = false # Bool to track if the keybind used for entering morse code is held down
