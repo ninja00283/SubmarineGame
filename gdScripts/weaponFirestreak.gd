@@ -20,13 +20,23 @@ extends RigidBody2D
 @onready var line2DB: Line2D = $line2dB
 @onready var line2DE: Line2D = $line2dE
 
-var HP = 5 # The current amount of hit points the missile has
-var player # The player that fired the weapon
+var HP: float = 5.0 # The current amount of hit points the missile has
+var player: Node2D # The player that fired the weapon
 var targetAngle: float # The prograde vector (radians)
 var dragCoefficient: float = 0.02 # Amount of drag, reduce for less drag
 var exploded: bool = false # Bool to track whether or not the missile has detonated
 var angleDifference: float # In radians, the difference between the current and target rotation
-var target # Missiles targeted player
+var target: Node2D # The missile's targeted player
+var damage: float = 80.0 # The average damage output
+var liftMultiplier: float = 0.8 # How much lift affects the missile
+var turnRate: float = 0.3 # The rate at which the missile can turn
+var explosionRadiusMultiplier: float = 1.0 # By how much the explosion damage radius is multiplied
+var detectionRadiusMultiplier: float = 1.0 # By how much the detection radius is multiplied
+var thrustMultiplier: float = 1.0 # By how much thrust is multiplied
+
+func _ready() -> void:
+	$explosionRadii/collisionShape2d.shape.radius = 224 * explosionRadiusMultiplier
+	$proximityFuzeRadii/collisionShape2d.shape.radius = 156 * detectionRadiusMultiplier
 
 func _process(delta: float) -> void:
 	if target and HP > 0:
@@ -42,28 +52,24 @@ func _process(delta: float) -> void:
 		if not is_instance_valid(armingDelay):
 			var torqueGain = 128.0
 			var torque = angleDifference * torqueGain
-			if abs(angular_velocity) < 1.0:
-				if gpup2D1.emitting:
-					apply_torque_impulse(clamp(torque, -512, 512) + torque * 0.35)
-				else:
-					apply_torque_impulse(clamp(torque, -1024, 1024) + torque * 0.35)
+			if abs(angular_velocity) < 2.0 * turnRate:
+				apply_torque_impulse(clamp(torque, -512, 512) + torque * turnRate)
 			if rad_to_deg(abs(angleDifference)) > 20 * abs(angular_velocity):
 				apply_torque_impulse(-angular_velocity / 32)
 	targetAngle = linear_velocity.normalized().angle()
 	apply_torque((Vector2.from_angle(rotation).angle() - targetAngle) * -75)
-	var lift: float = sin(2 * (rotation - targetAngle)) # Amount of lift, ranges from 1 to -1 depending on the missiles rotation
-	var liftMultiplier: float = 0.5 # How much lift should affect the missile
+	var lift = sin(2 * (rotation - targetAngle)) # Amount of lift, ranges from 1 to -1 depending on the missiles rotation
 	if HP <= 0 and not exploded:
 		explode()
 	apply_central_force(Vector2.from_angle(targetAngle + PI) * abs(sin(rotation - targetAngle)) * linear_velocity.length_squared() * dragCoefficient)
 	apply_central_force(Vector2.from_angle(targetAngle + PI/2) * lift * linear_velocity.length_squared() * liftMultiplier)
 	if HP > 0 and not exploded:
 		if is_instance_valid(boosterStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 30000 + Vector2(0, 19600)
+			constant_force = Vector2.from_angle(rotation) * 30000 * thrustMultiplier + Vector2(0, 19600)
 			gpup2D2.amount = 512
 			gpup2D2.lifetime = 0.08
 		elif is_instance_valid(cruiseStageTimer):
-			constant_force = Vector2.from_angle(rotation) * 15000 + Vector2(0, 19600)
+			constant_force = Vector2.from_angle(rotation) * 15000 * thrustMultiplier + Vector2(0, 19600)
 			gpup2D2.amount = 256
 			gpup2D2.lifetime = 0.05
 			gpup2D1.emitting = true
@@ -119,7 +125,7 @@ func explode():
 				if body != self and "HP" in body:
 					var relativePos = to_local(body.global_position)
 					var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-					var damage = 16000 / (distance + 1) * pow(distance / (distance + 12), 6)
+					var damage = damage * 200 / (distance + 1) * pow(distance / (distance + 12), 6)
 					body.HP -= damage
 					player.attackDamageF(damage, false)
 			else:

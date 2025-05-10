@@ -5,9 +5,28 @@ extends Node2D
 @onready var misc: Node2D = $Misc
 @onready var keybinds: Node2D = $Keybinds
 
+var generateCliffs: bool = true
+var torpedoHEATDamage: float = 80.0
+var torpedoExploDamage: float = 60.0
+var torpedoHP: float = 5.0
+var torpedoSpeed: float = 384.0
+var laserDamage: float = 0.5
+var laserDuration: float = 2.0
+var laserDamageRate: float = 0.5
+var firestreakDamage: float = 80.0
+var firestreakHP: float = 5.0
+var firestreakTurningRate: float = 0.3
+var firestreakDetectionRangeMultiplier: float = 1.0
+var firestreakExplosionRangeMultiplier: float = 1.0
+var firestreakLiftMultiplier: float = 0.8
+var firestreakThrustMultiplier: float = 1.0
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
-	pass # Replace with function body.
+	await root.players.size() > 0
+	for player in root.players:
+		$Misc/Variables/GridContainer/ShowMorse.text = str("Show morse: ", player.showMorse)
+		$Misc/Variables/GridContainer/attackDamageF.text = str("Show attack damage: ", player.attackDamageS)
 
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
@@ -32,15 +51,22 @@ func _onKeybindsPressed() -> void:
 func _onAttackDamageFPressed() -> void:
 	for player in root.players:
 		player.attackDamageS = !player.attackDamageS
-		if player.attackDamageS:
-			$Misc/Variables/GridContainer/attackDamageF.text = str("Show attack damage: True")
-		else:
-			$Misc/Variables/GridContainer/attackDamageF.text = str("Show attack damage: False")
+		$Misc/Variables/GridContainer/attackDamageF.text = str("Show attack damage: ", player.attackDamageS)
 
 func _onShowMorsePressed() -> void:
 	for player in root.players:
 		player.showMorse = !player.showMorse
-		if player.showMorse:
-			$Misc/Variables/GridContainer/ShowMorse.text = str("Show morse: True")
-		else:
-			$Misc/Variables/GridContainer/ShowMorse.text = str("Show morse: False")
+		$Misc/Variables/GridContainer/ShowMorse.text = str("Show morse: ", player.showMorse)
+
+
+func _onBackPressed() -> void:
+	misc.hide()
+	keybinds.hide()
+	settings.show()
+
+
+func _onGenerateCliffsPressed() -> void:
+	generateCliffs = !generateCliffs
+	$Misc/Variables/GridContainer/generateCliffs.text = str("Generate cliffs: ", generateCliffs)
+	root.reset()
+	WorldBuilder.reset()

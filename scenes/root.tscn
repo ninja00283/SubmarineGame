@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=16 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/keybinds.gd" id="2_2wqq8"]
@@ -99,12 +99,6 @@ _data = {
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u15to"]
 bg_color = Color(0, 1, 1, 0.313726)
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_jh1ax"]
-bg_color = Color(1, 0, 1, 0.313726)
-
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_unaew"]
-bg_color = Color(1, 1, 0, 0.313726)
-
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_kycxp"]
 bg_color = Color(1, 0, 0, 0.313726)
 
@@ -122,7 +116,6 @@ collision_mask = 9
 [node name="terrainCollider" type="CollisionPolygon2D" parent="terrain"]
 
 [node name="terrainPolygon" type="Polygon2D" parent="terrain"]
-color = Color(0.533333, 0.419608, 0.305882, 1)
 
 [node name="lightOccluder2d" type="LightOccluder2D" parent="terrain"]
 occluder = ExtResource("2_sqa0i")
@@ -275,6 +268,7 @@ theme_override_font_sizes/font_size = 112
 text = "Quit"
 
 [node name="Settings" type="Node2D" parent="MainMenu"]
+visible = false
 
 [node name="Panel" type="Panel" parent="MainMenu/Settings"]
 offset_left = -1920.0
@@ -282,7 +276,7 @@ offset_top = -1080.0
 offset_right = -660.0
 offset_bottom = 1080.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_jh1ax")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kycxp")
 
 [node name="Menus" type="MarginContainer" parent="MainMenu/Settings"]
 process_mode = 3
@@ -309,10 +303,15 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 112
 text = "Keybinds"
 
+[node name="Weapons" type="Button" parent="MainMenu/Settings/Menus/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 112
+text = "Weapons"
+
 [node name="Tooltips" type="MarginContainer" parent="MainMenu/Settings"]
 offset_left = -960.0
 offset_top = -1080.0
-offset_right = -680.0
+offset_right = -720.0
 offset_bottom = 1080.0
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 112
@@ -331,6 +330,10 @@ displayText = "Most uncategorized variables."
 layout_mode = 2
 displayText = "All keybinds."
 
+[node name="WeaponsTool" parent="MainMenu/Settings/Tooltips/VBoxContainer" instance=ExtResource("6_kycxp")]
+layout_mode = 2
+displayText = "Variables pertaining to all weapons."
+
 [node name="Misc" type="Node2D" parent="MainMenu"]
 visible = false
 
@@ -340,14 +343,14 @@ offset_top = -1080.0
 offset_right = -120.0
 offset_bottom = 1080.0
 mouse_filter = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_unaew")
+theme_override_styles/panel = SubResource("StyleBoxFlat_kycxp")
 
 [node name="Variables" type="MarginContainer" parent="MainMenu/Misc"]
 process_mode = 3
 offset_left = -1895.0
 offset_top = -1055.0
-offset_right = -1020.0
-offset_bottom = -844.0
+offset_right = -170.0
+offset_bottom = 1055.0
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 25
 theme_override_constants/margin_right = 25
@@ -360,16 +363,30 @@ theme_override_constants/v_separation = 25
 columns = 2
 
 [node name="attackDamageF" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
-custom_minimum_size = Vector2(825, 161)
+custom_minimum_size = Vector2(825, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
-text = "Show attack damage: True"
+text = "Show attack damage: true"
 
 [node name="ShowMorse" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
-custom_minimum_size = Vector2(825, 161)
+custom_minimum_size = Vector2(825, 162)
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
-text = "Show morse: True"
+text = "Show morse: true"
+
+[node name="generateCliffs" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
+custom_minimum_size = Vector2(825, 162)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Generate cliffs: true"
+
+[node name="Back" type="Button" parent="MainMenu/Misc"]
+offset_left = -1877.0
+offset_top = 926.0
+offset_right = -1617.8
+offset_bottom = 1035.2
+theme_override_font_sizes/font_size = 60
+text = "<- Back"
 
 [node name="Keybinds" type="Node2D" parent="MainMenu"]
 visible = false
@@ -516,6 +533,387 @@ alignment = 1
 context_menu_enabled = false
 virtual_keyboard_enabled = false
 
+[node name="Back" type="Button" parent="MainMenu/Keybinds"]
+offset_left = -1877.0
+offset_top = 926.0
+offset_right = -1617.8
+offset_bottom = 1035.2
+theme_override_font_sizes/font_size = 60
+text = "<- Back"
+
+[node name="Weapons" type="Node2D" parent="MainMenu"]
+visible = false
+
+[node name="Panel" type="Panel" parent="MainMenu/Weapons"]
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -1020.0
+offset_bottom = 1080.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kycxp")
+
+[node name="Weapons" type="MarginContainer" parent="MainMenu/Weapons"]
+process_mode = 3
+offset_left = -1895.0
+offset_top = -1055.0
+offset_right = -170.0
+offset_bottom = 1055.0
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="GridContainer" type="GridContainer" parent="MainMenu/Weapons/Weapons"]
+layout_mode = 2
+theme_override_constants/h_separation = 25
+theme_override_constants/v_separation = 25
+
+[node name="WTorpedo" type="Button" parent="MainMenu/Weapons/Weapons/GridContainer"]
+custom_minimum_size = Vector2(825, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Torpedo"
+
+[node name="WLaser" type="Button" parent="MainMenu/Weapons/Weapons/GridContainer"]
+custom_minimum_size = Vector2(825, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Laser"
+
+[node name="WRailgun" type="Button" parent="MainMenu/Weapons/Weapons/GridContainer"]
+custom_minimum_size = Vector2(825, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Railgun"
+
+[node name="WMissile" type="Button" parent="MainMenu/Weapons/Weapons/GridContainer"]
+custom_minimum_size = Vector2(825, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile"
+
+[node name="WFlamethrower" type="Button" parent="MainMenu/Weapons/Weapons/GridContainer"]
+custom_minimum_size = Vector2(825, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Flamethrower"
+
+[node name="Back" type="Button" parent="MainMenu/Weapons"]
+offset_left = -1877.0
+offset_top = 926.0
+offset_right = -1617.8
+offset_bottom = 1035.2
+theme_override_font_sizes/font_size = 60
+text = "<- Back"
+
+[node name="WeaponVariables" type="Node2D" parent="MainMenu"]
+visible = false
+
+[node name="Panel" type="Panel" parent="MainMenu/WeaponVariables"]
+offset_left = -1920.0
+offset_top = -1080.0
+offset_right = -120.0
+offset_bottom = 1080.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_kycxp")
+
+[node name="VTorpedo" type="HBoxContainer" parent="MainMenu/WeaponVariables"]
+visible = false
+offset_left = -1870.0
+offset_top = -1030.0
+offset_right = -195.0
+offset_bottom = 1030.0
+
+[node name="Labels" type="MarginContainer" parent="MainMenu/WeaponVariables/VTorpedo"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/WeaponVariables/VTorpedo/Labels"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="TorpedoHEATDmg" type="Label" parent="MainMenu/WeaponVariables/VTorpedo/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Torpedo HEAT Damage ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="TorpedoExploDmg" type="Label" parent="MainMenu/WeaponVariables/VTorpedo/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = " Torpedo Explosive Damage ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="TorpedoHP" type="Label" parent="MainMenu/WeaponVariables/VTorpedo/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Torpedo HP ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="TorpedoSpeed" type="Label" parent="MainMenu/WeaponVariables/VTorpedo/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Torpedo Speed ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="LineEdits" type="MarginContainer" parent="MainMenu/WeaponVariables/VTorpedo"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/WeaponVariables/VTorpedo/LineEdits"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="TorpedoHEATDmg" type="LineEdit" parent="MainMenu/WeaponVariables/VTorpedo/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "80.0"
+alignment = 1
+
+[node name="TorpedoExploDmg" type="LineEdit" parent="MainMenu/WeaponVariables/VTorpedo/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "60.0"
+alignment = 1
+
+[node name="TorpedoHP" type="LineEdit" parent="MainMenu/WeaponVariables/VTorpedo/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "5.0"
+alignment = 1
+
+[node name="TorpedoSpeed" type="LineEdit" parent="MainMenu/WeaponVariables/VTorpedo/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "384.0"
+alignment = 1
+
+[node name="VLaser" type="HBoxContainer" parent="MainMenu/WeaponVariables"]
+visible = false
+offset_left = -1870.0
+offset_top = -1030.0
+offset_right = -155.0
+offset_bottom = 1030.0
+
+[node name="Labels" type="MarginContainer" parent="MainMenu/WeaponVariables/VLaser"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/WeaponVariables/VLaser/Labels"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="LaserDmg" type="Label" parent="MainMenu/WeaponVariables/VLaser/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Laser Damage ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="LaserDur" type="Label" parent="MainMenu/WeaponVariables/VLaser/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Laser Duration ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="LaserDmgRate" type="Label" parent="MainMenu/WeaponVariables/VLaser/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Laser Damage Rate ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="LineEdits" type="MarginContainer" parent="MainMenu/WeaponVariables/VLaser"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/WeaponVariables/VLaser/LineEdits"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="LaserDmg" type="LineEdit" parent="MainMenu/WeaponVariables/VLaser/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "0.5"
+alignment = 1
+
+[node name="LaserDur" type="LineEdit" parent="MainMenu/WeaponVariables/VLaser/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "2.0"
+alignment = 1
+
+[node name="LaserDmgRate" type="LineEdit" parent="MainMenu/WeaponVariables/VLaser/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "0.01"
+alignment = 1
+
+[node name="VMissile" type="HBoxContainer" parent="MainMenu/WeaponVariables"]
+visible = false
+offset_left = -1870.0
+offset_top = -1030.0
+offset_right = -155.0
+offset_bottom = 1030.0
+
+[node name="Labels" type="MarginContainer" parent="MainMenu/WeaponVariables/VMissile"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/WeaponVariables/VMissile/Labels"]
+layout_mode = 2
+theme_override_constants/separation = 32
+
+[node name="MisDmg" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile Damage ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="MisHP" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile HP ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="MisTurnRate" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile Turn Rate ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="MisDetectRadius*" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile Detection Radius Multiplier ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="MisExploRadius*" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile Explosion Radius Multiplier ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="MisLift*" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile Lift Multiplier ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="MisThrust*" type="Label" parent="MainMenu/WeaponVariables/VMissile/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Missile Thrust Multiplier ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
+[node name="LineEdits" type="MarginContainer" parent="MainMenu/WeaponVariables/VMissile"]
+process_mode = 3
+layout_mode = 2
+theme_override_constants/margin_left = 25
+theme_override_constants/margin_top = 25
+theme_override_constants/margin_right = 25
+theme_override_constants/margin_bottom = 25
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/WeaponVariables/VMissile/LineEdits"]
+layout_mode = 2
+theme_override_constants/separation = 24
+
+[node name="MisDmg" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "80.0"
+alignment = 1
+
+[node name="MisHP" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "5.0"
+alignment = 1
+
+[node name="MisTurnRate" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "0.3"
+alignment = 1
+
+[node name="MisDetectRadius*" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "1.0"
+alignment = 1
+
+[node name="MisExploRadius*" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "1.0"
+alignment = 1
+
+[node name="MisLift*" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "0.8"
+alignment = 1
+
+[node name="MisThrust*" type="LineEdit" parent="MainMenu/WeaponVariables/VMissile/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "1.0"
+alignment = 1
+
+[node name="Back" type="Button" parent="MainMenu/WeaponVariables"]
+offset_left = -1877.0
+offset_top = 926.0
+offset_right = -1617.8
+offset_bottom = 1035.2
+theme_override_font_sizes/font_size = 60
+text = "<- Back"
+
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
 [connection signal="timeout" from="UI/vBoxContainer/keyInUseTimer" to="." method="_onKeyInUseTimerTimeout"]
 [connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
@@ -524,5 +922,11 @@ virtual_keyboard_enabled = false
 [connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Misc" to="MainMenu" method="_onMiscPressed"]
 [connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Keybinds" to="MainMenu" method="_onKeybindsPressed"]
+[connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Weapons" to="." method="_onWeaponsPressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/attackDamageF" to="MainMenu" method="_onAttackDamageFPressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/ShowMorse" to="MainMenu" method="_onShowMorsePressed"]
+[connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/generateCliffs" to="MainMenu" method="_onGenerateCliffsPressed"]
+[connection signal="pressed" from="MainMenu/Misc/Back" to="MainMenu" method="_onBackPressed"]
+[connection signal="pressed" from="MainMenu/Keybinds/Back" to="MainMenu" method="_onBackPressed"]
+[connection signal="pressed" from="MainMenu/Weapons/Back" to="MainMenu" method="_onBackPressed"]
+[connection signal="pressed" from="MainMenu/WeaponVariables/Back" to="MainMenu" method="_onBackPressed"]

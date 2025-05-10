@@ -39,6 +39,9 @@ var heldObjects: Array = []
 var keysAsText: Array = []
 
 func _ready() -> void:
+	reset()
+	WorldBuilder.cliffs = mainMenu.generateCliffs
+	WorldBuilder.reset()
 	if not terrain.is_in_group("Terrain"):
 		terrain.add_to_group("Terrain")
 	for action in InputMap.get_actions():
@@ -50,6 +53,7 @@ func _ready() -> void:
 	for polygonPoints in WorldBuilder.array:
 		var poly = Polygon2D.new()
 		poly.polygon = PackedVector2Array(polygonPoints)
+		poly.color = WorldBuilder.color
 		terrain.add_child(poly)
 		var collider = CollisionPolygon2D.new()
 		collider.polygon = PackedVector2Array(polygonPoints)
@@ -289,11 +293,19 @@ func waitForPlayers():
 func _onKeyInUseTimerTimeout() -> void:
 	keyInUse.hide()
 
+func getXRange(points: PackedVector2Array) -> float:
+	var minX = INF
+	var maxX = -INF
+	for p in points:
+		minX = min(minX, p.x)
+		maxX = max(maxX, p.x)
+	return maxX - minX
+
 func clip(poly):
 	for child in terrain.get_children():
 		if "polygon" in child:
 			for i in range(child.polygon.size()):
-				if abs(poly.global_position.x - child.polygon[i].x) < 244.5:
+				if abs(poly.global_position.x - child.polygon[i].x) < getXRange(poly.polygon):
 					var offsetPoly = Polygon2D.new()
 					var transformed_points = []
 					for point in poly.polygon:
@@ -303,3 +315,9 @@ func clip(poly):
 					child.set_deferred("polygon", res[0])
 					offsetPoly.queue_free()
 					break
+
+func reset():
+	for child in terrain.get_children():
+		if child is Polygon2D or child is CollisionPolygon2D or child is LightOccluder2D:
+			child.queue_free()
+	WorldBuilder.array.clear()

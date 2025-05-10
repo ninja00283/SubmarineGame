@@ -205,16 +205,12 @@ debug_color = Color(0.576471, 0.101961, 0.113725, 0.419608)
 scale = Vector2(1.5, 1.5)
 polygon = PackedVector2Array(163, 0, 115.46, 115.46, 0, 163, -115.46, 115.46, -163, 0, -115.46, -115.46, 0, -163, 115.46, -115.46)
 
-[node name="detectionRadiiDelay" type="Timer" parent="."]
-wait_time = 0.2
-one_shot = true
-
 [node name="queueFreeDelay" type="Timer" parent="."]
 wait_time = 10.0
 one_shot = true
 
 [node name="armingDelay" type="Timer" parent="."]
-wait_time = 0.5
+wait_time = 0.65
 autostart = true
 
 [node name="attackDamageDelay" type="Timer" parent="."]
@@ -307,7 +303,7 @@ target_position = Vector2(0, 0)
 
 [connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
 [connection signal="body_entered" from="detectionRadii" to="." method="_on_detection_radii_body_entered"]
-[connection signal="timeout" from="detectionRadiiDelay" to="." method="_on_detection_radii_delay_timeout"]
+[connection signal="body_exited" from="detectionRadii" to="." method="_onDetectionRadiiBodyExited"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_queueFreeDelayTimeout"]
 [connection signal="timeout" from="armingDelay" to="." method="_onArmingDelayTimeout"]
 [connection signal="timeout" from="attackDamageDelay" to="." method="_onAttackDamageDelayTimeout"]

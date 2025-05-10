@@ -29,6 +29,7 @@ extends CharacterBody2D
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
 
+var torpedoSpeed: float = 384.0
 var attackDamageS: bool = true
 var showMorse: bool = true
 var deathShaderShowDur: float = Time.get_ticks_msec()
@@ -56,7 +57,7 @@ func _ready() -> void:
 	commandInput.show()
 
 func _physics_process(delta: float) -> void:
-	if Input.is_action_just_pressed("LoseFocus"):
+	if Input.is_action_just_pressed("Escape"):
 		commandInput.release_focus()
 	if not showMorse:
 		morse.hide()
@@ -65,7 +66,8 @@ func _physics_process(delta: float) -> void:
 	morsePreview.text = "".join(morseCodeInt.currentMorsePreview)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
-	velocity.y += (20 * (1 - HP / 100.0)) * delta
+	if HP < 100.0:
+		velocity.y += (20 * (1 - HP / 100.0)) * delta
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	if not shaking:
@@ -222,7 +224,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				torpedo.rotation_degrees = angleDegreesInput
 				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
 				var offset = direction * 100
-				torpedo.velocity = direction * 384
+				torpedo.velocity = direction * torpedoSpeed
 				torpedo.position = characterBody.position + offset
 				get_tree().root.add_child(torpedo)
 				root.objects.append(torpedo)
@@ -243,8 +245,8 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				var railgun = railgunScene.instantiate()
 				railgun.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
-				var offset = direction * 135
-				railgun.velocity = direction * 8192
+				var offset = direction * 100
+				railgun.velocity = direction * 12228
 				railgun.position = characterBody.position + offset
 
 				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)

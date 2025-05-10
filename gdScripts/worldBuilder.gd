@@ -4,13 +4,14 @@ extends Node
 
 var array: Array = [] # The array that stores the points for the polygon2D
 var markers: Dictionary = {} # Dictionary that stores all markers and their positions
-var segments: int # Amount of segments composing the terrain, increase for higher resolution terrain (figuratively)
+var segments: int # Amount of segments composing the terrain, increase for higher resolution terrain
 var step: float # Floating point to store default segment size in pixels on the X axis
 var screenSizeX: int # Integer to store the size of the terrain on the X axis
 var cliffs: bool = true # Experimental cliffs
 var cliffPos: Array = [] # Array to store positions cliffs could start at
 var cliffIndices: Array = [] # Stores at which index the position is in 'array' that each cliff was based on
 var cliffCount: int = 0 # How many cliffs' positions have been picked out in the generation step
+var color: Color = Color(1, 1, 1, 1) # The terrains' color in RGBA
 
 func _ready() -> void:
 	array.clear()
@@ -103,3 +104,13 @@ func mark():
 		else:
 			markers.find_key(pos).queue_free()
 			markers.erase(markers.find_key(pos))
+
+func reset():
+	array.clear()
+	markers.keys().map(func(m): m.queue_free())
+	markers.clear()
+	cliffPos.clear()
+	cliffIndices.clear()
+	cliffCount = 0
+	fill()
+	build()

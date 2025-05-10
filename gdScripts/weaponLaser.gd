@@ -10,38 +10,45 @@ extends Node2D
 @onready var gpupHit: GPUParticles2D = $GPUPHit
 @onready var gpupStart: GPUParticles2D = $GPUPStart
 @onready var sprite2D: Sprite2D = $Sprite2D
+@onready var laserDurTimer: Timer = $laserDuration
 
 @export var amplitude: float = 1
 @export var frequency: float = 20
 @export var minBrightness: float = 0.8
 @export var maxBrightness: float = 1.2
 @export var amountRatio: float
+@export var scaleMultiplier: float = 1.0
 
 var player
 var castPoint
 var collisionPoint
+var laserDuration: float = 2.0
 var amountRatioMultiplier: float = 0
 var angle: float = 0
 var currentHitObject = null
 var damageTimer: float = 0.0
-var damageRate: float = 0.5
+var damageRate: float = 0.01
+var damage: float = 0.5
 var timeSinceTerrainHit: float = 0.0
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	animationPlayer.play("laserOn")
+	laserDurTimer.start(laserDuration)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
+	$terrainExplosionRadii/collisionShape2d.scale = Vector2(0.5, 0.5) * Vector2(scaleMultiplier, scaleMultiplier)
 	timeSinceTerrainHit += delta
 	$terrainExplosionRadii.global_position = laserHit.global_position
 	for body in $terrainExplosionRadii.get_overlapping_bodies():
 		if body.is_in_group("Terrain"):
 			timeSinceTerrainHit += delta
-			if timeSinceTerrainHit > 0.015:
-				for i in range(int(timeSinceTerrainHit / 0.015)):
+			if timeSinceTerrainHit > 0.08:
+				for i in range(int(timeSinceTerrainHit / 0.08)):
 					body.get_parent().clip($terrainExplosionRadii/collisionShape2d)
-					timeSinceTerrainHit -= 0.015
+					timeSinceTerrainHit -= 0.08
+
 	var hitObject = rayCast2D.get_collider()
 	if hitObject != null and "HP" in hitObject:
 		amountRatioMultiplier = 1
@@ -71,20 +78,21 @@ func _process(delta: float) -> void:
 
 	if currentHitObject != null:
 		damageTimer += delta
-		while damageTimer >= 0.01:
-			if damageTimer >= 0.01:
-				currentHitObject.HP -= damageRate
-				player.attackDamageF(damageRate, false)
+		while damageTimer >= damageRate:
+			if damageTimer >= damageRate:
+				currentHitObject.HP -= damage
+				player.attackDamageF(damage, false)
 				print(currentHitObject.get_class(), " HP: ", currentHitObject.HP)
-				damageTimer -= 0.01
+				damageTimer -= damageRate
 
 	if rayCast2D.is_colliding():
 		gpupHit.global_rotation = rayCast2D.get_collision_normal().angle()
 		gpupHit.position = laserHit.position
 
-func laserOff():
-	animationPlayer.stop()
-	animationPlayer.play("laserOff")
-
 func attackDamage():
 	player.attackDamageF(0.0, true)
+
+
+func _onLaserDurationTimeout() -> void:
+	animationPlayer.stop()
+	animationPlayer.play("laserOff")

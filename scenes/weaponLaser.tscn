@@ -154,15 +154,27 @@ tracks/6/path = NodePath(".:amountRatio")
 tracks/6/interp = 1
 tracks/6/loop_wrap = true
 tracks/6/keys = {
-"times": PackedFloat32Array(0, 0.075),
+"times": PackedFloat32Array(0, 0.025),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 0.0]
 }
+tracks/7/type = "value"
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/path = NodePath(".:scaleMultiplier")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/keys = {
+"times": PackedFloat32Array(0, 0.1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [1.0, 0.0]
+}
 
 [sub_resource type="Animation" id="Animation_vsu2t"]
 resource_name = "laserOn"
-length = 2.0
+length = 0.1
 step = 0.01
 tracks/0/type = "value"
 tracks/0/imported = false
@@ -171,7 +183,7 @@ tracks/0/path = NodePath("Line2D:width")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(0.2, 0.2),
 "update": 0,
 "values": [0.0, 20.0]
@@ -183,12 +195,9 @@ tracks/1/path = NodePath(".")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(2),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"laserOff"
-}]
+"times": PackedFloat32Array(),
+"transitions": PackedFloat32Array(),
+"values": []
 }
 tracks/2/type = "value"
 tracks/2/imported = false
@@ -197,7 +206,7 @@ tracks/2/path = NodePath("laserHit:modulate")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(0.2, 0.2),
 "update": 0,
 "values": [Color(0.15, 2, 0.5, 0), Color(0.15, 1.5, 0.75, 1)]
@@ -209,7 +218,7 @@ tracks/3/path = NodePath("laserStart:modulate")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(0.2, 0.2),
 "update": 0,
 "values": [Color(4.8, 48, 24, 0), Color(4.8, 48, 24, 1)]
@@ -221,7 +230,7 @@ tracks/4/path = NodePath("GPUPStart:self_modulate")
 tracks/4/interp = 1
 tracks/4/loop_wrap = true
 tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(0.2, 0.2),
 "update": 0,
 "values": [Color(0.3, 3, 1.5, 0), Color(0.3, 3, 1.5, 1)]
@@ -233,10 +242,22 @@ tracks/5/path = NodePath(".:amountRatio")
 tracks/5/interp = 1
 tracks/5/loop_wrap = true
 tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.2),
+"times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 0,
 "values": [0.0, 1.0]
+}
+tracks/6/type = "value"
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/path = NodePath(".:scaleMultiplier")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [1.0]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_ukykt"]
@@ -326,5 +347,10 @@ process_material = SubResource("ParticleProcessMaterial_v4xy5")
 [node name="terrainExplosionRadii" type="Area2D" parent="."]
 
 [node name="collisionShape2d" type="CollisionPolygon2D" parent="terrainExplosionRadii"]
-scale = Vector2(0.2, 0.2)
-polygon = PackedVector2Array(163, 0, 115.46, 115.46, 0, 163, -115.46, 115.46, -163, 0, -115.46, -115.46, 0, -163, 115.46, -115.46)
+polygon = PackedVector2Array(24.45, 0, 17.319, 17.319, 0, 24.45, -36, 24.45, -36, -24.45, 0, -24.45, 17.319, -17.319)
+
+[node name="laserDuration" type="Timer" parent="."]
+wait_time = 8.0
+one_shot = true
+
+[connection signal="timeout" from="laserDuration" to="." method="_onLaserDurationTimeout"]

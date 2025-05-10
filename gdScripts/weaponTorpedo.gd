@@ -1,7 +1,6 @@
 extends CharacterBody2D
 
 @onready var armingDelay: Timer = $armingDelay
-@onready var detectionRadiiDelay: Timer = $detectionRadiiDelay
 @onready var queueFreeDelay: Timer = $queueFreeDelay
 @onready var impactFuse: Area2D = $Area2D
 @onready var detectionRadii: Area2D = $detectionRadii
@@ -25,6 +24,8 @@ extends CharacterBody2D
 
 var player
 var damage
+var HEATDamage: float = 80
+var ExploDamage: float = 60
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
 var target = null
 var rangeToTarget: float = 0
@@ -32,6 +33,7 @@ var HP: float = 5.0
 var gpup2D6C: bool = false
 var exploded: bool = false
 var HEATExploded: bool = false
+var targets: Array = []
 
 func _process(delta: float) -> void:
 	if HP <= 0:
@@ -56,16 +58,20 @@ func _on_area_2d_body_entered(body):
 		print("Body is self")
 
 func _on_detection_radii_body_entered(body):
-	if not is_instance_valid(armingDelay):
-		var relativePos = to_local(body.global_position)
-		rangeToTarget = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-		target = body
-		detectionRadiiDelay.start()
+	if body != self:
+		if not is_instance_valid(armingDelay):
+			var relativePos = to_local(body.global_position)
+			rangeToTarget = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
+			target = body
+			weaponTorpedo.spread = 180
+			hit()
+			queueFreeDelay.start()
+		else:
+			targets.append(body)
 
-func _on_detection_radii_delay_timeout() -> void:
-	weaponTorpedo.spread = 180
-	hit()
-	queueFreeDelay.start()
+func _onDetectionRadiiBodyExited(body: Node2D) -> void:
+	if body in targets:
+		targets.erase(body)
 
 func hit():
 	velocity = Vector2(0, 0)
@@ -106,7 +112,7 @@ func explode():
 				if body != self and "HP" in body:
 					var relativePos = to_local(body.global_position)
 					var distance = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
-					damage = 12000 / (distance + 1) * pow(distance / (distance + 12), 6)
+					damage = ExploDamage * 60 / (distance + 1) * pow(distance / (distance + 12), 6)
 					body.HP -= damage
 					if damage <= 0:
 						player.attackDamageF(0, true)
@@ -116,15 +122,19 @@ func explode():
 				print("Target(",body,") obstructed")
 
 func _onArmingDelayTimeout() -> void:
+	if targets.size() > 0:
+		weaponTorpedo.spread = 180
+		hit()
+		queueFreeDelay.start()
 	armingDelay.queue_free()
 
 func HEAT():
 	if is_instance_valid(heatJet):
 		for body in heatJet.get_overlapping_bodies():
 			if body != self and "HP" in body:
-				body.HP -= 80
+				body.HP -= HEATDamage
 				print("Damaged:", body, "Damage:", damage, "Remaining HP:", body.HP, "Method: HEAT")
-				player.attackDamageF(80, false)
+				player.attackDamageF(HEATDamage, false)
 
 func _queueFreeDelayTimeout() -> void:
 	queue_free()
