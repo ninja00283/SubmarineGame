@@ -25,7 +25,7 @@ extends CharacterBody2D
 var player
 var damage
 var HEATDamage: float = 80
-var ExploDamage: float = 60
+var ExploDamage: float = 120
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
 var target = null
 var rangeToTarget: float = 0

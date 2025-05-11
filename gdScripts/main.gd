@@ -17,7 +17,11 @@ extends Node2D
 @onready var keyInUse: Label = $UI/vBoxContainer/keyInUse
 @onready var keyInUseTimer: Timer = $UI/vBoxContainer/keyInUseTimer
 @onready var settings: Node2D = $MainMenu/Settings
+@onready var sun: DirectionalLight2D = $Sun
+@onready var moon: DirectionalLight2D = $Moon
 
+var bgcol: Color
+var rot: float = 0.0
 var gameEnded: bool = false
 var started: bool = false
 var canSpawn: bool = false
@@ -39,6 +43,14 @@ var heldObjects: Array = []
 var keysAsText: Array = []
 
 func _ready() -> void:
+	bgcol = $UI/background.color
+	rot = Time.get_time_dict_from_system()["hour"] * 15 + 180
+	$UI/background.color = bgcol * -sin(deg_to_rad(rot - 90))
+	if $UI/background.color.r < bgcol.r * 0.1:
+		$UI/background.color = bgcol * 0.1
+	$UI/background.color.a = 1.0
+	sun.rotation_degrees = rot
+	moon.rotation_degrees = rot
 	reset()
 	WorldBuilder.cliffs = mainMenu.generateCliffs
 	WorldBuilder.reset()
@@ -321,3 +333,13 @@ func reset():
 		if child is Polygon2D or child is CollisionPolygon2D or child is LightOccluder2D:
 			child.queue_free()
 	WorldBuilder.array.clear()
+
+
+func _onTimerTimeout() -> void:
+	rot = Time.get_time_dict_from_system()["hour"] * 15 + 180
+	$UI/background.color = bgcol * -sin(deg_to_rad(rot - 90))
+	if $UI/background.color.r < bgcol.r * 0.1:
+		$UI/background.color = bgcol * 0.1
+	$UI/background.color.a = 1.0
+	sun.rotation_degrees = rot
+	moon.rotation_degrees = rot

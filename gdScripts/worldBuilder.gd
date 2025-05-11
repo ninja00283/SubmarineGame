@@ -11,7 +11,7 @@ var cliffs: bool = true # Experimental cliffs
 var cliffPos: Array = [] # Array to store positions cliffs could start at
 var cliffIndices: Array = [] # Stores at which index the position is in 'array' that each cliff was based on
 var cliffCount: int = 0 # How many cliffs' positions have been picked out in the generation step
-var color: Color = Color(1, 1, 1, 1) # The terrains' color in RGBA
+var color: Color = Color(0.6, 0.5, 0.25, 1) # The terrains' color in RGBA
 
 func _ready() -> void:
 	array.clear()
@@ -23,15 +23,15 @@ func _ready() -> void:
 	build()
 
 # Function to add the points to the array
-func fill(offset: float = 0.0, terrainSegments: int = 64, terrainSizeX: int = 3840):
+func fill(offset: float = 0.0, terrainSegments: int = 256, terrainSizeX: int = 15360):
 	segments = terrainSegments
 	screenSizeX = terrainSizeX
 	step = terrainSizeX / (terrainSegments - 1)
 	for i in range(terrainSegments + 1):
-		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(350, 800)))
+		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(650, 800)))
 
 # Function to move the points to resemble terrain
-func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 0.75, maxCliffCount: int = 3):
+func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 0.75, maxCliffCount: int = 3, maxAlt: float = 100.0):
 	var potentialCliffPos = array[randi_range(0, array.size()-1)]
 	if cliffs:
 		while cliffCount < maxCliffCount:
@@ -46,17 +46,18 @@ func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 
 		for cliff in cliffPos:
 			if cliff == array[i]:
 				cliff.x += xRandomization
-		array[i].y = array[i-1].y
-		var yRandomization
-		if i < array.size() / 2:
-			yRandomization = randf_range(-step * Yrand, step * (Yrand * 0.2))
-		else:
-			yRandomization = randf_range(-step * (Yrand * 0.2), step * Yrand)
-		var diff = array[i-1].y - array[i-2].y
-		array[i].y += diff * 0.2
+		if i == 0:
+			continue
+		array[i].y = array[i - 1].y
+		var yRandomization = randf_range(-step * Yrand, step * Yrand)
+		if i > 1:
+			var diff = array[i - 1].y - array[i - 2].y
+			array[i].y += diff * 0.2
 		array[i].y += yRandomization
 		if cliffIndices.has(i):
-			array[i].y = cliffPos[cliffIndices.find(i)].y
+			array[i].y = clampf(cliffPos[cliffIndices.find(i)].y, -INF, maxAlt)
+		else:
+			array[i].y = clampf(array[i].y, -INF, maxAlt)
 	array.append(Vector2(screenSizeX / 2, screenSizeX / 2))
 	array.append(Vector2(-screenSizeX / 2, screenSizeX / 2))
 
@@ -81,6 +82,7 @@ func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 
 			seg.append(Vector2(array[base + 1].x, screenSizeX / 2))
 		newArray.append(seg)
 	array = newArray
+
 
 
 func evaluate(pos: Vector2, cliffDistanceEdge: float):
