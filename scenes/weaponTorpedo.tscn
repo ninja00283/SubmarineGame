@@ -211,7 +211,7 @@ one_shot = true
 
 [node name="armingDelay" type="Timer" parent="."]
 wait_time = 0.65
-autostart = true
+one_shot = true
 
 [node name="attackDamageDelay" type="Timer" parent="."]
 wait_time = 0.2

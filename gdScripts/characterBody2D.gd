@@ -16,6 +16,7 @@ extends CharacterBody2D
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
 @onready var firestreakScene = preload("res://scenes/weaponFirestreak.tscn")
 @onready var flamethrowerScene = preload("res://scenes/weaponFlamethrower.tscn")
+@onready var M107Scene = preload("res://M107.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
@@ -37,7 +38,7 @@ var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
 var shortCommands: Array = ["m", "f", "d"]
-var ammo: Array = ["torpedo", "laser", "railgun", "firestreak", "flamethrower"]
+var ammo: Array = ["torpedo", "laser", "railgun", "firestreak", "flamethrower", "m107"]
 var xDrag: float = 0.01
 var yDrag: float = 0.01
 var HP: float = 100.0
@@ -67,8 +68,8 @@ func _physics_process(delta: float) -> void:
 	morsePreview.text = "".join(morseCodeInt.currentMorsePreview)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
-	if HP < 100.0:
-		velocity.y += (20 * (1 - HP / 100.0)) * delta
+	#if HP < 100.0:
+		#velocity.y += (20 * (1 - HP / 100.0)) * delta
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	if not shaking:
@@ -208,8 +209,16 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 	if parts.size() >= 3:
 		var ammoType = parts[1].to_lower()
 		var angle = parts[2]
+		var fltAngle
+		if str(angle).length() > 3:
+			var angleStr = str(angle)
+			var beforeDecimal = angleStr.substr(0, 3)
+			var afterDecimal = angleStr.substr(3, angleStr.length() - 3)
+			fltAngle = (beforeDecimal + "." + afterDecimal).to_float()
+		else:
+			fltAngle = str(angle).to_float()
 		if angle.is_valid_float():
-			var angleDegreesInput = angle.to_int()
+			var angleDegreesInput = fltAngle
 			if ammoType.is_valid_float() and contra:
 				var ammoIndex = ammoType.to_int()
 				if ammoIndex > 0 and ammoIndex <= ammo.size():
@@ -222,8 +231,13 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 			else:
 				print("Invalid ammo type. Must be either a valid index or a weapon name.")
 				return
-			if ammoType == "torpedo":
+			if ammoType.to_lower() == "torpedo":
 				var torpedo = torpedoScene.instantiate()
+				torpedo.HEATDamage = root.mainMenu.torpedoHEATDamage
+				torpedo.ExploDamage = root.mainMenu.torpedoExploDamage
+				torpedo.HP = 5.0
+				torpedo.armingDelay = root.mainMenu.torpedoArmingDelay
+				var torpedoSpeed: float = root.mainMenu.torpedoSpeed
 				torpedo.rotation_degrees = angleDegreesInput
 				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
 				var offset = direction * 100
@@ -233,8 +247,12 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				root.objects.append(torpedo)
 				torpedo.player = self
 
-			elif ammoType == "laser":
+			elif ammoType.to_lower() == "laser":
 				var laser = laserScene.instantiate()
+				laser.damage = root.mainMenu.laserDamage
+				laser.laserDuration = root.mainMenu.laserDuration
+				laser.damageRate = root.mainMenu.laserDamageRate
+				var laserDamageRate: float = 0.5
 				laser.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(laser.rotation), sin(laser.rotation))
 				var offset = direction * 100
@@ -242,7 +260,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				get_tree().root.add_child(laser)
 				laser.player = self
 				laser.reparent(self)
-			elif ammoType == "railgun":
+			elif ammoType.to_lower() == "railgun":
 				var sabotT = sabotScene.instantiate()
 				var sabotB = sabotScene.instantiate()
 				var railgun = railgunScene.instantiate()
@@ -269,7 +287,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				root.objects.append(sabotT)
 				root.objects.append(sabotB)
 				railgun.player = self
-			elif ammoType == "firestreak":
+			elif ammoType.to_lower() == "firestreak":
 				var firestreak = firestreakScene.instantiate()
 				firestreak.damage = root.mainMenu.firestreakDamage
 				firestreak.HP = root.mainMenu.firestreakHP
@@ -285,7 +303,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				firestreak.player = self
 				get_tree().root.add_child(firestreak)
 				root.objects.append(firestreak)
-			elif ammoType == "flamethrower":
+			elif ammoType.to_lower() == "flamethrower":
 				var flamethrower = flamethrowerScene.instantiate()
 				flamethrower.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(flamethrower.rotation), sin(flamethrower.rotation))
@@ -294,6 +312,15 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				get_tree().root.add_child(flamethrower)
 				flamethrower.player = self
 				flamethrower.reparent(self)
+			elif ammoType.to_lower() == "m107":
+				var M107 = M107Scene.instantiate()
+				M107.rotation = deg_to_rad(angleDegreesInput)
+				var direction = Vector2(cos(M107.rotation), sin(M107.rotation))
+				var offset = direction * 100
+				M107.position = characterBody.position + offset
+				M107.velocity = direction * 2048
+				M107.player = self
+				get_tree().root.add_child(M107)
 			print("Fired ", ammoType, " at angle ", angleDegreesInput)
 		else:
 			print("Invalid inputs for fire command. Angle must be numeric.", " ", angle)

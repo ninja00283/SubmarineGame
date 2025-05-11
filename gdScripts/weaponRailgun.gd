@@ -29,6 +29,7 @@ var ended: bool = false #Whether or not the railgun has left the screen
 var cooldown: bool = false # Whether or not the cooldown period has passed
 var cooldownStarted: bool = false # Whether or not the cooldown period is running
 var startingPoint: Vector2 # The position the weapon was fired at
+var damage: float = 120.0 # The weapons damage point blank
 
 func _ready() -> void:
 	GlobalTrail.addNode(self, 16, Vector2(-24, 0), 0.2)
@@ -56,8 +57,8 @@ func _onRigidBody2dBodyEntered(body: Node) -> void:
 		print("Rotation(Rad): ", rotation)
 		print("Hit angle: ", AoA)
 		if "HP" in body:
-			body.HP -= 150 * (velocity.length() / 6144)
-			player.attackDamageF(150 * (velocity.length() / 6144), false)
+			body.HP -= damage * (velocity.length() / 6144)
+			player.attackDamageF(damage * (velocity.length() / 6144), false)
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:

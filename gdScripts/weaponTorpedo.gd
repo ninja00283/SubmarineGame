@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@onready var armingDelay: Timer = $armingDelay
+@onready var armDelay: Timer = $armingDelay
 @onready var queueFreeDelay: Timer = $queueFreeDelay
 @onready var impactFuse: Area2D = $Area2D
 @onready var detectionRadii: Area2D = $detectionRadii
@@ -24,6 +24,7 @@ extends CharacterBody2D
 
 var player
 var damage
+var armingDelay: float = 0.65
 var HEATDamage: float = 80
 var ExploDamage: float = 60
 var weaponTorpedo = preload("res://assets/weaponTorpedo.tres")
@@ -34,6 +35,9 @@ var gpup2D6C: bool = false
 var exploded: bool = false
 var HEATExploded: bool = false
 var targets: Array = []
+
+func _ready() -> void:
+	armDelay.start(armingDelay)
 
 func _process(delta: float) -> void:
 	if HP <= 0:
@@ -59,7 +63,7 @@ func _on_area_2d_body_entered(body):
 
 func _on_detection_radii_body_entered(body):
 	if body != self:
-		if not is_instance_valid(armingDelay):
+		if not is_instance_valid(armDelay):
 			var relativePos = to_local(body.global_position)
 			rangeToTarget = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
 			target = body
@@ -126,7 +130,7 @@ func _onArmingDelayTimeout() -> void:
 		weaponTorpedo.spread = 180
 		hit()
 		queueFreeDelay.start()
-	armingDelay.queue_free()
+	armDelay.queue_free()
 
 func HEAT():
 	if is_instance_valid(heatJet):

@@ -69,6 +69,10 @@ func _ready() -> void:
 	pass
 
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("Submit"):
+		currentMorse.clear()
+		currentMorsePreview.clear()
+		currentText.clear()
 	if morseInputPressed:
 		timeSinceMorse += delta
 		timeSinceLastMorse = 0.0

@@ -4,19 +4,24 @@ var nodes: Dictionary = {} # Dictionary to store nodes and their associated data
 const TRAIL = preload("res://assets/trail.tres")
 
 func _process(delta: float) -> void:
+	if Input.is_action_just_pressed("Reload"):
+		for node in nodes.keys():
+			nodes[node][0].queue_free()
+			nodes.erase(node)
 	for node in nodes.keys():
 		var data = nodes[node]
 		var line2D = data[0]
 		nodes[node][3] -= delta
-		if line2D and node.global_position and data[4]:
-			var offsetPosition = node.global_position + (data[2].rotated(node.rotation))
-			line2D.add_point(offsetPosition)
-		if data[3] < 0:
-			if line2D.points.size() > 0:
-				line2D.remove_point(0)
-		if line2D.get_point_count() <= 0:
-			nodes.erase(node)
-			line2D.queue_free()
+		if is_instance_valid(node):
+			if line2D and node.global_position and data[4]:
+				var offsetPosition = node.global_position + (data[2].rotated(node.rotation))
+				line2D.add_point(offsetPosition)
+			if data[3] < 0:
+				if line2D.points.size() > 0:
+					line2D.remove_point(0)
+			if line2D.get_point_count() <= 0:
+				nodes.erase(node)
+				line2D.queue_free()
 
 func addNode(node, segments: int, offset: Vector2, delay: float):
 	var newLine2D = Line2D.new()

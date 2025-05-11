@@ -10,6 +10,7 @@ extends Node2D
 @onready var vLaser: HBoxContainer = $WeaponVariables/VLaser
 @onready var vMissile: HBoxContainer = $WeaponVariables/VMissile
 @onready var wVarPanel: Panel = $WeaponVariables/Panel
+@onready var wVars: Node2D = $WeaponVariables
 
 var lineEdits: Array = []
 var generateCliffs: bool = true
@@ -17,9 +18,10 @@ var torpedoHEATDamage: float = 80.0
 var torpedoExploDamage: float = 60.0
 var torpedoHP: float = 5.0
 var torpedoSpeed: float = 384.0
+var torpedoArmingDelay: float = 0.65
 var laserDamage: float = 0.5
 var laserDuration: float = 2.0
-var laserDamageRate: float = 0.5
+var laserDamageRate: float = 0.01
 var firestreakDamage: float = 80.0
 var firestreakHP: float = 5.0
 var firestreakTurningRate: float = 0.3
@@ -57,6 +59,10 @@ func _input(event: InputEvent) -> void:
 						lineEdit.clear()
 					"TorpedoSpeed":
 						torpedoSpeed = lineEdit.text.to_float()
+						lineEdit.placeholder_text = lineEdit.text
+						lineEdit.clear()
+					"TorpedoArmingDelay":
+						torpedoArmingDelay = lineEdit.text.to_float()
 						lineEdit.placeholder_text = lineEdit.text
 						lineEdit.clear()
 					"LaserDmg":
@@ -135,7 +141,7 @@ func _onBackPressed() -> void:
 func _onBackPressedWeapon():
 	$WeaponVariables/Back.hide()
 	weapons.show()
-	wVarPanel.hide()
+	wVars.hide()
 	vTorpedo.hide()
 	vLaser.hide()
 	vMissile.hide()
@@ -152,19 +158,19 @@ func _onWeaponsPressed() -> void:
 func _onWTorpedoPressed() -> void:
 	$WeaponVariables/Back.show()
 	weapons.hide()
-	wVarPanel.show()
+	wVars.show()
 	vTorpedo.show()
 
 func _onWLaserPressed() -> void:
 	$WeaponVariables/Back.show()
 	weapons.hide()
-	wVarPanel.show()
+	wVars.show()
 	vLaser.show()
 
 func _onWMissilePressed() -> void:
 	$WeaponVariables/Back.show()
 	weapons.hide()
-	wVarPanel.show()
+	wVars.show()
 	vMissile.show()
 
 

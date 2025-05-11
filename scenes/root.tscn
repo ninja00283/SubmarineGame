@@ -133,8 +133,8 @@ limit_smoothed = true
 position_smoothing_enabled = true
 
 [node name="Border" type="StaticBody2D" parent="."]
-collision_layer = 131079
-collision_mask = 131079
+collision_layer = 131075
+collision_mask = 131075
 physics_material_override = SubResource("PhysicsMaterial_nvee0")
 
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Border"]
@@ -268,6 +268,7 @@ theme_override_font_sizes/font_size = 112
 text = "Quit"
 
 [node name="Settings" type="Node2D" parent="MainMenu"]
+visible = false
 
 [node name="Panel" type="Panel" parent="MainMenu/Settings"]
 offset_left = -1920.0
@@ -582,9 +583,9 @@ theme_override_font_sizes/font_size = 60
 text = "<- Back"
 
 [node name="WeaponVariables" type="Node2D" parent="MainMenu"]
+visible = false
 
 [node name="Panel" type="Panel" parent="MainMenu/WeaponVariables"]
-visible = false
 offset_left = -1920.0
 offset_top = -1080.0
 offset_right = -120.0
@@ -639,6 +640,13 @@ theme_override_font_sizes/font_size = 60
 text = "Torpedo Speed ----------------------------------------------------------------------------------------------------------------------------------------"
 clip_text = true
 
+[node name="TorpedoArmingDelay" type="Label" parent="MainMenu/WeaponVariables/VTorpedo/Labels/VBoxContainer"]
+custom_minimum_size = Vector2(1375, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Torpedo Arming Delay ----------------------------------------------------------------------------------------------------------------------------------------"
+clip_text = true
+
 [node name="LineEdits" type="MarginContainer" parent="MainMenu/WeaponVariables/VTorpedo"]
 process_mode = 3
 layout_mode = 2
@@ -677,6 +685,13 @@ custom_minimum_size = Vector2(200, 0)
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
 placeholder_text = "384.0"
+alignment = 1
+
+[node name="TorpedoArmingDelay" type="LineEdit" parent="MainMenu/WeaponVariables/VTorpedo/LineEdits/VBoxContainer"]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+placeholder_text = "0.65"
 alignment = 1
 
 [node name="VLaser" type="HBoxContainer" parent="MainMenu/WeaponVariables"]
@@ -882,7 +897,6 @@ placeholder_text = "1.0"
 alignment = 1
 
 [node name="Back" type="Button" parent="MainMenu/WeaponVariables"]
-visible = false
 offset_left = -1877.0
 offset_top = 926.0
 offset_right = -1617.8
