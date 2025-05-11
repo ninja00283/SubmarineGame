@@ -74,10 +74,6 @@ func _process(delta: float) -> void:
 			gpup2D2.lifetime = 0.05
 			gpup2D1.emitting = true
 			gpup2D2.emitting = true
-		if target and angleDifference > 1.5:
-			constant_force = Vector2(0, 9800)
-			gpup2D1.emitting = false
-			gpup2D2.emitting = false
 
 func _onArmingDelayTimeout() -> void:
 	IRDetectionRadii.monitoring = true

@@ -340,7 +340,7 @@ shader_parameter/lineThickness = 3
 
 [sub_resource type="QuadMesh" id="QuadMesh_fjrip"]
 
-[node name="CharacterBody2D" type="CharacterBody2D"]
+[node name="CharacterBody2D2" type="CharacterBody2D"]
 process_mode = 1
 scale = Vector2(0.75, 0.75)
 collision_layer = 393231

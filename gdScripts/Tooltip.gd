@@ -10,7 +10,7 @@ var tooltipOffset: Vector2 = Vector2(20, 20) # By how many pixels the tooltip sh
 
 func _input(event: InputEvent) -> void:
 	if visible:
-		if abs((global_position + size / 2 - get_global_mouse_position()).length()) < 64:
+		if abs((global_position + size / 2 - get_global_mouse_position()).length()) < 32:
 			label.text = displayText
 			hovering = true
 		else:

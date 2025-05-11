@@ -39,6 +39,9 @@ var heldObjects: Array = []
 var keysAsText: Array = []
 
 func _ready() -> void:
+	instance(true)
+
+func instance(real: bool = true) -> void:
 	reset()
 	WorldBuilder.cliffs = mainMenu.generateCliffs
 	WorldBuilder.reset()
@@ -63,16 +66,17 @@ func _ready() -> void:
 		lightOccluder.occluder = lightOccluderPolygon
 		lightOccluder.occluder.polygon = PackedVector2Array(polygonPoints)
 		terrain.add_child(lightOccluder)
-	for player in range(startPlayerCount):
-		var playerInstance = playerScene.instantiate()
-		playerInstance.position = spawnPos[0]
-		playerInstance.root = self
-		players.append(playerInstance)
-		playerInstance.index = player
-		add_child(playerInstance)
-		move_child(playerInstance, 0)
-		spawnPos.remove_at(0)
-	get_tree().paused = true
+	if real:
+		for player in range(startPlayerCount):
+			var playerInstance = playerScene.instantiate()
+			playerInstance.position = spawnPos[0]
+			playerInstance.root = self
+			players.append(playerInstance)
+			playerInstance.index = player
+			add_child(playerInstance)
+			move_child(playerInstance, 0)
+			spawnPos.remove_at(0)
+		get_tree().paused = true
 
 
 func _process(delta: float) -> void:
@@ -82,7 +86,7 @@ func _process(delta: float) -> void:
 	if not debugging and players.size() < 2 and not gameEnded:
 		gameWon()
 
-	if Input.is_action_just_pressed("Reload") and started:
+	if Input.is_action_just_pressed("Reload"):
 		for child in terrain.get_children():
 			if child is Polygon2D or child is CollisionPolygon2D:
 				child.queue_free()

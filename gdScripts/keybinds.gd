@@ -15,8 +15,6 @@ extends Node2D
 	{"Node": spawnPlayerY, "Keybind": "Spawn"},
 	{"Node": submitText, "Keybind": "Submit"},
 	{"Node": morseInput, "Keybind": "MorseInput"},
-	{"Node": morseInputP1, "Keybind": "MorseInputP1"},
-	{"Node": morseInputP2, "Keybind": "MorseInputP2"},
 ]
 
 var listening = false

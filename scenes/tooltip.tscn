@@ -5,11 +5,14 @@
 
 [node name="Tooltip" type="TextureRect"]
 process_mode = 3
-custom_minimum_size = Vector2(0, 161)
+custom_minimum_size = Vector2(40.25, 40.25)
+offset_right = 40.25
+offset_bottom = 40.25
 scale = Vector2(0.5, 0.5)
 mouse_filter = 0
 texture = ExtResource("1_oxk8h")
-stretch_mode = 3
+expand_mode = 1
+stretch_mode = 4
 script = ExtResource("2_abxgm")
 
 [node name="TooltipDisplay" type="Label" parent="."]
@@ -19,8 +22,7 @@ offset_top = -391.0
 offset_right = -820.0
 offset_bottom = -346.0
 theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
-theme_override_constants/outline_size = 16
-theme_override_font_sizes/font_size = 32
+theme_override_font_sizes/font_size = 40
 
 [node name="Timer" type="Timer" parent="."]
 one_shot = true

@@ -29,6 +29,7 @@ extends CharacterBody2D
 @export var shaking: bool = false
 @export var shakeScale: float = 0.0
 
+var contra: bool = true # Linguistic contractions
 var torpedoSpeed: float = 384.0
 var attackDamageS: bool = true
 var showMorse: bool = true
@@ -170,12 +171,14 @@ func commandInterpret(input, characterBody, event):
 					fireCommand(parts, characterBody)
 				"damage":
 					damageCommand(parts, characterBody)
-				"m":
-					moveCommand(parts, characterBody)
-				"f":
-					fireCommand(parts, characterBody)
-				"d":
-					damageCommand(parts, characterBody)
+			if contra:
+				match command:
+					"m":
+						moveCommand(parts, characterBody)
+					"f":
+						fireCommand(parts, characterBody)
+					"d":
+						damageCommand(parts, characterBody)
 			input.clear()
 			return
 	input.clear()
@@ -207,7 +210,7 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 		var angle = parts[2]
 		if angle.is_valid_float():
 			var angleDegreesInput = angle.to_int()
-			if ammoType.is_valid_float():
+			if ammoType.is_valid_float() and contra:
 				var ammoIndex = ammoType.to_int()
 				if ammoIndex > 0 and ammoIndex <= ammo.size():
 					ammoType = ammo[ammoIndex - 1]
@@ -268,6 +271,13 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 				railgun.player = self
 			elif ammoType == "firestreak":
 				var firestreak = firestreakScene.instantiate()
+				firestreak.damage = root.mainMenu.firestreakDamage
+				firestreak.HP = root.mainMenu.firestreakHP
+				firestreak.turnRate = root.mainMenu.firestreakTurningRate
+				firestreak.detectionRadiusMultiplier = root.mainMenu.firestreakDetectionRangeMultiplier
+				firestreak.explosionRadiusMultiplier = root.mainMenu.firestreakExplosionRangeMultiplier
+				firestreak.liftMultiplier = root.mainMenu.firestreakLiftMultiplier
+				firestreak.thrustMultiplier = root.mainMenu.firestreakThrustMultiplier
 				firestreak.rotation = deg_to_rad(angleDegreesInput)
 				var direction = Vector2(cos(firestreak.rotation), sin(firestreak.rotation))
 				var offset = direction * 150

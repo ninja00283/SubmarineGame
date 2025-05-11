@@ -268,7 +268,6 @@ theme_override_font_sizes/font_size = 112
 text = "Quit"
 
 [node name="Settings" type="Node2D" parent="MainMenu"]
-visible = false
 
 [node name="Panel" type="Panel" parent="MainMenu/Settings"]
 offset_left = -1920.0
@@ -309,10 +308,10 @@ theme_override_font_sizes/font_size = 112
 text = "Weapons"
 
 [node name="Tooltips" type="MarginContainer" parent="MainMenu/Settings"]
-offset_left = -960.0
-offset_top = -1080.0
-offset_right = -720.0
-offset_bottom = 1080.0
+offset_left = -1006.01
+offset_top = -1076.16
+offset_right = -916.005
+offset_bottom = 1083.84
 theme_override_constants/margin_left = 25
 theme_override_constants/margin_top = 112
 theme_override_constants/margin_right = 25
@@ -320,7 +319,7 @@ theme_override_constants/margin_bottom = 25
 
 [node name="VBoxContainer" type="VBoxContainer" parent="MainMenu/Settings/Tooltips"]
 layout_mode = 2
-theme_override_constants/separation = 100
+theme_override_constants/separation = 221
 
 [node name="MiscTool" parent="MainMenu/Settings/Tooltips/VBoxContainer" instance=ExtResource("6_kycxp")]
 layout_mode = 2
@@ -380,6 +379,12 @@ layout_mode = 2
 theme_override_font_sizes/font_size = 60
 text = "Generate cliffs: true"
 
+[node name="allowContractions" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
+custom_minimum_size = Vector2(825, 162)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Allow contractions: true"
+
 [node name="Back" type="Button" parent="MainMenu/Misc"]
 offset_left = -1877.0
 offset_top = 926.0
@@ -438,22 +443,6 @@ theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
 text = "Morse Input"
 ellipsis_char = ""
 
-[node name="morseInputP1" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 70
-theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
-text = "Morse Input Player 1"
-ellipsis_char = ""
-
-[node name="morseInputP2" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 6
-theme_override_font_sizes/font_size = 70
-theme_override_styles/normal = SubResource("StyleBoxFlat_ppqkh")
-text = "Morse Input Player 2"
-ellipsis_char = ""
-
 [node name="spawnPlayerMMB" type="Label" parent="MainMenu/Keybinds/Actions/VBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 6
@@ -499,20 +488,6 @@ context_menu_enabled = false
 virtual_keyboard_enabled = false
 
 [node name="morseInput" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 64
-alignment = 1
-context_menu_enabled = false
-virtual_keyboard_enabled = false
-
-[node name="morseInputP1" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
-layout_mode = 2
-theme_override_font_sizes/font_size = 64
-alignment = 1
-context_menu_enabled = false
-virtual_keyboard_enabled = false
-
-[node name="morseInputP2" type="LineEdit" parent="MainMenu/Keybinds/Keybinds/VBoxContainer"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 64
 alignment = 1
@@ -607,9 +582,9 @@ theme_override_font_sizes/font_size = 60
 text = "<- Back"
 
 [node name="WeaponVariables" type="Node2D" parent="MainMenu"]
-visible = false
 
 [node name="Panel" type="Panel" parent="MainMenu/WeaponVariables"]
+visible = false
 offset_left = -1920.0
 offset_top = -1080.0
 offset_right = -120.0
@@ -907,6 +882,7 @@ placeholder_text = "1.0"
 alignment = 1
 
 [node name="Back" type="Button" parent="MainMenu/WeaponVariables"]
+visible = false
 offset_left = -1877.0
 offset_top = 926.0
 offset_right = -1617.8
@@ -922,11 +898,15 @@ text = "<- Back"
 [connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/quitButton" to="." method="_on_quit_button_pressed"]
 [connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Misc" to="MainMenu" method="_onMiscPressed"]
 [connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Keybinds" to="MainMenu" method="_onKeybindsPressed"]
-[connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Weapons" to="." method="_onWeaponsPressed"]
+[connection signal="pressed" from="MainMenu/Settings/Menus/VBoxContainer/Weapons" to="MainMenu" method="_onWeaponsPressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/attackDamageF" to="MainMenu" method="_onAttackDamageFPressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/ShowMorse" to="MainMenu" method="_onShowMorsePressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/generateCliffs" to="MainMenu" method="_onGenerateCliffsPressed"]
+[connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/allowContractions" to="MainMenu" method="_onAllowContractionsPressed"]
 [connection signal="pressed" from="MainMenu/Misc/Back" to="MainMenu" method="_onBackPressed"]
 [connection signal="pressed" from="MainMenu/Keybinds/Back" to="MainMenu" method="_onBackPressed"]
+[connection signal="pressed" from="MainMenu/Weapons/Weapons/GridContainer/WTorpedo" to="MainMenu" method="_onWTorpedoPressed"]
+[connection signal="pressed" from="MainMenu/Weapons/Weapons/GridContainer/WLaser" to="MainMenu" method="_onWLaserPressed"]
+[connection signal="pressed" from="MainMenu/Weapons/Weapons/GridContainer/WMissile" to="MainMenu" method="_onWMissilePressed"]
 [connection signal="pressed" from="MainMenu/Weapons/Back" to="MainMenu" method="_onBackPressed"]
-[connection signal="pressed" from="MainMenu/WeaponVariables/Back" to="MainMenu" method="_onBackPressed"]
+[connection signal="pressed" from="MainMenu/WeaponVariables/Back" to="MainMenu" method="_onBackPressedWeapon"]
