@@ -4,6 +4,8 @@ extends CharacterBody2D
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
+@onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
+@onready var gpup2D5: GPUParticles2D = $GPUParticles2D5
 @onready var collider2D: CollisionShape2D = $CollisionShape2D
 @onready var sprite2D: Sprite2D = $Sprite2D
 @onready var meshIn2D: MeshInstance2D = $MeshInstance2D
@@ -71,7 +73,7 @@ func _physics_process(delta: float) -> void:
 	if not shaking:
 		originalPosition = position
 	if HP > 0:
-		meshIn2D.set_self_modulate(Color(1 - HP / 100, HP / 100, 0, 1))
+		meshIn2D.set_self_modulate(Color(1+0.2-(HP/100),HP/100+0.2,0,1))
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
 	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
 	gpup2D3.modulate = Color(brightness,brightness,brightness)
@@ -122,6 +124,23 @@ func _physics_process(delta: float) -> void:
 			velocity = velocity.bounce(colInfo.get_normal()) * 0.6 * (HP / 100)
 			if colInfo.get_collider().name == "Border":
 				root.borderHit(self)
+		var velocityLen = velocity.length()
+		var particleRatio = 1.0
+		if velocityLen < 1600.0:
+			particleRatio = (velocityLen / 1600.0) - 0.25
+		var newgpup2D4 = gpup2D4.duplicate() as GPUParticles2D
+		var newgpup2D5 = gpup2D5.duplicate() as GPUParticles2D
+		var colPos = colInfo.get_position()
+		newgpup2D4.global_position = colPos
+		newgpup2D4.rotation = colInfo.get_normal().angle() - 90
+		newgpup2D4.amount_ratio = particleRatio
+		newgpup2D4.emitting = true
+		newgpup2D5.global_position = colPos
+		newgpup2D5.rotation = colInfo.get_normal().angle() + 90
+		newgpup2D5.amount_ratio = particleRatio
+		newgpup2D5.emitting = true
+		get_tree().root.add_child(newgpup2D4)
+		get_tree().root.add_child(newgpup2D5)
 
 	if shaking:
 		position = originalPosition + Vector2(

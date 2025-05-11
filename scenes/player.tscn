@@ -1,4 +1,4 @@
-[gd_scene load_steps=29 format=3 uid="uid://couhv4h8umrc7"]
+[gd_scene load_steps=33 format=3 uid="uid://couhv4h8umrc7"]
 
 [ext_resource type="Script" uid="uid://di5t4kn22mi7n" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
 [ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://assets/Morse Code the art/Protractor.png" id="2_vhsvq"]
@@ -6,14 +6,10 @@
 [ext_resource type="Texture2D" uid="uid://c44qeydba351h" path="res://assets/particle.png" id="4_20753"]
 [ext_resource type="Texture2D" uid="uid://dmjk0ccufp35n" path="res://assets/paritcle2.png" id="5_3y4eu"]
 [ext_resource type="Shader" uid="uid://bpshehyhqlc4f" path="res://shaders/deathShader.gdshader" id="6_kafhs"]
-[ext_resource type="Texture2D" uid="uid://6mcv3bhhfwm0" path="res://assets/particleHD.png" id="6_smehm"]
 [ext_resource type="Script" uid="uid://clas6xic3wxsl" path="res://gdScripts/morseCodeInterpreter.gd" id="7_fjrip"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_8h28d"]
 radius = 400.0
-
-[sub_resource type="CanvasItemMaterial" id="CanvasItemMaterial_smehm"]
-light_mode = 1
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_kimm8"]
 
@@ -69,6 +65,48 @@ scale_min = 0.45
 scale_max = 0.53
 scale_curve = SubResource("CurveTexture_lsc3e")
 alpha_curve = SubResource("CurveTexture_pg0lg")
+
+[sub_resource type="Gradient" id="Gradient_770go"]
+offsets = PackedFloat32Array(0, 0.627027)
+colors = PackedColorArray(4, 3.372, 1.884, 1, 2, 0.843, 0.471, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3ko0t"]
+gradient = SubResource("Gradient_770go")
+use_hdr = true
+
+[sub_resource type="Curve" id="Curve_egjc8"]
+_limits = [0.0, 100.0, 0.0, 1.0]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.788945, 0), 0.0, 0.0, 0, 0, Vector2(0.932161, 3.75), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_f00kc"]
+curve = SubResource("Curve_egjc8")
+
+[sub_resource type="Curve" id="Curve_m3c7b"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.0251256, 1), 0.0, 0.0, 0, 0, Vector2(0.758794, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 4
+
+[sub_resource type="CurveTexture" id="CurveTexture_x0avk"]
+curve = SubResource("Curve_m3c7b")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_egcnw"]
+lifetime_randomness = 1.0
+particle_flag_disable_z = true
+particle_flag_damping_as_friction = true
+spread = 5.0
+initial_velocity_min = 1200.0
+initial_velocity_max = 6400.0
+gravity = Vector3(0, 0, 0)
+damping_min = 0.04
+damping_max = 0.12
+damping_curve = SubResource("CurveTexture_f00kc")
+scale_min = 0.04
+scale_max = 0.08
+scale_curve = SubResource("CurveTexture_x0avk")
+color_ramp = SubResource("GradientTexture1D_3ko0t")
+turbulence_enabled = true
+collision_mode = 2
+collision_use_scale = true
 
 [sub_resource type="Environment" id="Environment_53vx8"]
 background_mode = 3
@@ -302,9 +340,6 @@ shader_parameter/lineThickness = 3
 
 [sub_resource type="QuadMesh" id="QuadMesh_fjrip"]
 
-[sub_resource type="OccluderPolygon2D" id="OccluderPolygon2D_smehm"]
-polygon = PackedVector2Array(-50, -50, 50, -50, 50, 50, -50, 50)
-
 [node name="CharacterBody2D" type="CharacterBody2D"]
 process_mode = 1
 scale = Vector2(0.75, 0.75)
@@ -321,8 +356,6 @@ shape = SubResource("CircleShape2D_8h28d")
 debug_color = Color(0.576471, 0.101961, 0.113725, 0.419608)
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-light_mask = 0
-material = SubResource("CanvasItemMaterial_smehm")
 scale = Vector2(4, 4)
 texture = ExtResource("2_vhsvq")
 
@@ -373,6 +406,24 @@ texture = ExtResource("5_3y4eu")
 lifetime = 5.0
 one_shot = true
 process_material = SubResource("ParticleProcessMaterial_ck7vr")
+
+[node name="GPUParticles2D4" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 768
+texture = ExtResource("4_20753")
+one_shot = true
+explosiveness = 1.0
+trail_lifetime = 0.05
+process_material = SubResource("ParticleProcessMaterial_egcnw")
+
+[node name="GPUParticles2D5" type="GPUParticles2D" parent="."]
+emitting = false
+amount = 768
+texture = ExtResource("4_20753")
+one_shot = true
+explosiveness = 1.0
+trail_lifetime = 0.05
+process_material = SubResource("ParticleProcessMaterial_egcnw")
 
 [node name="attackDamageLabel" type="Label" parent="."]
 anchors_preset = 8
@@ -437,8 +488,8 @@ range_z_max = 2048
 shadow_enabled = true
 shadow_color = Color(0, 0, 0, 0.2)
 shadow_filter_smooth = 1.0
-texture = ExtResource("6_smehm")
-texture_scale = 5.0
+texture = ExtResource("4_20753")
+texture_scale = 50.0
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 process_mode = 3
@@ -460,10 +511,6 @@ target_position = Vector2(0, 200)
 
 [node name="morseCodeInterpreter" type="Node" parent="."]
 script = ExtResource("7_fjrip")
-
-[node name="LightOccluder2D" type="LightOccluder2D" parent="."]
-occluder = SubResource("OccluderPolygon2D_smehm")
-sdf_collision = false
 
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
 [connection signal="timeout" from="explodeDelay" to="." method="_explodeDelayEnd"]
