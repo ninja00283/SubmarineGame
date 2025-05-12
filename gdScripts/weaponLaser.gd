@@ -44,10 +44,10 @@ func _process(delta: float) -> void:
 	for body in $terrainExplosionRadii.get_overlapping_bodies():
 		if body.is_in_group("Terrain"):
 			timeSinceTerrainHit += delta
-			if timeSinceTerrainHit > 0.08:
-				for i in range(int(timeSinceTerrainHit / 0.08)):
+			if timeSinceTerrainHit > 0.16:
+				for i in range(int(timeSinceTerrainHit / 0.16)):
 					body.get_parent().clip($terrainExplosionRadii/collisionShape2d)
-					timeSinceTerrainHit -= 0.08
+					timeSinceTerrainHit -= 0.16
 
 	var hitObject = rayCast2D.get_collider()
 	if hitObject != null and "HP" in hitObject:

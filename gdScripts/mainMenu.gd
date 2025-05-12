@@ -14,6 +14,7 @@ extends Node2D
 
 var lineEdits: Array = []
 var generateCliffs: bool = true
+var showGuide: bool = true
 var torpedoHEATDamage: float = 80.0
 var torpedoExploDamage: float = 60.0
 var torpedoHP: float = 5.0
@@ -108,9 +109,10 @@ func _input(event: InputEvent) -> void:
 
 
 func _onSettingsButtonPressed() -> void:
-	settings.visible = !settings.visible
-	misc.hide()
-	keybinds.hide()
+	if not weaponVars.visible and not weapons.visible and not keybinds.visible and not misc.visible:
+		settings.visible = !settings.visible
+		misc.hide()
+		keybinds.hide()
 
 func _onMiscPressed() -> void:
 	misc.visible = !misc.visible
@@ -178,3 +180,8 @@ func _onAllowContractionsPressed() -> void:
 	for player in root.players:
 		player.contra = !player.contra
 		$Misc/Variables/GridContainer/allowContractions.text = str("Allow contractions: ", player.contra)
+
+
+func _onShowGuidePressed() -> void:
+	showGuide = !showGuide
+	$Misc/Variables/GridContainer/showGuide.text = str("Show guide: ", showGuide)

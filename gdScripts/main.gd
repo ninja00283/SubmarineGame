@@ -17,6 +17,15 @@ extends Node2D
 @onready var keyInUse: Label = $UI/vBoxContainer/keyInUse
 @onready var keyInUseTimer: Timer = $UI/vBoxContainer/keyInUseTimer
 @onready var settings: Node2D = $MainMenu/Settings
+@onready var moveCommand: Label = $UI/Panel/VBoxContainer/moveCommand
+@onready var fireCommand: Label = $UI/Panel/VBoxContainer/fireCommand
+@onready var damageCommand: Label = $UI/Panel/VBoxContainer/damageCommand
+@onready var moveCommand2: Label = $UI/Panel/VBoxContainer2/moveCommand2
+@onready var fireCommand2: Label = $UI/Panel/VBoxContainer2/fireCommand2
+@onready var damageCommand2: Label = $UI/Panel/VBoxContainer2/damageCommand2
+@onready var damageLabel: Label = $UI/Panel/Panel2/VBoxContainer2/damageLabel
+@onready var guide: Panel = $UI/Panel
+
 
 var gameEnded: bool = false
 var started: bool = false
@@ -29,6 +38,7 @@ var spawnFrameCounter: float = 0.0
 var spawnRate: float = 0.025
 var holdTime: float = 0.5
 var holdCounter: float = 0.0
+var waterAnimSpeed: float = 0.1
 var startPlayerCount: int = 2
 var keybinds: int = 0
 var keybindsSubmit: int = 0
@@ -80,6 +90,8 @@ func instance(real: bool = true) -> void:
 
 
 func _process(delta: float) -> void:
+	var currentTime = $waterShader.material.get_shader_parameter("time")
+	$waterShader.material.set_shader_parameter("time", currentTime + delta * waterAnimSpeed)
 	for object in objects:
 		if not is_instance_valid(object):
 			objects.remove_at(objects.find(object))
@@ -244,6 +256,9 @@ func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
 func _on_start_button_pressed() -> void:
+	if mainMenu.showGuide:
+		guide.show()
+	damageLabel.hide()
 	listening = true
 	inputPrompt.show()
 	inputPromptCover.show()
@@ -263,6 +278,8 @@ func _on_start_button_pressed() -> void:
 			player.position.y = player.radarAltimeter.get_collision_point().y - 100
 
 func _on_debug_button_pressed() -> void:
+	if mainMenu.showGuide:
+		guide.show()
 	started = true
 	if players.size() > 0:
 		for player in players:
@@ -307,6 +324,7 @@ func getXRange(points: PackedVector2Array) -> float:
 
 func clip(poly):
 	for child in terrain.get_children():
+		var res
 		if "polygon" in child:
 			for i in range(child.polygon.size()):
 				if abs(poly.global_position.x - child.polygon[i].x) < getXRange(poly.polygon):
@@ -315,8 +333,20 @@ func clip(poly):
 					for point in poly.polygon:
 						transformed_points.append(poly.to_global(point))
 					offsetPoly.polygon = transformed_points
-					var res = Geometry2D.clip_polygons(child.polygon, offsetPoly.polygon)
+					res = Geometry2D.clip_polygons(child.polygon, offsetPoly.polygon)
 					child.set_deferred("polygon", res[0])
+					offsetPoly.queue_free()
+					break
+		elif "occluder" in child:
+			for i in range(child.occluder.polygon.size()):
+				if abs(poly.global_position.x - child.occluder.polygon[i].x) < getXRange(poly.polygon):
+					var offsetPoly = Polygon2D.new()
+					var transformed_points = []
+					for point in poly.polygon:
+						transformed_points.append(poly.to_global(point))
+					offsetPoly.polygon = transformed_points
+					res = Geometry2D.clip_polygons(child.occluder.polygon, offsetPoly.polygon)
+					child.occluder.set_deferred("polygon", res[0])
 					offsetPoly.queue_free()
 					break
 

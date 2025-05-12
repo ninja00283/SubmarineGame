@@ -514,3 +514,4 @@ script = ExtResource("7_fjrip")
 
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
 [connection signal="timeout" from="explodeDelay" to="." method="_explodeDelayEnd"]
+[connection signal="text_changed" from="Control/commandInput" to="." method="_onCommandInputTextChanged"]

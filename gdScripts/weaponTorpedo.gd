@@ -38,6 +38,7 @@ var targets: Array = []
 
 func _ready() -> void:
 	armDelay.start(armingDelay)
+	name = "Torpedo"
 
 func _process(delta: float) -> void:
 	if HP <= 0:
@@ -62,7 +63,7 @@ func _on_area_2d_body_entered(body):
 		print("Body is self")
 
 func _on_detection_radii_body_entered(body):
-	if body != self:
+	if body != self and body.name != "Torpedo":
 		if not is_instance_valid(armDelay):
 			var relativePos = to_local(body.global_position)
 			rangeToTarget = sqrt(relativePos.x * relativePos.x + relativePos.y * relativePos.y)
@@ -92,11 +93,11 @@ func hit():
 	if not HEATExploded:
 		HEAT()
 		HEATExploded = true
-	collider2D2.position = Vector2(INF, INF)
-	impactFuse.position = Vector2(INF, INF)
-	heatJet.position = Vector2(INF, INF)
-	detectionRadii.position = Vector2(INF, INF)
-	explosionRadii.position = Vector2(INF, INF)
+	collider2D2.position = Vector2(8000, 8000)
+	impactFuse.position = Vector2(8000, 8000)
+	heatJet.position = Vector2(8000, 8000)
+	detectionRadii.position = Vector2(8000, 8000)
+	explosionRadii.position = Vector2(8000, 8000)
 	queueFreeDelay.start()
 	attackDamageDelay.start()
 

@@ -16,7 +16,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 0,
-"values": [20.0]
+"values": [12.0]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
@@ -81,7 +81,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.2),
 "transitions": PackedFloat32Array(0.2, 0.2),
 "update": 0,
-"values": [20.0, 0.0]
+"values": [12.0, 0.0]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -186,7 +186,7 @@ tracks/0/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(0.2, 0.2),
 "update": 0,
-"values": [0.0, 20.0]
+"values": [0.0, 12.0]
 }
 tracks/1/type = "method"
 tracks/1/imported = false
@@ -300,7 +300,7 @@ collision_mask = 2097167
 
 [node name="Line2D" type="Line2D" parent="."]
 points = PackedVector2Array(0, 0, 200, 0)
-width = 20.0
+width = 12.0
 default_color = Color(0.5, 6, 3, 1)
 antialiased = true
 
@@ -313,13 +313,14 @@ speed_scale = 0.5
 [node name="laserHit" type="Sprite2D" parent="."]
 modulate = Color(0.15, 2, 0.5, 1)
 texture_filter = 2
+scale = Vector2(0.5, 0.5)
 texture = ExtResource("2_b4osc")
 
 [node name="laserStart" type="Sprite2D" parent="."]
 modulate = Color(4.8, 48, 24, 1)
 texture_filter = 2
 material = SubResource("CanvasItemMaterial_88g1s")
-scale = Vector2(0.4, 0.4)
+scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_b4osc")
 
 [node name="GPUPHit" type="GPUParticles2D" parent="."]
@@ -347,7 +348,7 @@ process_material = SubResource("ParticleProcessMaterial_v4xy5")
 [node name="terrainExplosionRadii" type="Area2D" parent="."]
 
 [node name="collisionShape2d" type="CollisionPolygon2D" parent="terrainExplosionRadii"]
-polygon = PackedVector2Array(24.45, 0, 17.319, 17.319, 0, 24.45, -36, 24.45, -36, -24.45, 0, -24.45, 17.319, -17.319)
+polygon = PackedVector2Array(56.45, 0, 46, 12, 32, 16, -36, 16, -36, -16, 32, -16, 46, -12)
 
 [node name="laserDuration" type="Timer" parent="."]
 wait_time = 8.0

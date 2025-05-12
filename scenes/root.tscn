@@ -1,11 +1,12 @@
-[gd_scene load_steps=16 format=3 uid="uid://dyl0pe6kqksw3"]
+[gd_scene load_steps=25 format=3 uid="uid://dyl0pe6kqksw3"]
 
 [ext_resource type="Script" uid="uid://umbh2qxxkqfy" path="res://gdScripts/main.gd" id="1_rqimn"]
 [ext_resource type="Script" uid="uid://jbp5bdlwytwl" path="res://gdScripts/keybinds.gd" id="2_2wqq8"]
 [ext_resource type="Environment" uid="uid://4qhtyd6p6yvx" path="res://assets/worldEnv.tres" id="2_lrqlo"]
 [ext_resource type="OccluderPolygon2D" uid="uid://ckcvdmb7aka10" path="res://assets/lightOccluderPolygon2D.tres" id="2_sqa0i"]
-[ext_resource type="Script" uid="uid://owy6qdwv6cvp" path="res://gdScripts/MainMenu.gd" id="4_kycxp"]
+[ext_resource type="Script" uid="uid://owy6qdwv6cvp" path="res://gdScripts/mainMenu.gd" id="4_kycxp"]
 [ext_resource type="PackedScene" uid="uid://b8gxcth4c7hu0" path="res://scenes/tooltip.tscn" id="6_kycxp"]
+[ext_resource type="Shader" uid="uid://b64obh3isaccc" path="res://shaders/waterShader.gdshader" id="7_j287u"]
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nvee0"]
 friction = 0.2
@@ -96,6 +97,13 @@ _data = {
 &"cameraZoomPost": SubResource("Animation_k5d0p")
 }
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_j287u"]
+bg_color = Color(0, 1, 0, 0.470588)
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_5sfjl"]
+bg_color = Color(1, 0, 0, 0.470588)
+corner_radius_bottom_right = 25
+
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_u15to"]
 bg_color = Color(0, 1, 1, 0.313726)
 
@@ -104,6 +112,28 @@ bg_color = Color(1, 0, 0, 0.313726)
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ppqkh"]
 bg_color = Color(0, 0, 0, 0)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_j287u"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_5sfjl"]
+seamless = true
+seamless_blend_skirt = 1.0
+noise = SubResource("FastNoiseLite_j287u")
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_3hfy5"]
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_7pvxh"]
+seamless = true
+noise = SubResource("FastNoiseLite_3hfy5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_j287u"]
+shader = ExtResource("7_j287u")
+shader_parameter/noiseMapX = SubResource("NoiseTexture2D_5sfjl")
+shader_parameter/noiseMapY = SubResource("NoiseTexture2D_7pvxh")
+shader_parameter/time = 9.27
+shader_parameter/offsetMultiplier = 0.002
+
+[sub_resource type="QuadMesh" id="QuadMesh_5sfjl"]
 
 [node name="Root" type="Node2D"]
 process_mode = 3
@@ -119,6 +149,8 @@ collision_mask = 9
 
 [node name="lightOccluder2d" type="LightOccluder2D" parent="terrain"]
 occluder = ExtResource("2_sqa0i")
+
+[node name="rigidTerrain" type="Node2D" parent="."]
 
 [node name="line2d" type="Line2D" parent="."]
 closed = true
@@ -219,6 +251,138 @@ offset_right = 2000.0
 offset_bottom = 2000.0
 mouse_filter = 2
 color = Color(0, 0, 0, 0.25)
+
+[node name="Panel" type="Panel" parent="UI"]
+visible = false
+offset_left = -1910.0
+offset_top = -1066.0
+offset_right = -1110.0
+offset_bottom = -666.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_j287u")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Panel"]
+layout_mode = 0
+offset_right = 1000.0
+offset_bottom = 400.0
+
+[node name="P1" type="Label" parent="UI/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Player 1:"
+
+[node name="moveCommand" type="Label" parent="UI/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "M(ove): Power(int): Angle(deg):"
+
+[node name="fireCommand" type="Label" parent="UI/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "F(ire): Weapon(int/string): Angle(float):"
+
+[node name="damageCommand" type="Label" parent="UI/Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "D(amage): Amount(int):"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/Panel"]
+layout_mode = 0
+offset_top = 188.0
+offset_right = 1000.0
+offset_bottom = 588.0
+
+[node name="P2" type="Label" parent="UI/Panel/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Player2:"
+
+[node name="moveCommand2" type="Label" parent="UI/Panel/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "M(ove): Power(int): Angle(deg):"
+
+[node name="fireCommand2" type="Label" parent="UI/Panel/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "F(ire): Weapon(int/string): Angle(float):"
+
+[node name="damageCommand2" type="Label" parent="UI/Panel/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 28
+text = "D(amage): Amount(int):"
+
+[node name="Panel2" type="Panel" parent="UI/Panel"]
+layout_mode = 0
+offset_left = 800.0
+offset_right = 1400.0
+offset_bottom = 400.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_5sfjl")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="UI/Panel/Panel2"]
+layout_mode = 0
+offset_right = 300.0
+offset_bottom = 400.0
+
+[node name="Label" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Weapons"
+
+[node name="torpedoLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "1 - Torpedo"
+
+[node name="laserLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "2 - Laser"
+
+[node name="railgunLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "3 - Railgun"
+
+[node name="firestreakLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "4 - Missile"
+
+[node name="flamethrowerLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "5 - Flamethrower"
+
+[node name="m107Label" type="Label" parent="UI/Panel/Panel2/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "6 - M107"
+
+[node name="VBoxContainer2" type="VBoxContainer" parent="UI/Panel/Panel2"]
+layout_mode = 0
+offset_left = 300.0
+offset_right = 600.0
+offset_bottom = 400.0
+
+[node name="Label" type="Label" parent="UI/Panel/Panel2/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 48
+text = "Commands"
+
+[node name="moveLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "M - Move"
+
+[node name="fireLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "F - Fire"
+
+[node name="damageLabel" type="Label" parent="UI/Panel/Panel2/VBoxContainer2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 32
+text = "D - Damage"
 
 [node name="MainMenu" type="Node2D" parent="."]
 process_mode = 3
@@ -385,6 +549,12 @@ custom_minimum_size = Vector2(825, 162)
 layout_mode = 2
 theme_override_font_sizes/font_size = 60
 text = "Allow contractions: true"
+
+[node name="showGuide" type="Button" parent="MainMenu/Misc/Variables/GridContainer"]
+custom_minimum_size = Vector2(825, 162)
+layout_mode = 2
+theme_override_font_sizes/font_size = 60
+text = "Show guide: true"
 
 [node name="Back" type="Button" parent="MainMenu/Misc"]
 offset_left = -1877.0
@@ -904,6 +1074,15 @@ offset_bottom = 1035.2
 theme_override_font_sizes/font_size = 60
 text = "<- Back"
 
+[node name="waterShader" type="MeshInstance2D" parent="."]
+visible = false
+top_level = true
+texture_filter = 2
+material = SubResource("ShaderMaterial_j287u")
+position = Vector2(78, -46)
+scale = Vector2(99999, 99999)
+mesh = SubResource("QuadMesh_5sfjl")
+
 [connection signal="timeout" from="cameraZoomTimer" to="." method="_on_camera_zoom_timer_timeout"]
 [connection signal="timeout" from="UI/vBoxContainer/keyInUseTimer" to="." method="_onKeyInUseTimerTimeout"]
 [connection signal="pressed" from="MainMenu/Buttons/VBoxContainer/startButton" to="." method="_on_start_button_pressed"]
@@ -917,6 +1096,7 @@ text = "<- Back"
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/ShowMorse" to="MainMenu" method="_onShowMorsePressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/generateCliffs" to="MainMenu" method="_onGenerateCliffsPressed"]
 [connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/allowContractions" to="MainMenu" method="_onAllowContractionsPressed"]
+[connection signal="pressed" from="MainMenu/Misc/Variables/GridContainer/showGuide" to="MainMenu" method="_onShowGuidePressed"]
 [connection signal="pressed" from="MainMenu/Misc/Back" to="MainMenu" method="_onBackPressed"]
 [connection signal="pressed" from="MainMenu/Keybinds/Back" to="MainMenu" method="_onBackPressed"]
 [connection signal="pressed" from="MainMenu/Weapons/Weapons/GridContainer/WTorpedo" to="MainMenu" method="_onWTorpedoPressed"]

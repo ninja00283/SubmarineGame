@@ -3,6 +3,7 @@ extends CharacterBody2D
 @onready var gpup2D1: GPUParticles2D = $GPUParticles2D1
 @onready var gpup2D2: GPUParticles2D = $GPUParticles2D2
 @onready var gpup2D3: GPUParticles2D = $GPUParticles2D3
+@onready var gpup2D4: GPUParticles2D = $GPUParticles2D4
 @onready var proxyFuse: Area2D = $ProxyFuse
 
 
@@ -16,11 +17,22 @@ var hit: bool = false # Whether or not the projectile has been triggered
 var armingDelay: float = 0.25
 
 func _ready() -> void:
+	name = str("M107 ", randf())
 	player.root.objects.append(self)
-	GlobalTrail.addNode(self, 2, Vector2(-48, 0), 0.05)
 	$ArmingDelay.start(armingDelay)
 
 func _physics_process(delta: float) -> void:
+	if not hit:
+		if global_position.y < -1080:
+			gpup2D4.reparent(get_tree().root)
+			gpup2D4.emitting = false
+		else:
+			gpup2D4.reparent(self)
+			gpup2D4.global_position = global_position
+			gpup2D4.emitting = true
+	if global_position.y > 1080:
+		global_position.y = 1080
+		explode()
 	if not hit:
 		velocity.y += gravity * delta
 	rotation = velocity.angle()
@@ -39,8 +51,8 @@ func _physics_process(delta: float) -> void:
 	velocity *= 0.5
 
 func explode():
+	gpup2D4.emitting = false
 	if not hit:
-		GlobalTrail.removeNode(self)
 		$Sprite2D.hide()
 		gpup2D2.process_material.direction = Vector3(sin(rotation + PI / 2), cos(rotation + PI / 2), 0.0)
 		gpup2D3.process_material.direction = Vector3(sin(rotation + PI / 2), cos(rotation + PI / 2), 0.0)
@@ -71,9 +83,12 @@ func explode():
 						body.HP -= aDamage
 						player.attackDamageF(aDamage, false)
 		await get_tree().create_timer(1.0).timeout
-		player.attackDamageF(0.0, true)
+		if is_instance_valid(player):
+			player.attackDamageF(0.0, true)
 		queue_free()
 
-func _onProxyFuseBodyEntered(_body: Node2D) -> void:
+func _onProxyFuseBodyEntered(body: Node2D) -> void:
 	if $ArmingDelay.is_stopped():
-		explode()
+		if not body.name == "Border" and not body.name.begins_with("M107"):
+			explode()
+			print(body)

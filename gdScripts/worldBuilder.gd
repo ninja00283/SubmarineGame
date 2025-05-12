@@ -1,17 +1,21 @@
 extends Node
 
-@onready var marker = preload("res://scenes/Marker.tscn") # Marker scene file
+@onready var marker = preload("res://scenes/Marker.tscn")
 
-var array: Array = [] # The array that stores the points for the polygon2D
-var markers: Dictionary = {} # Dictionary that stores all markers and their positions
-var segments: int # Amount of segments composing the terrain, increase for higher resolution terrain
-var step: float # Floating point to store default segment size in pixels on the X axis
-var screenSizeX: int # Integer to store the size of the terrain on the X axis
-var cliffs: bool = true # Experimental cliffs
-var cliffPos: Array = [] # Array to store positions cliffs could start at
-var cliffIndices: Array = [] # Stores at which index the position is in 'array' that each cliff was based on
-var cliffCount: int = 0 # How many cliffs' positions have been picked out in the generation step
-var color: Color = Color(1, 1, 1, 1) # The terrains' color in RGBA
+var array: Array = []
+var markers: Dictionary = {}
+var segments: int
+var step: float
+var screenSizeX: int
+var cliffs: bool = true
+var cliffPos: Array = []
+var cliffIndices: Array = []
+var cliffCount: int = 0
+var color: Color = Color(0.1, 0.5, 0.5, 1)
+var stalactites: bool = true
+var stalactiteResolution: int = 8
+var stalactiteMaxHeight: float = -200.0
+var stalactiteMinHeight: float = -100.0
 
 func _ready() -> void:
 	array.clear()
@@ -22,16 +26,15 @@ func _ready() -> void:
 	fill()
 	build()
 
-# Function to add the points to the array
-func fill(offset: float = 0.0, terrainSegments: int = 64, terrainSizeX: int = 3840):
+func fill(offset: float = 0.0, terrainSegments: int = 192, terrainSizeX: int = 3840):
 	segments = terrainSegments
 	screenSizeX = terrainSizeX
 	step = terrainSizeX / (terrainSegments - 1)
 	for i in range(terrainSegments + 1):
-		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(350, 800)))
+		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(300, 800)))
 
-# Function to move the points to resemble terrain
-func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 0.75, maxCliffCount: int = 3):
+func build(Xrand: float = 0.15, Yrand: float = 0.35, cliffDistanceEdge: float = 0.8, maxCliffCount: int = 12):
+	var upSlope: bool = true
 	var potentialCliffPos = array[randi_range(0, array.size()-1)]
 	if cliffs:
 		while cliffCount < maxCliffCount:
@@ -45,18 +48,27 @@ func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 
 		array[i].x += xRandomization
 		for cliff in cliffPos:
 			if cliff == array[i]:
-				cliff.x += xRandomization
+				cliffPos[i].x += xRandomization
 		array[i].y = array[i-1].y
 		var yRandomization
-		if i < array.size() / 2:
-			yRandomization = randf_range(-step * Yrand, step * (Yrand * 0.2))
+		if randf_range(0.0, 1.0) > 0.7:
+			upSlope = !upSlope
+		if upSlope:
+			yRandomization = randf_range(-step * Yrand, step * (Yrand * randf_range(-16.0, 16.0)))
 		else:
-			yRandomization = randf_range(-step * (Yrand * 0.2), step * Yrand)
+			yRandomization = randf_range(-step * (Yrand * randf_range(-16.0, 16.0)), step * Yrand)
+		randomize()
 		var diff = array[i-1].y - array[i-2].y
-		array[i].y += diff * 0.2
+		array[i].y += diff * randf_range(-0.2, 0.2)
+		randomize()
 		array[i].y += yRandomization
-		if cliffIndices.has(i):
-			array[i].y = cliffPos[cliffIndices.find(i)].y
+		if cliffs:
+			if cliffIndices.has(i):
+				array[i].y = cliffPos[cliffIndices.find(i)].y
+	for i in range(array.size()):
+		if randf_range(0.0, 1.0) > 0.9 and i < array.size()-1 and stalactites:
+			array[i].y += randf_range(stalactiteMinHeight, stalactiteMaxHeight)
+			array[i+1].y = array[i].y
 	array.append(Vector2(screenSizeX / 2, screenSizeX / 2))
 	array.append(Vector2(-screenSizeX / 2, screenSizeX / 2))
 
@@ -82,18 +94,16 @@ func build(Xrand: float = 0.15, Yrand: float = 0.55, cliffDistanceEdge: float = 
 		newArray.append(seg)
 	array = newArray
 
-
 func evaluate(pos: Vector2, cliffDistanceEdge: float):
 	if abs(pos.x) < (screenSizeX / 2) * cliffDistanceEdge:
 		for position in cliffPos:
-			if abs(pos.x - position.x) < 200.0:
+			if abs(pos.x - position.x) < 120.0:
 				return false
 				break
 		return true
 	else:
 		return false
 
-# Function to toggle markers at the points, meant for debugging
 func mark():
 	for pos in array:
 		if not pos in markers.values():

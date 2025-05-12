@@ -16,7 +16,7 @@ extends CharacterBody2D
 @onready var sabotScene = preload("res://scenes/particleSabot.tscn")
 @onready var firestreakScene = preload("res://scenes/weaponFirestreak.tscn")
 @onready var flamethrowerScene = preload("res://scenes/weaponFlamethrower.tscn")
-@onready var M107Scene = preload("res://M107.tscn")
+@onready var M107Scene = preload("res://scenes/M107.tscn")
 @onready var explosionRadii: Area2D = $explosionRadii
 @onready var explodeDelay: Timer = $explodeDelay
 @onready var attackDamageLabel: Label = $attackDamageLabel
@@ -38,7 +38,7 @@ var deathShaderShowDur: float = Time.get_ticks_msec()
 var deathShaderRan: bool = false
 var commands: Array = ["move", "fire", "damage"]
 var shortCommands: Array = ["m", "f", "d"]
-var ammo: Array = ["torpedo", "laser", "railgun", "firestreak", "flamethrower", "m107"]
+var ammo: Array = ["torpedo", "laser", "railgun", "missile", "flamethrower", "m107"]
 var xDrag: float = 0.01
 var yDrag: float = 0.01
 var HP: float = 100.0
@@ -51,6 +51,8 @@ var maxBrightness: float = 1.15
 var index: int
 var originalPosition: Vector2
 var keybind: InputEvent
+var interpreted: String
+var command: String
 var root
 
 func _ready() -> void:
@@ -68,8 +70,8 @@ func _physics_process(delta: float) -> void:
 	morsePreview.text = "".join(morseCodeInt.currentMorsePreview)
 	xDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
 	yDrag = (0.2 + 0.8 * (1 - HP / 100.0)) * delta
-	#if HP < 100.0:
-		#velocity.y += (20 * (1 - HP / 100.0)) * delta
+	if HP < 100.0:
+		velocity.y += (20 * (1 - HP / 100.0)) * delta
 	velocity.x = velocity.x * (1 - xDrag)
 	velocity.y = velocity.y * (1 - yDrag)
 	if not shaking:
@@ -153,7 +155,6 @@ func _physics_process(delta: float) -> void:
 
 func commandInterpret(input, characterBody, event):
 	var key = char(event.unicode)
-
 	if str(input.text).ends_with(key) and key != "":
 		input.text = str(input.text).erase(str(input.text).length()-1)
 	var text = input.text.to_lower().strip_edges()
@@ -183,6 +184,7 @@ func commandInterpret(input, characterBody, event):
 			input.clear()
 			return
 	input.clear()
+	interpreted = str("")
 
 func moveCommand(parts: Array, characterBody: CharacterBody2D):
 	if parts.size() == 3:
@@ -210,120 +212,116 @@ func fireCommand(parts: Array, characterBody: CharacterBody2D):
 		var ammoType = parts[1].to_lower()
 		var angle = parts[2]
 		var fltAngle
-		if str(angle).length() > 3:
-			var angleStr = str(angle)
-			var beforeDecimal = angleStr.substr(0, 3)
-			var afterDecimal = angleStr.substr(3, angleStr.length() - 3)
-			fltAngle = (beforeDecimal + "." + afterDecimal).to_float()
+		if parts.size() > 3:
+			fltAngle = (parts[2] + "." + parts[3]).to_float()
 		else:
-			fltAngle = str(angle).to_float()
-		if angle.is_valid_float():
-			var angleDegreesInput = fltAngle
-			if ammoType.is_valid_float() and contra:
-				var ammoIndex = ammoType.to_int()
-				if ammoIndex > 0 and ammoIndex <= ammo.size():
-					ammoType = ammo[ammoIndex - 1]
-				else:
-					print("Invalid ammo index. Must be within the range of available weapons.")
-					return
-			elif ammo.has(ammoType):
-				pass
+			fltAngle = parts[2].to_float()
+
+		var angleDegreesInput = fltAngle
+		if ammoType.is_valid_float() and contra:
+			var ammoIndex = ammoType.to_int()
+			if ammoIndex > 0 and ammoIndex <= ammo.size():
+				ammoType = ammo[ammoIndex - 1]
 			else:
-				print("Invalid ammo type. Must be either a valid index or a weapon name.")
+				print("Invalid ammo index. Must be within the range of available weapons.")
 				return
-			if ammoType.to_lower() == "torpedo":
-				var torpedo = torpedoScene.instantiate()
-				torpedo.HEATDamage = root.mainMenu.torpedoHEATDamage
-				torpedo.ExploDamage = root.mainMenu.torpedoExploDamage
-				torpedo.HP = 5.0
-				torpedo.armingDelay = root.mainMenu.torpedoArmingDelay
-				var torpedoSpeed: float = root.mainMenu.torpedoSpeed
-				torpedo.rotation_degrees = angleDegreesInput
-				var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
-				var offset = direction * 100
-				torpedo.velocity = direction * torpedoSpeed
-				torpedo.position = characterBody.position + offset
-				get_tree().root.add_child(torpedo)
-				root.objects.append(torpedo)
-				torpedo.player = self
-
-			elif ammoType.to_lower() == "laser":
-				var laser = laserScene.instantiate()
-				laser.damage = root.mainMenu.laserDamage
-				laser.laserDuration = root.mainMenu.laserDuration
-				laser.damageRate = root.mainMenu.laserDamageRate
-				var laserDamageRate: float = 0.5
-				laser.rotation = deg_to_rad(angleDegreesInput)
-				var direction = Vector2(cos(laser.rotation), sin(laser.rotation))
-				var offset = direction * 100
-				laser.position = characterBody.position + offset
-				get_tree().root.add_child(laser)
-				laser.player = self
-				laser.reparent(self)
-			elif ammoType.to_lower() == "railgun":
-				var sabotT = sabotScene.instantiate()
-				var sabotB = sabotScene.instantiate()
-				var railgun = railgunScene.instantiate()
-				railgun.rotation = deg_to_rad(angleDegreesInput)
-				var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
-				var offset = direction * 100
-				railgun.velocity = direction * 12228
-				railgun.position = characterBody.position + offset
-
-				var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)
-				sabotT.position = railgun.position + sabotOffsetT
-				sabotT.linear_velocity = railgun.velocity + Vector2(-2048, 1200).rotated(railgun.rotation)
-				sabotT.rotation = railgun.rotation
-
-				var sabotOffsetB = Vector2(-3.84, -12.8).rotated(railgun.rotation)
-				sabotB.position = railgun.position + sabotOffsetB
-				sabotB.linear_velocity = railgun.velocity + Vector2(-2048, -1200).rotated(railgun.rotation)
-				sabotB.rotation = railgun.rotation
-
-				get_tree().root.add_child(railgun)
-				get_tree().root.add_child(sabotT)
-				get_tree().root.add_child(sabotB)
-				root.objects.append(railgun)
-				root.objects.append(sabotT)
-				root.objects.append(sabotB)
-				railgun.player = self
-			elif ammoType.to_lower() == "firestreak":
-				var firestreak = firestreakScene.instantiate()
-				firestreak.damage = root.mainMenu.firestreakDamage
-				firestreak.HP = root.mainMenu.firestreakHP
-				firestreak.turnRate = root.mainMenu.firestreakTurningRate
-				firestreak.detectionRadiusMultiplier = root.mainMenu.firestreakDetectionRangeMultiplier
-				firestreak.explosionRadiusMultiplier = root.mainMenu.firestreakExplosionRangeMultiplier
-				firestreak.liftMultiplier = root.mainMenu.firestreakLiftMultiplier
-				firestreak.thrustMultiplier = root.mainMenu.firestreakThrustMultiplier
-				firestreak.rotation = deg_to_rad(angleDegreesInput)
-				var direction = Vector2(cos(firestreak.rotation), sin(firestreak.rotation))
-				var offset = direction * 150
-				firestreak.position = characterBody.position + offset
-				firestreak.player = self
-				get_tree().root.add_child(firestreak)
-				root.objects.append(firestreak)
-			elif ammoType.to_lower() == "flamethrower":
-				var flamethrower = flamethrowerScene.instantiate()
-				flamethrower.rotation = deg_to_rad(angleDegreesInput)
-				var direction = Vector2(cos(flamethrower.rotation), sin(flamethrower.rotation))
-				var offset = direction * 100
-				flamethrower.position = characterBody.position + offset
-				get_tree().root.add_child(flamethrower)
-				flamethrower.player = self
-				flamethrower.reparent(self)
-			elif ammoType.to_lower() == "m107":
-				var M107 = M107Scene.instantiate()
-				M107.rotation = deg_to_rad(angleDegreesInput)
-				var direction = Vector2(cos(M107.rotation), sin(M107.rotation))
-				var offset = direction * 100
-				M107.position = characterBody.position + offset
-				M107.velocity = direction * 2048
-				M107.player = self
-				get_tree().root.add_child(M107)
-			print("Fired ", ammoType, " at angle ", angleDegreesInput)
+		elif ammo.has(ammoType):
+			pass
 		else:
-			print("Invalid inputs for fire command. Angle must be numeric.", " ", angle)
+			print("Invalid ammo type. Must be either a valid index or a weapon name.")
+			return
+		if ammoType.to_lower() == "torpedo":
+			var torpedo = torpedoScene.instantiate()
+			torpedo.HEATDamage = root.mainMenu.torpedoHEATDamage
+			torpedo.ExploDamage = root.mainMenu.torpedoExploDamage
+			torpedo.HP = 5.0
+			torpedo.armingDelay = root.mainMenu.torpedoArmingDelay
+			var torpedoSpeed: float = root.mainMenu.torpedoSpeed
+			torpedo.rotation_degrees = angleDegreesInput
+			var direction = Vector2(cos(torpedo.rotation), sin(torpedo.rotation))
+			var offset = direction * 100
+			torpedo.velocity = direction * torpedoSpeed
+			torpedo.position = characterBody.position + offset
+			get_tree().root.add_child(torpedo)
+			root.objects.append(torpedo)
+			torpedo.player = self
+
+		elif ammoType.to_lower() == "laser":
+			var laser = laserScene.instantiate()
+			laser.damage = root.mainMenu.laserDamage
+			laser.laserDuration = root.mainMenu.laserDuration
+			laser.damageRate = root.mainMenu.laserDamageRate
+			var laserDamageRate: float = 0.5
+			laser.rotation = deg_to_rad(angleDegreesInput)
+			var direction = Vector2(cos(laser.rotation), sin(laser.rotation))
+			var offset = direction * 100
+			laser.position = characterBody.position + offset
+			get_tree().root.add_child(laser)
+			laser.player = self
+			laser.reparent(self)
+		elif ammoType.to_lower() == "railgun":
+			var sabotT = sabotScene.instantiate()
+			var sabotB = sabotScene.instantiate()
+			var railgun = railgunScene.instantiate()
+			railgun.rotation = deg_to_rad(angleDegreesInput)
+			var direction = Vector2(cos(railgun.rotation), sin(railgun.rotation))
+			var offset = direction * 100
+			railgun.velocity = direction * 12228
+			railgun.position = characterBody.position + offset
+
+			var sabotOffsetT = Vector2(-3.84, 12.8).rotated(railgun.rotation)
+			sabotT.position = railgun.position + sabotOffsetT
+			sabotT.linear_velocity = railgun.velocity + Vector2(-2048, 1200).rotated(railgun.rotation)
+			sabotT.rotation = railgun.rotation
+
+			var sabotOffsetB = Vector2(-3.84, -12.8).rotated(railgun.rotation)
+			sabotB.position = railgun.position + sabotOffsetB
+			sabotB.linear_velocity = railgun.velocity + Vector2(-2048, -1200).rotated(railgun.rotation)
+			sabotB.rotation = railgun.rotation
+
+			get_tree().root.add_child(railgun)
+			get_tree().root.add_child(sabotT)
+			get_tree().root.add_child(sabotB)
+			root.objects.append(railgun)
+			root.objects.append(sabotT)
+			root.objects.append(sabotB)
+			railgun.player = self
+		elif ammoType.to_lower() == "missile":
+			var firestreak = firestreakScene.instantiate()
+			firestreak.damage = root.mainMenu.firestreakDamage
+			firestreak.HP = root.mainMenu.firestreakHP
+			firestreak.turnRate = root.mainMenu.firestreakTurningRate
+			firestreak.detectionRadiusMultiplier = root.mainMenu.firestreakDetectionRangeMultiplier
+			firestreak.explosionRadiusMultiplier = root.mainMenu.firestreakExplosionRangeMultiplier
+			firestreak.liftMultiplier = root.mainMenu.firestreakLiftMultiplier
+			firestreak.thrustMultiplier = root.mainMenu.firestreakThrustMultiplier
+			firestreak.rotation = deg_to_rad(angleDegreesInput)
+			var direction = Vector2(cos(firestreak.rotation), sin(firestreak.rotation))
+			var offset = direction * 150
+			firestreak.position = characterBody.position + offset
+			firestreak.player = self
+			get_tree().root.add_child(firestreak)
+			root.objects.append(firestreak)
+		elif ammoType.to_lower() == "flamethrower":
+			var flamethrower = flamethrowerScene.instantiate()
+			flamethrower.rotation = deg_to_rad(angleDegreesInput)
+			var direction = Vector2(cos(flamethrower.rotation), sin(flamethrower.rotation))
+			var offset = direction * 100
+			flamethrower.position = characterBody.position + offset
+			get_tree().root.add_child(flamethrower)
+			flamethrower.player = self
+			flamethrower.reparent(self)
+		elif ammoType.to_lower() == "m107":
+			var M107 = M107Scene.instantiate()
+			M107.rotation = deg_to_rad(angleDegreesInput)
+			var spread = 0.02
+			var direction = Vector2(cos(M107.rotation + randf_range(-spread, spread)), sin(M107.rotation + randf_range(-spread, spread)))
+			var offset = direction * 125
+			M107.position = characterBody.position + offset
+			M107.velocity = direction * 2048
+			M107.player = self
+			get_tree().root.add_child(M107)
+		print("Fired ", ammoType, " at angle ", angleDegreesInput)
 	else:
 		print("Needs 3 parts: command type, ammo type, and firing angle. Parts: ", parts.size())
 
@@ -418,3 +416,67 @@ func deathShaderAnimP():
 
 func addChar(char: String):
 	commandInput.text += char
+
+func _onCommandInputTextChanged(new_text: String) -> void:
+	var parts = new_text.split(" ")
+	if contra:
+		match str(new_text.split("")[0].to_lower()):
+			"m":
+				interpreted = str("Command: MOVE")
+				if self == root.players[0]:
+					root.fireCommand.hide()
+					root.damageCommand.hide()
+					root.moveCommand.text = interpreted
+				else:
+					root.fireCommand2.hide()
+					root.damageCommand2.hide()
+					root.moveCommand2.text = interpreted
+			"f":
+				if not contra:
+					interpreted = str("Command: FIRE Weapon(string): ")
+				else:
+					interpreted = str("Command: FIRE Weapon(index/string): ")
+				if self == root.players[0]:
+					root.moveCommand.hide()
+					root.damageCommand.hide()
+					root.fireCommand.text = interpreted
+				else:
+					root.moveCommand2.hide()
+					root.damageCommand2.hide()
+					root.fire2Command.text = interpreted
+				var ammoType
+				if parts.size() > 1:
+					ammoType = parts[1]
+					if ammoType.is_valid_float() and contra:
+						var ammoIndex = ammoType.to_int()
+						if ammoIndex > 0 and ammoIndex <= ammo.size():
+							ammoType = ammo[ammoIndex - 1]
+					if str(ammoType).length() > 0:
+						interpreted = str("Command: FIRE ","Weapon: ", str(ammoType).to_upper(), " Angle(float): ")
+					if self == root.players[0]:
+						root.fireCommand.text = interpreted
+					else:
+						root.fire2Command.text = interpreted
+				var fltAngle
+				if parts.size() > 3:
+					fltAngle = (parts[2] + "." + parts[3]).to_float()
+					interpreted = str("Command: FIRE ","Weapon: ", str(ammoType).to_upper(), " Angle: ", fltAngle)
+				elif parts.size() > 2 and parts[2].length() > 0:
+					fltAngle = parts[2].to_float()
+					interpreted = str("Command: FIRE ","Weapon: ", str(ammoType).to_upper(), " Angle: ", fltAngle)
+				if self == root.players[0]:
+					root.fireCommand.text = interpreted
+				else:
+					root.fire2Command.text = interpreted
+			"d":
+				interpreted = str("Command: DAMAGE Damage: ")
+				if self == root.players[0]:
+					root.moveCommand.hide()
+					root.fireCommand.hide()
+					root.damageCommand.text = interpreted
+				else:
+					root.moveCommand2.hide()
+					root.fireCommand2.hide()
+					root.damageCommand2.text = interpreted
+				if parts.size() > 1:
+					interpreted = str("Command: DAMAGE Damage: ", str(parts[1]).to_float())
