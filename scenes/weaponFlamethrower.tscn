@@ -15,5 +15,9 @@ wait_time = 1.5
 one_shot = true
 autostart = true
 
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://fnuyobd77ixp")
+spawn_path = NodePath("..")
+
 [connection signal="timeout" from="timer" to="." method="_onTimerTimeout"]
 [connection signal="timeout" from="queueFreeDelay" to="." method="_onQueueFreeDelayTimeout"]

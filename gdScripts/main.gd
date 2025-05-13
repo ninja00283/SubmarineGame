@@ -17,15 +17,6 @@ extends Node2D
 @onready var keyInUse: Label = $UI/vBoxContainer/keyInUse
 @onready var keyInUseTimer: Timer = $UI/vBoxContainer/keyInUseTimer
 @onready var settings: Node2D = $MainMenu/Settings
-@onready var moveCommand: Label = $UI/Panel/VBoxContainer/moveCommand
-@onready var fireCommand: Label = $UI/Panel/VBoxContainer/fireCommand
-@onready var damageCommand: Label = $UI/Panel/VBoxContainer/damageCommand
-@onready var moveCommand2: Label = $UI/Panel/VBoxContainer2/moveCommand2
-@onready var fireCommand2: Label = $UI/Panel/VBoxContainer2/fireCommand2
-@onready var damageCommand2: Label = $UI/Panel/VBoxContainer2/damageCommand2
-@onready var damageLabel: Label = $UI/Panel/Panel2/VBoxContainer2/damageLabel
-@onready var guide: Panel = $UI/Panel
-
 
 var gameEnded: bool = false
 var started: bool = false
@@ -47,6 +38,8 @@ var players: Array = []
 var objects: Array = []
 var heldObjects: Array = []
 var keysAsText: Array = []
+@export var terrainArray: Array
+var peer = ENetMultiplayerPeer.new()
 
 func _ready() -> void:
 	instance(true)
@@ -76,17 +69,7 @@ func instance(real: bool = true) -> void:
 		lightOccluder.occluder = lightOccluderPolygon
 		lightOccluder.occluder.polygon = PackedVector2Array(polygonPoints)
 		terrain.add_child(lightOccluder)
-	if real:
-		for player in range(startPlayerCount):
-			var playerInstance = playerScene.instantiate()
-			playerInstance.position = spawnPos[0]
-			playerInstance.root = self
-			players.append(playerInstance)
-			playerInstance.index = player
-			add_child(playerInstance)
-			move_child(playerInstance, 0)
-			spawnPos.remove_at(0)
-		get_tree().paused = true
+	get_tree().paused = true
 
 
 func _process(delta: float) -> void:
@@ -95,8 +78,8 @@ func _process(delta: float) -> void:
 	for object in objects:
 		if not is_instance_valid(object):
 			objects.remove_at(objects.find(object))
-	if not debugging and players.size() < 2 and not gameEnded:
-		gameWon()
+	#if not debugging and players.size() < 2 and not gameEnded:
+		#gameWon()
 
 	if Input.is_action_just_pressed("Reload"):
 		for child in terrain.get_children():
@@ -256,9 +239,6 @@ func _on_quit_button_pressed() -> void:
 	get_tree().quit()
 
 func _on_start_button_pressed() -> void:
-	if mainMenu.showGuide:
-		guide.show()
-	damageLabel.hide()
 	listening = true
 	inputPrompt.show()
 	inputPromptCover.show()
@@ -278,8 +258,6 @@ func _on_start_button_pressed() -> void:
 			player.position.y = player.radarAltimeter.get_collision_point().y - 100
 
 func _on_debug_button_pressed() -> void:
-	if mainMenu.showGuide:
-		guide.show()
 	started = true
 	if players.size() > 0:
 		for player in players:
@@ -355,3 +333,43 @@ func reset():
 		if child is Polygon2D or child is CollisionPolygon2D or child is LightOccluder2D:
 			child.queue_free()
 	WorldBuilder.array.clear()
+
+
+func _onHostButtonPressed() -> void:
+	peer.create_server(135)
+	multiplayer.multiplayer_peer = peer
+	multiplayer.peer_connected.connect(addPlayer)
+	addPlayer()
+	get_tree().paused = false
+	started = true
+	if players.size() > 0:
+		for player in players:
+			player.commandInput.show()
+	mainMenu.hide()
+	get_tree().paused = false
+	debugging = true
+
+
+func _onJoinButtonPressed() -> void:
+	peer.create_client("localhost", 135)
+	multiplayer.multiplayer_peer = peer
+	get_tree().paused = false
+	started = true
+	if players.size() > 0:
+		for player in players:
+			player.commandInput.show()
+	mainMenu.hide()
+	get_tree().paused = false
+	debugging = true
+
+func addPlayer(id = 1):
+	var playerInstance = playerScene.instantiate()
+	playerInstance.position = spawnPos[0]
+	playerInstance.name = str(id)
+	playerInstance.root = self
+	players.append(playerInstance)
+	playerInstance.index = players.find(playerInstance)
+	add_child(playerInstance)
+	move_child(playerInstance, 0)
+	spawnPos.remove_at(0)
+	get_tree().paused = true

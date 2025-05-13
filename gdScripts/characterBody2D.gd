@@ -41,7 +41,7 @@ var shortCommands: Array = ["m", "f", "d"]
 var ammo: Array = ["torpedo", "laser", "railgun", "missile", "flamethrower", "m107"]
 var xDrag: float = 0.01
 var yDrag: float = 0.01
-var HP: float = 100.0
+@export var HP: float = 100.0
 var alive: bool = true
 var attackDamage: float = 0.0
 var amplitude: float = 1
@@ -51,18 +51,35 @@ var maxBrightness: float = 1.15
 var index: int
 var originalPosition: Vector2
 var keybind: InputEvent
-var interpreted: String
 var command: String
 var root
 
+func _enter_tree() -> void:
+	set_multiplayer_authority(name.to_int())
+
 func _ready() -> void:
+	root = get_tree().root.get_children()[2]
 	morseCodeInt.player = self
 	await get_tree().create_timer(0.1, false).timeout
 	commandInput.show()
 
-func _physics_process(delta: float) -> void:
+func _input(event: InputEvent) -> void:
+	if not is_multiplayer_authority():
+		commandInput.hide()
+		return
 	if Input.is_action_just_pressed("Escape"):
 		commandInput.release_focus()
+	if Input.is_action_just_pressed("Submit"):
+		var eve = InputEventKey.new()
+		for ev in InputMap.action_get_events("Submit"):
+			if ev is InputEventKey:
+				eve = ev
+				break
+		commandInterpret(commandInput, self, event)
+
+func _physics_process(delta: float) -> void:
+	if not is_multiplayer_authority():
+		commandInput.hide()
 	if not showMorse:
 		morse.hide()
 		morsePreview.hide()
@@ -81,21 +98,6 @@ func _physics_process(delta: float) -> void:
 	var sineValue = amplitude*sin(frequency*Time.get_ticks_usec()/1000000.0)
 	var brightness = lerp(minBrightness,maxBrightness,(sineValue+1)/2)
 	gpup2D3.modulate = Color(brightness,brightness,brightness)
-	if not root.debugging:
-		if Input.is_action_just_pressed(str("P", index, "TextSubmit")):
-			var event = InputEventKey.new()
-			for ev in InputMap.action_get_events(str("P", index, "TextSubmit")):
-				if ev is InputEventKey:
-					event = ev
-					break
-			commandInterpret(commandInput, self, event)
-	elif Input.is_action_just_pressed("Submit"):
-		var event = InputEventKey.new()
-		for ev in InputMap.action_get_events("Submit"):
-			if ev is InputEventKey:
-				event = ev
-				break
-		commandInterpret(commandInput, self, event)
 
 	if HP <= 0 and alive == true:
 		if root.players.find(self) != -1:
@@ -184,7 +186,6 @@ func commandInterpret(input, characterBody, event):
 			input.clear()
 			return
 	input.clear()
-	interpreted = str("")
 
 func moveCommand(parts: Array, characterBody: CharacterBody2D):
 	if parts.size() == 3:
@@ -416,67 +417,3 @@ func deathShaderAnimP():
 
 func addChar(char: String):
 	commandInput.text += char
-
-func _onCommandInputTextChanged(new_text: String) -> void:
-	var parts = new_text.split(" ")
-	if contra:
-		match str(new_text.split("")[0].to_lower()):
-			"m":
-				interpreted = str("Command: MOVE")
-				if self == root.players[0]:
-					root.fireCommand.hide()
-					root.damageCommand.hide()
-					root.moveCommand.text = interpreted
-				else:
-					root.fireCommand2.hide()
-					root.damageCommand2.hide()
-					root.moveCommand2.text = interpreted
-			"f":
-				if not contra:
-					interpreted = str("Command: FIRE Weapon(string): ")
-				else:
-					interpreted = str("Command: FIRE Weapon(index/string): ")
-				if self == root.players[0]:
-					root.moveCommand.hide()
-					root.damageCommand.hide()
-					root.fireCommand.text = interpreted
-				else:
-					root.moveCommand2.hide()
-					root.damageCommand2.hide()
-					root.fire2Command.text = interpreted
-				var ammoType
-				if parts.size() > 1:
-					ammoType = parts[1]
-					if ammoType.is_valid_float() and contra:
-						var ammoIndex = ammoType.to_int()
-						if ammoIndex > 0 and ammoIndex <= ammo.size():
-							ammoType = ammo[ammoIndex - 1]
-					if str(ammoType).length() > 0:
-						interpreted = str("Command: FIRE ","Weapon: ", str(ammoType).to_upper(), " Angle(float): ")
-					if self == root.players[0]:
-						root.fireCommand.text = interpreted
-					else:
-						root.fire2Command.text = interpreted
-				var fltAngle
-				if parts.size() > 3:
-					fltAngle = (parts[2] + "." + parts[3]).to_float()
-					interpreted = str("Command: FIRE ","Weapon: ", str(ammoType).to_upper(), " Angle: ", fltAngle)
-				elif parts.size() > 2 and parts[2].length() > 0:
-					fltAngle = parts[2].to_float()
-					interpreted = str("Command: FIRE ","Weapon: ", str(ammoType).to_upper(), " Angle: ", fltAngle)
-				if self == root.players[0]:
-					root.fireCommand.text = interpreted
-				else:
-					root.fire2Command.text = interpreted
-			"d":
-				interpreted = str("Command: DAMAGE Damage: ")
-				if self == root.players[0]:
-					root.moveCommand.hide()
-					root.fireCommand.hide()
-					root.damageCommand.text = interpreted
-				else:
-					root.moveCommand2.hide()
-					root.fireCommand2.hide()
-					root.damageCommand2.text = interpreted
-				if parts.size() > 1:
-					interpreted = str("Command: DAMAGE Damage: ", str(parts[1]).to_float())

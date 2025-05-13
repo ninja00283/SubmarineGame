@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=3 uid="uid://couhv4h8umrc7"]
+[gd_scene load_steps=34 format=3 uid="uid://couhv4h8umrc7"]
 
 [ext_resource type="Script" uid="uid://di5t4kn22mi7n" path="res://gdScripts/characterBody2D.gd" id="1_bhnif"]
 [ext_resource type="Texture2D" uid="uid://cjcjxu7myhbq" path="res://assets/Morse Code the art/Protractor.png" id="2_vhsvq"]
@@ -340,6 +340,32 @@ shader_parameter/lineThickness = 3
 
 [sub_resource type="QuadMesh" id="QuadMesh_fjrip"]
 
+[sub_resource type="SceneReplicationConfig" id="SceneReplicationConfig_fjrip"]
+properties/0/path = NodePath(".:position")
+properties/0/spawn = true
+properties/0/replication_mode = 1
+properties/1/path = NodePath("AnimationPlayer:current_animation")
+properties/1/spawn = true
+properties/1/replication_mode = 1
+properties/2/path = NodePath("GPUParticles2D1:emitting")
+properties/2/spawn = true
+properties/2/replication_mode = 1
+properties/3/path = NodePath("GPUParticles2D2:emitting")
+properties/3/spawn = true
+properties/3/replication_mode = 1
+properties/4/path = NodePath("GPUParticles2D3:emitting")
+properties/4/spawn = true
+properties/4/replication_mode = 1
+properties/5/path = NodePath("GPUParticles2D4:emitting")
+properties/5/spawn = true
+properties/5/replication_mode = 1
+properties/6/path = NodePath("GPUParticles2D5:emitting")
+properties/6/spawn = true
+properties/6/replication_mode = 1
+properties/7/path = NodePath(".:HP")
+properties/7/spawn = true
+properties/7/replication_mode = 1
+
 [node name="CharacterBody2D2" type="CharacterBody2D"]
 process_mode = 1
 scale = Vector2(0.75, 0.75)
@@ -511,6 +537,13 @@ target_position = Vector2(0, 200)
 
 [node name="morseCodeInterpreter" type="Node" parent="."]
 script = ExtResource("7_fjrip")
+
+[node name="MultiplayerSynchronizer" type="MultiplayerSynchronizer" parent="."]
+replication_config = SubResource("SceneReplicationConfig_fjrip")
+
+[node name="MultiplayerSpawner" type="MultiplayerSpawner" parent="."]
+_spawnable_scenes = PackedStringArray("uid://bvih3qrkyftcx", "uid://clp730ykoyj6o", "uid://c463jyt3tm14g", "uid://d0iesrjidokl4", "uid://bmi8j7ndhedm1", "uid://cb2au4ork2kqh", "uid://bgwy0w4eemlew")
+spawn_path = NodePath("..")
 
 [connection signal="timeout" from="queueFreeDelay" to="." method="_on_queue_free_delay_timeout"]
 [connection signal="timeout" from="explodeDelay" to="." method="_explodeDelayEnd"]

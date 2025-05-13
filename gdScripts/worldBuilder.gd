@@ -7,12 +7,12 @@ var markers: Dictionary = {}
 var segments: int
 var step: float
 var screenSizeX: int
-var cliffs: bool = true
+var cliffs: bool = false
 var cliffPos: Array = []
 var cliffIndices: Array = []
 var cliffCount: int = 0
 var color: Color = Color(0.1, 0.5, 0.5, 1)
-var stalactites: bool = true
+var stalactites: bool = false
 var stalactiteResolution: int = 8
 var stalactiteMaxHeight: float = -200.0
 var stalactiteMinHeight: float = -100.0
@@ -26,14 +26,14 @@ func _ready() -> void:
 	fill()
 	build()
 
-func fill(offset: float = 0.0, terrainSegments: int = 192, terrainSizeX: int = 3840):
+func fill(offset: float = 0.0, terrainSegments: int = 1920, terrainSizeX: int = 38400):
 	segments = terrainSegments
 	screenSizeX = terrainSizeX
 	step = terrainSizeX / (terrainSegments - 1)
 	for i in range(terrainSegments + 1):
-		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(300, 800)))
+		array.append(Vector2(((-terrainSizeX / 2) + step * i) + step * offset, randf_range(800, 800)))
 
-func build(Xrand: float = 0.15, Yrand: float = 0.35, cliffDistanceEdge: float = 0.8, maxCliffCount: int = 12):
+func build(Xrand: float = 0.0, Yrand: float = 0.0, cliffDistanceEdge: float = 0.8, maxCliffCount: int = 120):
 	var upSlope: bool = true
 	var potentialCliffPos = array[randi_range(0, array.size()-1)]
 	if cliffs:
@@ -46,9 +46,10 @@ func build(Xrand: float = 0.15, Yrand: float = 0.35, cliffDistanceEdge: float = 
 	for i in range(array.size()):
 		var xRandomization: float = randf_range(-step * Xrand, step * Xrand)
 		array[i].x += xRandomization
-		for cliff in cliffPos:
-			if cliff == array[i]:
-				cliffPos[i].x += xRandomization
+		if cliffs:
+			for cliff in cliffPos:
+				if cliff == array[i]:
+					cliffPos[i].x += xRandomization
 		array[i].y = array[i-1].y
 		var yRandomization
 		if randf_range(0.0, 1.0) > 0.7:

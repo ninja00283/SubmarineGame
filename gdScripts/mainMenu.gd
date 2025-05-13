@@ -13,8 +13,7 @@ extends Node2D
 @onready var wVars: Node2D = $WeaponVariables
 
 var lineEdits: Array = []
-var generateCliffs: bool = true
-var showGuide: bool = true
+var generateCliffs: bool = false
 var torpedoHEATDamage: float = 80.0
 var torpedoExploDamage: float = 60.0
 var torpedoHP: float = 5.0
@@ -180,8 +179,3 @@ func _onAllowContractionsPressed() -> void:
 	for player in root.players:
 		player.contra = !player.contra
 		$Misc/Variables/GridContainer/allowContractions.text = str("Allow contractions: ", player.contra)
-
-
-func _onShowGuidePressed() -> void:
-	showGuide = !showGuide
-	$Misc/Variables/GridContainer/showGuide.text = str("Show guide: ", showGuide)
